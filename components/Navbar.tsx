@@ -15,10 +15,10 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-20 sm:h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1">
-            <div className="relative w-16 h-16">
+          <Link href="/" className="flex items-center gap-0">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24">
               <Image
                 src="/logo.png"
                 alt="Pearly Logo"
@@ -27,7 +27,7 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">
               Pearly
             </span>
           </Link>

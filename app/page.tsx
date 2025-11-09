@@ -47,7 +47,7 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-8 sm:pb-12 md:pb-0 bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50 min-h-screen flex items-center">
+      <section className="relative overflow-hidden pt-24 sm:pt-28 md:pt-32 lg:pt-20 pb-8 sm:pb-12 md:pb-0 bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
             {/* Left Side - Text Content */}
@@ -341,6 +341,7 @@ export default function Home() {
                       <button
                         onClick={(e) => {
                           e.preventDefault();
+                          e.stopPropagation();
                           handleAddToCart(product);
                         }}
                         className="p-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full hover:shadow-lg transition-all hover:scale-110 flex items-center justify-center"
