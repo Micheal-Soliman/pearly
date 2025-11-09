@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -9,11 +9,22 @@ import { products, categories } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { Filter, Heart, ShoppingBag, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || 'All');
+
+  // Update category when URL changes
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<'all' | 'under-200' | '200-300' | 'over-300'>('all');
   const [sortBy, setSortBy] = useState<'default' | 'price-low' | 'price-high' | 'name'>('default');
@@ -88,15 +99,28 @@ export default function ProductsPage() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Header */}
-      <div className="bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 py-16 pt-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 bg-clip-text text-transparent animate-fadeIn gradient-text-animate">
-            All Products
+      {/* Banner */}
+      <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] mt-20 sm:mt-24 overflow-hidden">
+        <Image
+          src={`/all products.png?v=${Date.now()}`}
+          alt="All Products Banner"
+          fill
+          className="object-cover"
+          priority
+          unoptimized
+        />
+        {/* Luxury Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        
+        {/* Luxury Text Overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 drop-shadow-2xl animate-fadeIn">
+            Luxury Collection
           </h1>
-          <p className="text-gray-700 text-lg animate-fadeInUp">
-            Discover our complete collection of luxury products
+          <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl font-light tracking-wide drop-shadow-lg animate-fadeInUp">
+            Discover Elegance & Beauty
           </p>
+          <div className="mt-4 sm:mt-6 w-16 sm:w-20 md:w-24 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
         </div>
       </div>
 

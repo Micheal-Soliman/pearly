@@ -14,7 +14,7 @@ import { useState } from 'react';
 export default function Home() {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
-  const featuredProducts = products.filter((p) => p.featured);
+  const lipglossProducts = products.filter((p) => p.category === 'Lipgloss').slice(0, 4);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
@@ -111,7 +111,7 @@ export default function Home() {
             >
               <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/welcome.jpg"
+                  src="/hero.png"
                   alt="Pearly Collection"
                   fill
                   className="object-cover"
@@ -198,47 +198,122 @@ export default function Home() {
         <div className="absolute bottom-20 left-10 w-40 h-40 bg-rose-200/30 rounded-full blur-3xl"></div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 bg-white">
+      {/* Categories Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-pink-50 via-white to-rose-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-pink-50 to-rose-50 hover:shadow-lg transition-shadow animate-fadeInUp hover-lift">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-float">
-                <Truck className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Fast Shipping
-              </h3>
-              <p className="text-gray-600">
-                Delivery to all governorates in 2-3 business days
-              </p>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              Shop by Category
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
+              Explore our curated collections
+            </p>
+          </motion.div>
 
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-shadow animate-fadeInUp hover-lift" style={{animationDelay: '0.1s'}}>
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-float" style={{animationDelay: '0.5s'}}>
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Secure Payment
-              </h3>
-              <p className="text-gray-600">
-                Cash on Delivery - 100% safe and secure
-              </p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Bundles */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
+              <Link
+                href="/products?category=Bundles"
+                className="block group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="relative h-64 sm:h-72 md:h-80">
+                  <Image
+                    src="/double-gloss.jpg"
+                    alt="Bundles"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2 drop-shadow-2xl">Bundles</h3>
+                  <p className="text-sm sm:text-base text-white drop-shadow-lg">Special combo deals</p>
+                </div>
+              </Link>
+            </motion.div>
 
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-rose-50 to-purple-50 hover:shadow-lg transition-shadow animate-fadeInUp hover-lift" style={{animationDelay: '0.2s'}}>
-              <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-float" style={{animationDelay: '1s'}}>
-                <Sparkles className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Luxury Quality
-              </h3>
-              <p className="text-gray-600">
-                Carefully selected products to ensure the highest quality
-              </p>
-            </div>
+            {/* Lipgloss */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
+              <Link
+                href="/products?category=Lipgloss"
+                className="block group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="relative h-64 sm:h-72 md:h-80">
+                  <Image
+                    src="/lipgloss-clear-1.jpg"
+                    alt="Lipgloss"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2 drop-shadow-2xl">Lipgloss</h3>
+                  <p className="text-sm sm:text-base text-white drop-shadow-lg">Shine & hydration</p>
+                </div>
+              </Link>
+            </motion.div>
+
+            {/* Eyebrow Wax */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
+              <Link
+                href="/products?category=Eyebrow Wax"
+                className="block group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="relative h-64 sm:h-72 md:h-80">
+                  <Image
+                    src="/eyebrow-wax-1.jpg"
+                    alt="Eyebrow Wax"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2 drop-shadow-2xl">Eyebrow Wax</h3>
+                  <p className="text-sm sm:text-base text-white drop-shadow-lg">Perfect brows</p>
+                </div>
+              </Link>
+            </motion.div>
           </div>
         </div>
+      </section>
+
+      {/* Promotional Banner */}
+      <section className="relative w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] overflow-hidden">
+        <Image
+          src="/all products2.png"
+          alt="Pearly Products"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
       </section>
 
       {/* Featured Products */}
@@ -252,15 +327,15 @@ export default function Home() {
             className="text-center mb-8 sm:mb-10 md:mb-12"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
-              Featured Products
+              Lipgloss Collection
             </h2>
             <p className="text-gray-600 text-base sm:text-lg md:text-xl">
-              Discover our latest luxury additions
+              Shine, hydrate, and glow with our luxury lipgloss range
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 md:gap-8">
-            {featuredProducts.map((product, index) => (
+            {lipglossProducts.map((product: any, index: number) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 50 }}
@@ -358,11 +433,440 @@ export default function Home() {
 
           <div className="text-center mt-12">
             <Link
-              href="/products"
+              href="/products?category=Lipgloss"
               className="inline-block bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105 hover-glow animate-pulse-soft"
             >
-              View All Products
+              View All Lipgloss
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Best Sellers Section */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              Best Sellers 🔥
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
+              Our customers' favorite picks
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Bundle - Double Gloss */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <Link href="/products/7" className="block">
+                <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-pink-50 to-rose-50 p-6">
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                    #1 Best Seller
+                  </div>
+                  <div className="relative h-64 mb-4 rounded-2xl overflow-hidden">
+                    <Image
+                      src="/double-gloss.jpg"
+                      alt="Double Gloss"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Double Gloss Bundle</h3>
+                  <p className="text-gray-600 text-sm mb-3">2 Full-Size Lipgloss of your choice</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-pink-600">335 EGP</span>
+                    <span className="text-sm text-gray-500">⭐ 4.9/5</span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+
+            {/* Lipgloss - Clear */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <Link href="/products/1" className="block">
+                <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                    #2 Best Seller
+                  </div>
+                  <div className="relative h-64 mb-4 rounded-2xl overflow-hidden">
+                    <Image
+                      src="/lipgloss-clear-1.jpg"
+                      alt="Clear Lipgloss"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Clear Lipgloss</h3>
+                  <p className="text-gray-600 text-sm mb-3">Natural shine & hydration</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-pink-600">From 180 EGP</span>
+                    <span className="text-sm text-gray-500">⭐ 4.8/5</span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+
+            {/* Triple Gloss Bundle */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <Link href="/products/8" className="block">
+                <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-rose-50 to-purple-50 p-6">
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                    #3 Best Seller
+                  </div>
+                  <div className="relative h-64 mb-4 rounded-2xl overflow-hidden">
+                    <Image
+                      src="/triple-gloss.jpg"
+                      alt="Triple Gloss"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Triple Gloss Bundle</h3>
+                  <p className="text-gray-600 text-sm mb-3">3 Full-Size Lipgloss of your choice</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-pink-600">470 EGP</span>
+                    <span className="text-sm text-gray-500">⭐ 5.0/5</span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Reviews Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              Loved by Thousands 💕
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
+              Discover why our customers choose Pearly for their beauty routine
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Review 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">⭐</span>
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed italic">
+                "The best lipgloss I've ever used! The shine is natural and the scent is absolutely divine. Pearly has become my go-to brand for all things beauty. 🩷"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  S
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900 text-lg">Sara Ahmed</p>
+                  <p className="text-sm text-pink-600 font-semibold">✓ Verified Buyer</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Review 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">⭐</span>
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed italic">
+                "The bundle deal is absolutely amazing! I saved so much and all the shades are gorgeous. Fast delivery and beautiful packaging. Highly recommend! ✨"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  N
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900 text-lg">Nour Hassan</p>
+                  <p className="text-sm text-pink-600 font-semibold">✓ Verified Buyer</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Review 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">⭐</span>
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed italic">
+                "Exceptional quality at an incredible price! The lipgloss lasts all day and keeps my lips hydrated. This is luxury beauty made accessible. 💄"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  M
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900 text-lg">Mona Ali</p>
+                  <p className="text-sm text-pink-600 font-semibold">✓ Verified Buyer</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              Why Choose Pearly? 💎
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
+              Your beauty, our promise
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="text-center p-8 rounded-3xl bg-gradient-to-br from-pink-50 to-rose-50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <Truck className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Fast Shipping
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Delivery to all governorates in 2-3 business days. Track your order every step of the way! 🚚
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-center p-8 rounded-3xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <Shield className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Secure Payment
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Cash on Delivery - 100% safe and secure. Pay only when you receive your order! 💳
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-center p-8 rounded-3xl bg-gradient-to-br from-rose-50 to-purple-50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Luxury Quality
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Carefully selected products to ensure the highest quality. Your satisfaction is guaranteed! ✨
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Instagram Feed Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              #PearlyGlow 📸
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl mb-6">
+              Share your Pearly moments with us on Instagram
+            </p>
+            <a
+              href="https://instagram.com/pearly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <Heart className="w-5 h-5" />
+              Follow @Pearly
+            </a>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                viewport={{ once: true }}
+                className="relative aspect-square rounded-2xl overflow-hidden group cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 group-hover:opacity-0 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/50">
+                  <Heart className="w-8 h-8 text-white" />
+                </div>
+                <div className="w-full h-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center">
+                  <Sparkles className="w-12 h-12 text-white/50" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How to Use Section */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 gradient-text-animate">
+              How to Use 📖
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg md:text-xl">
+              Get the most out of your Pearly products
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-xl">
+                1
+              </div>
+              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 pt-12">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Prep Your Lips</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Start with clean, moisturized lips for the best application and longest-lasting shine.
+                </p>
+                <div className="w-full h-40 bg-gradient-to-br from-pink-200 to-rose-200 rounded-2xl flex items-center justify-center">
+                  <Sparkles className="w-16 h-16 text-white/50" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-xl">
+                2
+              </div>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 pt-12">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Apply Evenly</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Use the applicator to glide the gloss smoothly across your lips from center to edges.
+                </p>
+                <div className="w-full h-40 bg-gradient-to-br from-purple-200 to-pink-200 rounded-2xl flex items-center justify-center">
+                  <Heart className="w-16 h-16 text-white/50" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-xl">
+                3
+              </div>
+              <div className="bg-gradient-to-br from-rose-50 to-purple-50 rounded-3xl p-8 pt-12">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Enjoy the Glow</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Reapply throughout the day for continuous shine and hydration. Perfect for any occasion!
+                </p>
+                <div className="w-full h-40 bg-gradient-to-br from-rose-200 to-purple-200 rounded-2xl flex items-center justify-center">
+                  <Star className="w-16 h-16 text-white/50" />
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
