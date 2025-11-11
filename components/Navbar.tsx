@@ -13,48 +13,46 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 sm:h-24">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-0">
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20">
               <Image
                 src="/logo.png"
-                alt="Pearly Logo"
+                alt="Pearly"
                 fill
                 className="object-contain"
                 priority
               />
             </div>
-            <span className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">
-              Pearly
-            </span>
+            <span className="text-3xl sm:text-4xl text-black" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
             >
               Home
             </Link>
             <Link
               href="/products"
-              className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
             >
-              Products
+              Shop
             </Link>
             <Link
               href="/about"
-              className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
             >
-              About Us
+              About
             </Link>
             <Link
               href="/contact"
-              className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
             >
               Contact
             </Link>
@@ -64,22 +62,22 @@ export default function Navbar() {
           <div className="flex items-center space-x-6">
             <Link
               href="/favorites"
-              className="relative text-gray-700 hover:text-pink-500 transition-colors"
+              className="relative hover:text-gray-500 transition-colors"
             >
-              <Heart className="w-6 h-6" />
+              <Heart className="w-5 h-5" />
               {favorites.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {favorites.length}
                 </span>
               )}
             </Link>
             <Link
               href="/cart"
-              className="relative text-gray-700 hover:text-pink-500 transition-colors"
+              className="relative hover:text-gray-500 transition-colors"
             >
-              <ShoppingBag className="w-6 h-6" />
+              <ShoppingBag className="w-5 h-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}
@@ -87,13 +85,13 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden text-gray-700"
+              className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               )}
             </button>
           </div>
@@ -101,32 +99,32 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-pink-100">
+          <div className="md:hidden py-6 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
               <Link
                 href="/"
-                className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/products"
-                className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Products
+                Shop
               </Link>
               <Link
                 href="/about"
-                className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                About Us
+                About
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-700 hover:text-pink-500 transition-colors font-medium"
+                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact

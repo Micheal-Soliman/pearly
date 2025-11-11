@@ -1,140 +1,184 @@
 'use client';
 
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCart } from '@/context/CartContext';
-import { motion } from 'framer-motion';
+import { X, ShoppingBag } from 'lucide-react';
+import { useState } from 'react';
 
 export default function FavoritesPage() {
   const { favorites, removeFromFavorites } = useFavorites();
   const { addToCart } = useCart();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
 
   const handleAddToCart = (product: any) => {
-    addToCart(product);
+    if (product.category === 'Lipgloss') {
+      setSelectedProduct(product);
+      setSelectedType('squeez');
+      setShowModal(true);
+    } else {
+      addToCart(product);
+    }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
-      <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-32">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-100 to-rose-100 px-6 py-3 rounded-full mb-6">
-            <Heart className="w-6 h-6 text-pink-500 fill-pink-500" />
-            <span className="text-sm font-semibold text-pink-600">Your Favorites</span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">
-              My Favorites 💖
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600">
-            {favorites.length} {favorites.length === 1 ? 'item' : 'items'} in your wishlist
-          </p>
-        </motion.div>
+  const confirmAddToCart = () => {
+    if (selectedProduct) {
+      const productToAdd = {
+        ...selectedProduct,
+        selectedType,
+      };
+      addToCart(productToAdd);
+      setShowModal(false);
+      setSelectedProduct(null);
+    }
+  };
 
-        {favorites.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-20"
-          >
-            <div className="bg-white rounded-3xl p-12 shadow-xl max-w-md mx-auto">
-              <Heart className="w-24 h-24 text-pink-200 mx-auto mb-6" />
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">No Favorites Yet</h2>
-              <p className="text-gray-600 mb-8">
-                Start adding products to your favorites by clicking the ❤️ icon
-              </p>
-              <Link
-                href="/products"
-                className="inline-block bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                Browse Products
-              </Link>
-            </div>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {favorites.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group"
-              >
-                {/* Product Image */}
-                <Link href={`/products/${product.id}`} className="block relative h-80 overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  if (favorites.length === 0) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <div className="pt-32 pb-20">
+          <div className="max-w-2xl mx-auto px-4 text-center">
+            <h1 className="text-4xl sm:text-5xl font-light tracking-widest mb-6">YOUR FAVORITES</h1>
+            <p className="text-gray-600 font-light mb-12">You haven't added any favorites yet</p>
+            <Link
+              href="/products"
+              className="inline-block bg-black text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300"
+            >
+              CONTINUE SHOPPING
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Navbar />
+
+      <div className="pt-32 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl sm:text-5xl font-light tracking-widest mb-12 text-center">
+            YOUR FAVORITES
+          </h1>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {favorites.map((product) => (
+              <div key={product.id} className="group relative">
+                <Link href={`/products/${product.id}`}>
+                  <div className="relative h-[400px] sm:h-[500px] mb-4 overflow-hidden bg-gray-100">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    
+                    {/* Remove Button */}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeFromFavorites(product.id);
+                      }}
+                      className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100"
+                    >
+                      <X className="w-5 h-5 text-gray-700" />
+                    </button>
+                  </div>
                 </Link>
 
-                {/* Product Info */}
-                <div className="p-6">
+                <div className="space-y-2">
                   <Link href={`/products/${product.id}`}>
-                    <h3 className="font-bold text-lg text-gray-900 mb-2 hover:text-pink-500 transition-colors line-clamp-2">
-                      {product.name}
+                    <h3 className="text-base font-light tracking-wide hover:underline">
+                      {product.name.toLowerCase()}
                     </h3>
                   </Link>
-                  <p className="text-sm text-gray-500 mb-4">{product.category}</p>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-pink-600">{product.price} EGP</span>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600 font-light">
+                      {product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP
+                    </p>
+                    
                     <button
-                      onClick={() => handleAddToCart(product)}
-                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
+                      className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all duration-300"
                     >
                       <ShoppingBag className="w-4 h-4" />
-                      Add to Cart
-                    </button>
-                    <button
-                      onClick={() => removeFromFavorites(product.id)}
-                      className="bg-red-50 text-red-500 px-4 py-3 rounded-xl hover:bg-red-100 transition-colors"
-                      title="Remove from favorites"
-                    >
-                      <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        )}
-
-        {/* Continue Shopping */}
-        {favorites.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center mt-12"
-          >
-            <Link
-              href="/products"
-              className="inline-block bg-white text-pink-600 px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-pink-300"
-            >
-              Continue Shopping
-            </Link>
-          </motion.div>
-        )}
+        </div>
       </div>
+
+      {/* Modal for Lipgloss Options */}
+      {showModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white max-w-md w-full p-8 relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <h2 className="text-2xl font-light tracking-wide mb-4">Choose Your Option</h2>
+            <p className="text-gray-600 font-light mb-6">{selectedProduct.name}</p>
+
+            <div className="space-y-3 mb-6">
+              <button
+                onClick={() => setSelectedType('squeez')}
+                className={`w-full p-4 border-2 transition-all ${
+                  selectedType === 'squeez'
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 hover:border-black'
+                }`}
+              >
+                <div className="text-left">
+                  <p className="font-medium">Squeez</p>
+                  <p className="text-sm opacity-80">180 EGP</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setSelectedType('big-brush')}
+                className={`w-full p-4 border-2 transition-all ${
+                  selectedType === 'big-brush'
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 hover:border-black'
+                }`}
+              >
+                <div className="text-left">
+                  <p className="font-medium">Big Brush</p>
+                  <p className="text-sm opacity-80">200 EGP</p>
+                </div>
+              </button>
+            </div>
+
+            <button
+              onClick={confirmAddToCart}
+              className="w-full bg-black text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300 flex items-center justify-center gap-3"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              ADD TO CART
+            </button>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

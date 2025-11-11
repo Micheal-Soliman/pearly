@@ -4,6 +4,7 @@ import { emailService } from '@/emailService';
 export async function POST(request: Request) {
   try {
     const orderData = await request.json();
+    console.log('📦 Order received:', orderData.orderNumber);
     
     // Google Sheets Web App URL - هتحطها من Google Apps Script
     const GOOGLE_SHEETS_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL || '';
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
     // إرسال إيميل تأكيد للعميل
     if (orderData.email && orderData.email !== 'N/A') {
       try {
+        console.log('📧 Attempting to send email to:', orderData.email);
         await emailService.sendPearlyOrderConfirmation({
           name: orderData.customerName,
           email: orderData.email,
@@ -51,18 +53,21 @@ export async function POST(request: Request) {
           deliveryArea: orderData.city,
           notes: orderData.notes,
           items: orderData.items,
-          subtotal: orderData.total,
-          deliveryFee: 0,
+          subtotal: orderData.subtotal || orderData.total,
+          deliveryFee: orderData.deliveryFee || 0,
           discount: 0,
           total: orderData.total,
         });
-        console.log('Order confirmation email sent successfully');
+        console.log('✅ Order confirmation email sent successfully');
       } catch (emailError) {
-        console.error('Failed to send email:', emailError);
+        console.error('❌ Failed to send email:', emailError);
         // لا نوقف العملية إذا فشل الإيميل
       }
+    } else {
+      console.log('⚠️ No email provided, skipping email notification');
     }
 
+    console.log('✅ Order processed successfully:', orderData.orderNumber);
     return NextResponse.json({ success: true, orderNumber: orderData.orderNumber });
   } catch (error) {
     console.error('Order submission error:', error);

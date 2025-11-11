@@ -1,157 +1,173 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Mail, Phone, MapPin, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({ name: '', email: '', message: '' });
+    }, 3000);
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 py-16 pt-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 bg-clip-text text-transparent">
-            Contact Us
-          </h1>
-          <p className="text-gray-700 text-lg">
-            We're here to answer all your questions
-          </p>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
-              Contact Information
-            </h2>
-
-            <div className="space-y-6">
-              <div className="flex items-start gap-4 bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-1">Phone</h3>
-                  <p className="text-gray-600" dir="ltr">+20 123 456 7890</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Available 9 AM - 9 PM
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-1">Email</h3>
-                  <p className="text-gray-600" dir="ltr">info@pearly.com</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    We reply within 24 hours
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 bg-gradient-to-br from-rose-50 to-purple-50 p-6 rounded-2xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-1">Address</h3>
-                  <p className="text-gray-600">Cairo, Egypt</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    We deliver to all governorates
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <h3 className="font-bold text-gray-900 mb-4">Follow Us</h3>
-              <div className="flex gap-4">
-                <a
-                  href="#"
-                  className="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all duration-300 hover:scale-110"
-                >
-                  <Instagram className="w-6 h-6" />
-                </a>
-                <a
-                  href="#"
-                  className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all duration-300 hover:scale-110"
-                >
-                  <Facebook className="w-6 h-6" />
-                </a>
-                <a
-                  href="#"
-                  className="w-12 h-12 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all duration-300 hover:scale-110"
-                >
-                  <Twitter className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
+      {/* Hero Banner */}
+      <section className="relative w-full h-[60vh] mt-20 sm:mt-24">
+        <Image
+          src="/contact.png"
+          alt="Contact Us"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-widest mb-4">
+              GET IN TOUCH
+            </h1>
+            <p className="text-lg font-light">
+              We'd love to hear from you
+            </p>
           </div>
+        </div>
+      </section>
 
-          {/* Contact Form */}
-          <div className="bg-white rounded-3xl p-8 shadow-xl">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Send Us a Message
-            </h2>
+      <div className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <form className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Contact Info */}
+            <div className="space-y-12">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-pink-100 focus:border-pink-500 focus:outline-none transition-colors"
-                  placeholder="Your Name"
-                />
+                <h2 className="text-2xl font-light tracking-wide mb-8">
+                  contact information
+                </h2>
+                
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm tracking-wide mb-1">EMAIL</p>
+                      <a href="mailto:info@pearly.com" className="text-gray-600 font-light hover:underline">
+                        info@pearly.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm tracking-wide mb-1">PHONE</p>
+                      <a href="tel:+201234567890" className="text-gray-600 font-light hover:underline">
+                        +20 123 456 7890
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm tracking-wide mb-1">ADDRESS</p>
+                      <p className="text-gray-600 font-light">
+                        Cairo, Egypt
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-pink-100 focus:border-pink-500 focus:outline-none transition-colors"
-                  placeholder="example@email.com"
-                  dir="ltr"
-                />
+                <h3 className="text-xl font-light tracking-wide mb-4">
+                  business hours
+                </h3>
+                <div className="space-y-2 text-gray-600 font-light">
+                  <p>Saturday - Thursday: 10:00 AM - 8:00 PM</p>
+                  <p>Friday: Closed</p>
+                </div>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-pink-100 focus:border-pink-500 focus:outline-none transition-colors"
-                  placeholder="01xxxxxxxxx"
-                  dir="ltr"
-                />
-              </div>
+            {/* Contact Form */}
+            <div>
+              <h2 className="text-2xl font-light tracking-wide mb-8">
+                send us a message
+              </h2>
 
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Message
-                </label>
-                <textarea
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-pink-100 focus:border-pink-500 focus:outline-none transition-colors resize-none"
-                  placeholder="How can we help you?"
-                />
-              </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm tracking-wide mb-2">
+                    NAME
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                Send Message
-              </button>
-            </form>
+                <div>
+                  <label htmlFor="email" className="block text-sm tracking-wide mb-2">
+                    EMAIL
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm tracking-wide mb-2">
+                    MESSAGE
+                  </label>
+                  <textarea
+                    id="message"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
+                    rows={6}
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitted}
+                  className="w-full bg-black text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300 disabled:bg-gray-400"
+                >
+                  {submitted ? 'MESSAGE SENT!' : 'SEND MESSAGE'}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

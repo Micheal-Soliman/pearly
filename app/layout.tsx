@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from '@/context/FavoritesContext';
@@ -8,6 +9,12 @@ const alice = localFont({
   src: "./fonts/Alice-Regular.ttf",
   variable: "--font-alice",
   weight: "400",
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  variable: "--font-dancing",
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -28,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={alice.variable}>
+    <html lang="en" className={`${alice.variable} ${dancingScript.variable}`}>
       <body>
         <CartProvider>
           <FavoritesProvider>

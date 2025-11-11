@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -9,12 +9,10 @@ import Footer from '@/components/Footer';
 import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
-import { ShoppingBag, Heart, Star, Truck, Shield, ArrowLeft, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ShoppingBag, Heart, Minus, Plus, Check } from 'lucide-react';
 
 export default function ProductPage() {
   const params = useParams();
-  const router = useRouter();
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -26,11 +24,11 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <Link href="/products" className="text-pink-500 hover:text-pink-600">
-            Back to Products
+          <h1 className="text-4xl font-light tracking-wide mb-6">Product Not Found</h1>
+          <Link href="/products" className="text-sm tracking-widest uppercase hover:underline">
+            Back to Shop
           </Link>
         </div>
       </div>
@@ -39,7 +37,7 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     const productToAdd = product.category === 'Lipgloss' 
-      ? { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 }
+      ? { ...product, selectedType, price: selectedType === 'big-brush' ? 200 : 180 }
       : product;
     
     for (let i = 0; i < quantity; i++) {
@@ -51,77 +49,41 @@ export default function ProductPage() {
 
   const getCurrentPrice = () => {
     if (product.category === 'Lipgloss') {
-      return selectedType === 'big-brush' ? 250 : 180;
+      return selectedType === 'big-brush' ? 200 : 180;
     }
     return product.price;
   };
 
-  const getOldPrice = () => {
-    if (product.category === 'Lipgloss') {
-      return selectedType === 'big-brush' ? 280 : 205;
+  const toggleFavorite = () => {
+    if (isFavorite(product.id)) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
     }
-    if (product.id === '9') return 140;
-    return null;
   };
 
-  const getFlavour = () => {
-    const flavours: { [key: string]: string } = {
-      '10': 'Bubble Gum',
-      '11': 'Coffee',
-      '12': 'Vanilla',
-      '13': 'Coconut',
-      '14': 'Mixed Berries',
-      '15': 'Mixed Berries',
-      '16': 'Mixed Berries',
-      '17': 'Vanilla',
-      '18': 'Bubble Gum',
-      '19': 'Mixed Berries',
-      '20': 'Strawberry',
-      '21': 'Bubble Gum',
-      '22': 'Coffee',
-      '23': 'Strawberry',
-      '24': 'Cheesecake',
-      '25': 'Coffee',
-      '26': 'Mixed Berries',
-      '27': 'Strawberry',
-      '28': 'Watermelon',
-      '29': 'Coffee',
-    };
-    return flavours[product.id] || 'Vanilla';
-  };
-
-  const relatedProducts = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
+  const images = product.images || [product.image];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-16 pt-32">
+      <div className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-8">
-            <Link href="/" className="hover:text-pink-500">Home</Link>
-            <span>/</span>
-            <Link href="/products" className="hover:text-pink-500">Products</Link>
-            <span>/</span>
-            <span className="text-gray-900 font-semibold">{product.name}</span>
-          </div>
+          <Link 
+            href="/products" 
+            className="inline-block text-sm tracking-widest uppercase mb-8 hover:underline"
+          >
+            ← Back to Shop
+          </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Product Images */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* Main Image or Video */}
-              <div className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl mb-4 bg-gradient-to-br from-pink-50 to-rose-50">
-                {product.images[selectedImage].toLowerCase().endsWith('.mov') || 
-                 product.images[selectedImage].toLowerCase().endsWith('.mp4') ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="space-y-4">
+              <div className="relative h-[500px] lg:h-[700px] bg-gray-50">
+                {images[selectedImage].toLowerCase().endsWith('.mov') || 
+                 images[selectedImage].toLowerCase().endsWith('.mp4') ? (
                   <video
-                    src={product.images[selectedImage]}
+                    src={images[selectedImage]}
                     controls
                     autoPlay
                     loop
@@ -130,37 +92,28 @@ export default function ProductPage() {
                   />
                 ) : (
                   <Image
-                    src={product.images[selectedImage]}
+                    src={images[selectedImage]}
                     alt={product.name}
                     fill
-                    className="object-contain"
-                    priority
+                    className="object-cover"
                   />
                 )}
-                {product.featured && (
-                  <div className="absolute top-6 right-6 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    Featured
-                  </div>
-                )}
               </div>
-
-              {/* Thumbnail Images */}
-              {product.images.length > 1 && (
+              
+              {images.length > 1 && (
                 <div className="grid grid-cols-4 gap-4">
-                  {product.images.map((img, index) => (
+                  {images.map((img: string, idx: number) => (
                     <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`relative h-24 rounded-xl overflow-hidden transition-all duration-300 ${
-                        selectedImage === index
-                          ? 'ring-4 ring-pink-500 shadow-lg scale-105'
-                          : 'ring-2 ring-gray-200 hover:ring-pink-300'
+                      key={idx}
+                      onClick={() => setSelectedImage(idx)}
+                      className={`relative h-28 bg-gray-50 ${
+                        selectedImage === idx ? 'ring-2 ring-black' : ''
                       }`}
                     >
                       {img.toLowerCase().endsWith('.mov') || img.toLowerCase().endsWith('.mp4') ? (
                         <div className="w-full h-full bg-gray-900 flex items-center justify-center">
                           <div className="text-white text-center">
-                            <div className="w-8 h-8 mx-auto mb-1 rounded-full bg-pink-500 flex items-center justify-center">
+                            <div className="w-8 h-8 mx-auto mb-1 rounded-full bg-black flex items-center justify-center">
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                               </svg>
@@ -171,299 +124,160 @@ export default function ProductPage() {
                       ) : (
                         <Image
                           src={img}
-                          alt={`${product.name} ${index + 1}`}
+                          alt={`${product.name} ${idx + 1}`}
                           fill
-                          className="object-contain"
+                          className="object-cover"
                         />
                       )}
                     </button>
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
 
-            {/* Product Details */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-6"
-            >
-              {/* Category Badge */}
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-100 to-rose-100 px-4 py-2 rounded-full">
-                <span className="text-sm font-semibold text-pink-600">{product.category}</span>
+            <div className="space-y-8">
+              <div>
+                <p className="text-xs tracking-widest uppercase text-gray-500 mb-3">
+                  {product.category}
+                </p>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide mb-6">
+                  {product.name}
+                </h1>
+                <p className="text-3xl font-light">
+                  {getCurrentPrice()} EGP
+                </p>
               </div>
 
-              {/* Product Name */}
-              <h1 className="text-5xl font-bold text-gray-900 leading-tight">
-                {product.name}
-              </h1>
-
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-pink-500 text-pink-500" />
-                  ))}
-                </div>
-                <span className="text-gray-600">(4.9/5 - 127 reviews)</span>
+              <div className="border-t border-b border-gray-200 py-8">
+                <p className="text-gray-600 font-light leading-relaxed">
+                  {product.description}
+                </p>
               </div>
 
-              {/* Price & Favorite */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-baseline gap-4">
-                  <span className="text-5xl font-bold text-pink-600">{getCurrentPrice()} EGP</span>
-                  {getOldPrice() && (
-                    <span className="text-2xl text-gray-400 line-through">{getOldPrice()} EGP</span>
-                  )}
-                </div>
-                <button
-                  onClick={() => {
-                    if (isFavorite(product.id)) {
-                      removeFromFavorites(product.id);
-                    } else {
-                      addToFavorites({
-                        id: product.id,
-                        name: product.name,
-                        price: getCurrentPrice(),
-                        image: product.image,
-                        category: product.category,
-                      });
-                    }
-                  }}
-                  className={`p-4 rounded-full transition-all duration-300 ${
-                    isFavorite(product.id)
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-white text-pink-500 border-2 border-pink-500'
-                  } hover:scale-110`}
-                >
-                  <Heart className={`w-6 h-6 ${isFavorite(product.id) ? 'fill-white' : ''}`} />
-                </button>
-              </div>
-
-              {/* Description */}
-              <p className="text-xl text-gray-700 leading-relaxed">
-                {product.description}
-              </p>
-
-              {/* Product Details for Eyebrow Wax */}
-              {product.id === '9' && (
-                <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Product Details</h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-4">
-                      <p className="text-sm text-gray-600 mb-1">Size</p>
-                      <p className="text-lg font-bold text-pink-600">20 ml</p>
-                    </div>
-                    <div className="bg-white rounded-xl p-4">
-                      <p className="text-sm text-gray-600 mb-1">Items</p>
-                      <p className="text-lg font-bold text-pink-600">2 pieces</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-6">
-                    <p className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-pink-500 rounded-full"></span>
-                      Ingredients
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {['Wax', 'Fixative material', 'Aloe vera extract', 'Panthenol', 'Moisturizer'].map((ingredient, i) => (
-                        <span
-                          key={i}
-                          className="px-4 py-2 bg-gradient-to-r from-pink-50 to-rose-50 text-gray-700 rounded-full text-sm border border-pink-200"
-                        >
-                          {ingredient}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Product Details for Lipgloss */}
               {product.category === 'Lipgloss' && (
-                <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 space-y-6">
-                  <h3 className="text-xl font-bold text-gray-900">Choose Your Type</h3>
-                  
-                  {/* Big Brush Option */}
-                  <button
-                    onClick={() => setSelectedType('big-brush')}
-                    className={`w-full bg-white rounded-xl p-6 border-2 transition-all ${
-                      selectedType === 'big-brush'
-                        ? 'border-pink-500 ring-4 ring-pink-200 shadow-lg'
-                        : 'border-pink-200 hover:border-pink-400'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="text-left">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-lg font-bold text-gray-900">Big Brush</h4>
-                          {selectedType === 'big-brush' && (
-                            <Check className="w-5 h-5 text-pink-500" />
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">6 ml</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-pink-600">250 EGP</p>
-                        <p className="text-sm text-gray-400 line-through">280 EGP</p>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Squeez Option */}
-                  <button
-                    onClick={() => setSelectedType('squeez')}
-                    className={`w-full bg-white rounded-xl p-6 border-2 transition-all ${
-                      selectedType === 'squeez'
-                        ? 'border-pink-500 ring-4 ring-pink-200 shadow-lg'
-                        : 'border-pink-200 hover:border-pink-400'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="text-left">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-lg font-bold text-gray-900">Squeez</h4>
-                          {selectedType === 'squeez' && (
-                            <Check className="w-5 h-5 text-pink-500" />
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">8 ml</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-pink-600">180 EGP</p>
-                        <p className="text-sm text-gray-400 line-through">205 EGP</p>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Flavour */}
-                  <div className="bg-white rounded-xl p-4">
-                    <p className="text-sm text-gray-600 mb-1">Flavour</p>
-                    <p className="text-lg font-bold text-pink-600">
-                      {getFlavour()} {
-                        getFlavour() === 'Bubble Gum' ? '🍬' : 
-                        getFlavour() === 'Coffee' ? '☕' : 
-                        getFlavour() === 'Coconut' ? '🥥' : 
-                        getFlavour() === 'Mixed Berries' ? '🍓' : 
-                        getFlavour() === 'Strawberry' ? '🍓' : 
-                        getFlavour() === 'Cheesecake' ? '🍰' : 
-                        getFlavour() === 'Watermelon' ? '🍉' : 
-                        '🍦'
-                      }
-                    </p>
-                  </div>
-
-                  {/* Ingredients */}
-                  <div className="bg-white rounded-xl p-6">
-                    <p className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-pink-500 rounded-full"></span>
-                      Ingredients
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {['Mineral Oil', 'Ethylene/Propylene/Styrene Copolymer', 'Coconut oil', 'Castor seed oil', 'Vitamin E'].map((ingredient, i) => (
-                        <span
-                          key={i}
-                          className="px-4 py-2 bg-gradient-to-r from-pink-50 to-rose-50 text-gray-700 rounded-full text-sm border border-pink-200"
-                        >
-                          {ingredient}
-                        </span>
-                      ))}
-                    </div>
+                <div>
+                  <p className="text-sm tracking-wide mb-4">SELECT TYPE</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setSelectedType('squeez')}
+                      className={`p-4 border-2 text-left transition-all ${
+                        selectedType === 'squeez'
+                          ? 'border-black bg-black text-white'
+                          : 'border-gray-300 hover:border-black'
+                      }`}
+                    >
+                      <p className="font-medium">Squeez</p>
+                      <p className="text-sm opacity-80">180 EGP</p>
+                    </button>
+                    <button
+                      onClick={() => setSelectedType('big-brush')}
+                      className={`p-4 border-2 text-left transition-all ${
+                        selectedType === 'big-brush'
+                          ? 'border-black bg-black text-white'
+                          : 'border-gray-300 hover:border-black'
+                      }`}
+                    >
+                      <p className="font-medium">Big Brush</p>
+                      <p className="text-sm opacity-80">200 EGP</p>
+                    </button>
                   </div>
                 </div>
               )}
 
-              {/* Stock Status */}
-              <div className="flex items-center gap-2 text-green-600">
-                <Check className="w-5 h-5" />
-                <span className="font-semibold">In Stock - Ready to Ship</span>
-              </div>
-
-              {/* Quantity Selector */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">Quantity</label>
-                <div className="flex items-center gap-4">
+              <div>
+                <p className="text-sm tracking-wide mb-4">QUANTITY</p>
+                <div className="flex items-center border border-gray-300 w-fit">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 rounded-full bg-pink-100 text-pink-600 font-bold hover:bg-pink-200 transition-colors"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
                   >
-                    -
+                    <Minus className="w-4 h-4" />
                   </button>
-                  <span className="text-2xl font-bold w-12 text-center">{quantity}</span>
+                  <span className="w-16 text-center font-light">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-12 h-12 rounded-full bg-pink-100 text-pink-600 font-bold hover:bg-pink-200 transition-colors"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
                   >
-                    +
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* Add to Cart Buttons */}
-              <div className="pt-4">
+              <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
+                  disabled={addedToCart}
+                  className="w-full bg-black text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300 flex items-center justify-center gap-3 disabled:bg-gray-400"
                 >
-                  <ShoppingBag className="w-6 h-6" />
-                  {addedToCart ? 'Added to Cart!' : 'Add to Cart'}
+                  {addedToCart ? (
+                    <>
+                      <Check className="w-5 h-5" />
+                      ADDED TO CART
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-5 h-5" />
+                      ADD TO CART
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={toggleFavorite}
+                  className="w-full border-2 border-gray-300 px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:border-black transition-colors duration-300 flex items-center justify-center gap-3"
+                >
+                  <Heart
+                    className={`w-5 h-5 ${
+                      isFavorite(product.id) ? 'fill-black' : ''
+                    }`}
+                  />
+                  {isFavorite(product.id) ? 'REMOVE FROM FAVORITES' : 'ADD TO FAVORITES'}
                 </button>
               </div>
 
-              {/* Features */}
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-pink-100">
-                <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl">
-                  <Truck className="w-6 h-6 text-pink-500" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Free Shipping</p>
-                    <p className="text-sm text-gray-600">On all orders</p>
-                  </div>
+              <div className="border-t border-gray-200 pt-8 space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Category</span>
+                  <span className="font-light">{product.category}</span>
                 </div>
-                <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
-                  <Shield className="w-6 h-6 text-pink-500" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Cash on Delivery</p>
-                    <p className="text-sm text-gray-600">100% Secure</p>
-                  </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Availability</span>
+                  <span className="font-light">{product.inStock ? 'In Stock' : 'Out of Stock'}</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <div className="mt-24">
-              <h2 className="text-4xl font-bold text-gray-900 mb-8">You May Also Like</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {relatedProducts.map((relatedProduct) => (
-                  <Link
-                    key={relatedProduct.id}
-                    href={`/products/${relatedProduct.id}`}
-                    className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
-                  >
-                    <div className="relative h-64 overflow-hidden">
-                      <Image
-                        src={relatedProduct.image}
-                        alt={relatedProduct.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">
-                        {relatedProduct.name}
+          <div className="mt-32">
+            <h2 className="text-3xl font-light tracking-wide mb-12 text-center">
+              You May Also Like
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+              {products
+                .filter((p) => p.category === product.category && p.id !== product.id)
+                .slice(0, 4)
+                .map((relatedProduct) => (
+                  <Link key={relatedProduct.id} href={`/products/${relatedProduct.id}`}>
+                    <div className="group">
+                      <div className="relative h-[300px] sm:h-[400px] mb-4 overflow-hidden bg-gray-50">
+                        <Image
+                          src={relatedProduct.image}
+                          alt={relatedProduct.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <h3 className="text-base font-light tracking-wide mb-2">
+                        {relatedProduct.name.toLowerCase()}
                       </h3>
-                      <p className="text-2xl font-bold text-pink-600">
+                      <p className="text-sm text-gray-600 font-light">
                         {relatedProduct.price} EGP
                       </p>
                     </div>
                   </Link>
                 ))}
-              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
 

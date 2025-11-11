@@ -17,15 +17,18 @@
   --color-accent: var(--accent);
   --color-rose-gold: var(--rose-gold);
   --font-alice: var(--font-alice);
+  --font-dancing: var(--font-dancing);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #ffffff;
+  color: #000000;
   font-family: var(--font-alice), 'Georgia', 'Times New Roman', serif;
+  font-weight: 400;
 }
 
 * {
+  font-family: var(--font-alice), 'Georgia', 'Times New Roman', serif;
   scroll-behavior: smooth;
 }
 
@@ -196,4 +199,14 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: #ec4899 #fdf2f8;
+}
+
+/* Hide scrollbar for slider */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

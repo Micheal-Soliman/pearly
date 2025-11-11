@@ -1,129 +1,134 @@
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import Image from 'next/image';
-import { Heart, Sparkles, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 py-20 pt-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 bg-clip-text text-transparent">
-            About Us
+      {/* Hero */}
+      <section className="relative w-full h-[60vh] mt-20 sm:mt-24">
+        <Image
+          src="/about-us.jpg"
+          alt="About Pearly"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-widest text-white">
+            ABOUT US
           </h1>
-          <p className="text-gray-700 text-xl">
-            Discover the Pearly Story
-          </p>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        {/* Main Content with Image */}
-        <div className="bg-white rounded-3xl overflow-hidden shadow-2xl mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            {/* Image Section */}
-            <div className="relative h-[400px] lg:h-auto">
-              <Image
-                src="/about-us.jpg"
-                alt="The Pearly Shop"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-pink-900/20 to-transparent"></div>
-            </div>
+      {/* Story */}
+      <section className="py-20 sm:py-32">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center space-y-8"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-wide">
+              our story
+            </h2>
+            <p className="text-lg text-gray-600 font-light leading-relaxed">
+              At Pearly, we believe beauty begins with self-love. Our mission is to empower every woman 
+              to shine confidently through high-quality, affordable beauty products that reflect her unique style.
+            </p>
+            <p className="text-lg text-gray-600 font-light leading-relaxed">
+              Founded with passion and dedication, we carefully curate each product to ensure it meets 
+              our standards of luxury and excellence. From our signature lipgloss collection to our 
+              premium beauty bundles, every item is designed to make you feel special.
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-            {/* Text Section */}
-            <div className="p-8 md:p-12 flex flex-col justify-center">
-              <div className="mb-6">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-100 to-rose-100 px-4 py-2 rounded-full mb-4">
-                  <Heart className="w-5 h-5 text-pink-500 fill-pink-500" />
-                  <span className="text-sm font-semibold text-pink-600">Our Story</span>
-                </div>
+      {/* Values */}
+      <section className="py-20 sm:py-32 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-wide">
+              our values
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center space-y-4"
+            >
+              <div className="w-16 h-16 border-2 border-black rounded-full mx-auto flex items-center justify-center">
+                <span className="text-2xl">✨</span>
               </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                Welcome to The Pearly Shop
-              </h2>
-
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                At The Pearly Shop, we believe <strong className="text-pink-600">beauty begins with self-love</strong>. Our mission is to empower every woman to shine confidently through high-quality, affordable beauty products that reflect her unique style.
+              <h3 className="text-xl font-light tracking-wide">Quality</h3>
+              <p className="text-gray-600 font-light leading-relaxed">
+                We never compromise on quality. Every product is carefully selected and tested.
               </p>
+            </motion.div>
 
-              <p className="text-lg text-gray-700 leading-relaxed">
-                We promise products made with care, so you always look and feel your best.
-              </p>
-
-              <div className="mt-8 flex items-center gap-4">
-                <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-                <Sparkles className="w-6 h-6 text-pink-500" />
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-center space-y-4"
+            >
+              <div className="w-16 h-16 border-2 border-black rounded-full mx-auto flex items-center justify-center">
+                <span className="text-2xl">💕</span>
               </div>
-            </div>
+              <h3 className="text-xl font-light tracking-wide">Self-Love</h3>
+              <p className="text-gray-600 font-light leading-relaxed">
+                We believe beauty starts from within. Our products help you express your inner glow.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-center space-y-4"
+            >
+              <div className="w-16 h-16 border-2 border-black rounded-full mx-auto flex items-center justify-center">
+                <span className="text-2xl">🌟</span>
+              </div>
+              <h3 className="text-xl font-light tracking-wide">Accessibility</h3>
+              <p className="text-gray-600 font-light leading-relaxed">
+                Luxury beauty should be accessible to everyone. We offer premium products at fair prices.
+              </p>
+            </motion.div>
           </div>
         </div>
+      </section>
 
-        {/* Values Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Our Values
+      {/* CTA */}
+      <section className="py-20 sm:py-32">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-wide mb-8">
+            ready to shine?
           </h2>
-          <p className="text-gray-600 text-lg">
-            What makes us special
-          </p>
+          <Link
+            href="/products"
+            className="inline-block bg-black text-white px-16 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300"
+          >
+            SHOP NOW
+          </Link>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <Sparkles className="w-10 h-10 text-white" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Luxury Quality
-            </h3>
-            <p className="text-gray-600 leading-relaxed">
-              Every product is carefully selected to ensure the highest standards of quality and elegance
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <Shield className="w-10 h-10 text-white" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Trust & Safety
-            </h3>
-            <p className="text-gray-600 leading-relaxed">
-              Cash on delivery for your peace of mind and security
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-rose-50 to-purple-50 rounded-3xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <Heart className="w-10 h-10 text-white fill-white" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Made with Love
-            </h3>
-            <p className="text-gray-600 leading-relaxed">
-              We're here to support you every step of your beauty journey
-            </p>
-          </div>
-        </div>
-
-        {/* Quote Section */}
-        <div className="mt-20 bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 rounded-3xl p-12 text-center">
-          <div className="max-w-3xl mx-auto">
-            <Sparkles className="w-12 h-12 text-pink-500 mx-auto mb-6" />
-            <blockquote className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 leading-relaxed">
-              "Beauty begins with self-love"
-            </blockquote>
-            <p className="text-lg text-gray-700">
-              - The Pearly Shop Promise
-            </p>
-          </div>
-        </div>
-      </div>
+      </section>
 
       <Footer />
     </div>
