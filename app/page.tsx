@@ -101,45 +101,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Category - Lipgloss */}
-      <section className="py-20 sm:py-32">
+      {/* Categories Grid */}
+      <section className="py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative h-[500px] lg:h-[700px]"
-            >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Lipgloss Category */}
+            <Link href="/products?category=Lipgloss" className="group relative h-[500px] overflow-hidden">
               <Image
                 src="/lipgloss-clear-1.jpg"
-                alt="Lipgloss Collection"
+                alt="Lipgloss"
                 fill
-                className="object-cover"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
-            </motion.div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest">LIPGLOSS</h3>
+              </div>
+            </Link>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
-              <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase">
-                The Lipgloss
-              </h2>
-              <p className="text-lg text-gray-600 font-light leading-relaxed">
-                because your lips deserve the perfect shine
-              </p>
-              <Link
-                href="/products?category=Lipgloss"
-                className="inline-block border-2 border-black px-12 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-black hover:text-white transition-all duration-300"
-              >
-                SHOP LIPGLOSS
-              </Link>
-            </motion.div>
+            {/* Eyebrow Wax Category */}
+            <Link href="/products?category=Eyebrow" className="group relative h-[500px] overflow-hidden">
+              <Image
+                src="/eyebrow-wax-1.jpg"
+                alt="Eyebrow Wax"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest">EYEBROW</h3>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -318,43 +310,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="py-20 sm:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Lipgloss Category */}
-            <Link href="/products?category=Lipgloss" className="group relative h-[500px] overflow-hidden">
-              <Image
-                src="/lipgloss-clear-1.jpg"
-                alt="Lipgloss"
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest">LIPGLOSS</h3>
-              </div>
-            </Link>
-
-            {/* Eyebrow Wax Category */}
-            <Link href="/products?category=Eyebrow" className="group relative h-[500px] overflow-hidden">
-              <Image
-                src="/eyebrow-wax-1.jpg"
-                alt="Eyebrow Wax"
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest">EYEBROW</h3>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Customer Reviews - Minimalist */}
-      <section className="py-20 sm:py-32">
+      <section className="py-12 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
@@ -397,7 +354,7 @@ export default function Home() {
       </section>
 
       {/* Featured Flavours Section */}
-      <section className="py-20 sm:py-32 bg-gray-50">
+      <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
@@ -436,7 +393,7 @@ export default function Home() {
       </section>
 
       {/* Bundle Savings Section */}
-      <section className="py-20 sm:py-32">
+      <section className="py-12 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
@@ -485,7 +442,7 @@ export default function Home() {
       </section>
 
       {/* Color Palette Section */}
-      <section className="py-20 sm:py-32 bg-gray-50">
+      <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
