@@ -210,3 +210,54 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Pink Gradient Text */
+.text-gradient-pearly {
+  background: linear-gradient(135deg, #f4a5b9 0%, #e88ba0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Sparkle Effect */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Soft Glow */
+.glow-pink {
+  box-shadow: 0 0 20px rgba(244, 165, 185, 0.4),
+              0 0 40px rgba(244, 165, 185, 0.2);
+}
+
+/* Decorative Border */
+.border-gradient-pink {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #f4a5b9, #e88ba0) border-box;
+}

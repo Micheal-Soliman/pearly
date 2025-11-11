@@ -117,7 +117,7 @@ export default function TestimonialsPage() {
                   console.log('Clicked:', feedback);
                   setSelectedImage(feedback);
                 }}
-                className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+                className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl"
               >
                 <div className="relative h-[400px]">
                   <Image

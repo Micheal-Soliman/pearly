@@ -27,32 +27,32 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <span className="text-3xl sm:text-4xl text-black" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly</span>
+            <span className="text-3xl sm:text-4xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+              className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
             >
               Home
             </Link>
             <Link
               href="/products"
-              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+              className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
             >
               Shop
             </Link>
             <Link
               href="/about"
-              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+              className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
             >
               About
             </Link>
             <Link
               href="/contact"
-              className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+              className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
             >
               Contact
             </Link>
@@ -62,22 +62,22 @@ export default function Navbar() {
           <div className="flex items-center space-x-6">
             <Link
               href="/favorites"
-              className="relative hover:text-gray-500 transition-colors"
+              className="relative hover:text-pink-400 transition-colors"
             >
               <Heart className="w-5 h-5" />
               {favorites.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {favorites.length}
                 </span>
               )}
             </Link>
             <Link
               href="/cart"
-              className="relative hover:text-gray-500 transition-colors"
+              className="relative hover:text-pink-400 transition-colors"
             >
               <ShoppingBag className="w-5 h-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}
@@ -103,28 +103,28 @@ export default function Navbar() {
             <div className="flex flex-col space-y-4">
               <Link
                 href="/"
-                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+                className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/products"
-                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+                className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Shop
               </Link>
               <Link
                 href="/about"
-                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+                className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link
                 href="/contact"
-                className="text-xs tracking-widest uppercase hover:text-gray-500 transition-colors"
+                className="text-xs tracking-widest uppercase hover:text-pink-400 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact

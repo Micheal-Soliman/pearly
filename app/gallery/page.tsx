@@ -93,7 +93,7 @@ export default function GalleryPage() {
                   console.log('Clicked:', moment);
                   setSelectedImage(moment);
                 }}
-                className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+                className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
               >
                 <Image
                   src={`/Clients moments with pearly/${moment}`}
