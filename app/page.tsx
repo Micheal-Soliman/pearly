@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -16,6 +16,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -197,10 +198,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
-              Featured Products
+              Lipgloss Collection
             </h2>
             <p className="text-lg text-gray-600 font-light">
-              discover our best picks
+              shine bright with our signature glosses
             </p>
           </div>
 
@@ -248,7 +249,16 @@ export default function Home() {
               ref={sliderRef}
               className="flex gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide scroll-smooth px-4"
             >
-              {products.filter(p => p.category === 'Lipgloss').slice(0, 8).map((product, index) => (
+              {products
+                .filter(p => p.category === 'Lipgloss')
+                .sort((a, b) => {
+                  // Best sellers first
+                  if (a.bestSeller && !b.bestSeller) return -1;
+                  if (!a.bestSeller && b.bestSeller) return 1;
+                  return 0;
+                })
+                .slice(0, 8)
+                .map((product, index) => (
                 <Link 
                   key={product.id} 
                   href={`/products/${product.id}`}
@@ -268,6 +278,13 @@ export default function Home() {
                         
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
+                        
+                        {/* Best Seller Badge */}
+                        {product.bestSeller && (
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-4 py-2 text-xs font-medium tracking-widest uppercase shadow-lg">
+                            ⭐ Best Seller
+                          </div>
+                        )}
                         
                         {/* Price Badge */}
                         <div className="absolute top-4 left-4 bg-black text-white px-4 py-2 text-sm font-light">
@@ -310,45 +327,82 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Customer Reviews - Minimalist */}
+      {/* Customer Reviews - Real Feedbacks */}
       <section className="py-12 sm:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
-              Loved By Thousands
+              What Our Customers Say
             </h2>
+            <p className="text-lg text-gray-600 font-light">
+              real reviews from real customers
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="text-center">
-              <div className="mb-4">
-                <span className="text-yellow-400 text-2xl">★★★★★</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0018.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            >
+              <div className="relative h-[400px]">
+                <Image
+                  src="/Pearly feedbacks/IMG-20251110-WA0018.jpg"
+                  alt="Customer Feedback"
+                  fill
+                  className="object-contain pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Click to enlarge
+                  </span>
+                </div>
               </div>
-              <p className="text-gray-700 font-light italic mb-4">
-                "The best lipgloss I've ever used. Natural shine and divine scent."
-              </p>
-              <p className="text-sm text-gray-500 font-light">— Sara A.</p>
             </div>
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0021.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            >
+              <div className="relative h-[400px]">
+                <Image
+                  src="/Pearly feedbacks/IMG-20251110-WA0021.jpg"
+                  alt="Customer Feedback"
+                  fill
+                  className="object-contain pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Click to enlarge
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0027.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            >
+              <div className="relative h-[400px]">
+                <Image
+                  src="/Pearly feedbacks/IMG-20251110-WA0027.jpg"
+                  alt="Customer Feedback"
+                  fill
+                  className="object-contain pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Click to enlarge
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <div className="text-center">
-              <div className="mb-4">
-                <span className="text-yellow-400 text-2xl">★★★★★</span>
-              </div>
-              <p className="text-gray-700 font-light italic mb-4">
-                "Amazing bundle deal! Fast delivery and beautiful packaging."
-              </p>
-              <p className="text-sm text-gray-500 font-light">— Nour H.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="mb-4">
-                <span className="text-yellow-400 text-2xl">★★★★★</span>
-              </div>
-              <p className="text-gray-700 font-light italic mb-4">
-                "Exceptional quality at an incredible price. Lasts all day!"
-              </p>
-              <p className="text-sm text-gray-500 font-light">— Mona A.</p>
-            </div>
+          <div className="text-center mt-12">
+            <Link
+              href="/testimonials"
+              className="inline-block bg-black text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors"
+            >
+              View All Reviews
+            </Link>
           </div>
         </div>
       </section>
@@ -535,6 +589,44 @@ export default function Home() {
       )}
 
       <Footer />
+
+      {/* Feedback Lightbox Modal */}
+      <AnimatePresence>
+        {selectedFeedback && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedFeedback(null)}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedFeedback(null)}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-[101]"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            {/* Image Container */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl max-h-[90vh] w-full h-full"
+            >
+              <Image
+                src={`/Pearly feedbacks/${selectedFeedback}`}
+                alt="Customer Feedback"
+                fill
+                className="object-contain"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

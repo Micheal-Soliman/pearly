@@ -7,6 +7,39 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 
+// Delivery fees by city
+const deliveryFees: { [key: string]: number } = {
+  'Cairo': 65,
+  'Giza': 65,
+  'Al Asher mn Ramadan': 75,
+  'Alexandria': 75,
+  'Qalyubia': 75,
+  'Ismailia': 80,
+  'Suez': 80,
+  'Port Said': 80,
+  'Beheira': 80,
+  'Dakahlia': 80,
+  'Menoufia': 80,
+  'Sharqia': 80,
+  'Kafr El-Sheikh': 80,
+  'Damietta': 80,
+  'Gharbia': 80,
+  'Tanta': 80,
+  'Mansoura': 80,
+  'Fayoum': 85,
+  'Beni Suef': 85,
+  'Sohag': 85,
+  'Minya': 85,
+  'Assiut': 85,
+  'Qena': 100,
+  'Luxor': 100,
+  'Aswan': 100,
+  'Matrouh': 110,
+  'New Valley': 120,
+  'North Coast': 120,
+  'Red Sea': 130,
+};
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, totalPrice, clearCart } = useCart();
@@ -17,11 +50,11 @@ export default function CheckoutPage() {
     phone: '',
     address: '',
     city: '',
-    governorate: '',
     notes: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [deliveryFee, setDeliveryFee] = useState(65);
 
   useEffect(() => {
     // Only redirect if cart is empty AND we're not processing an order
@@ -30,20 +63,24 @@ export default function CheckoutPage() {
     }
   }, [cart.length, router, isProcessing]);
 
+  const handleCityChange = (city: string) => {
+    setFormData({ ...formData, city });
+    setDeliveryFee(deliveryFees[city] || 65);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setIsProcessing(true);
 
     try {
-      const deliveryFee = 50;
       const orderNumber = `ORD-${Date.now()}`;
       const orderData = {
         orderNumber,
         customerName: `${formData.firstName} ${formData.lastName}`,
         email: formData.email || 'N/A',
         phone: formData.phone,
-        address: `${formData.address}, ${formData.governorate}`,
+        address: formData.address,
         city: formData.city,
         notes: formData.notes,
         items: cart.map(item => ({
@@ -159,27 +196,45 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm tracking-wide mb-2">CITY</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm tracking-wide mb-2">GOVERNORATE</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.governorate}
-                      onChange={(e) => setFormData({ ...formData, governorate: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm tracking-wide mb-2">CITY / GOVERNORATE</label>
+                  <select
+                    required
+                    value={formData.city}
+                    onChange={(e) => handleCityChange(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light bg-white"
+                  >
+                    <option value="">Select your city</option>
+                    <option value="Cairo">Cairo (65 EGP)</option>
+                    <option value="Giza">Giza (65 EGP)</option>
+                    <option value="Al Asher mn Ramadan">Al Asher mn Ramadan (75 EGP)</option>
+                    <option value="Alexandria">Alexandria (75 EGP)</option>
+                    <option value="Qalyubia">Qalyubia (75 EGP)</option>
+                    <option value="Ismailia">Ismailia (80 EGP)</option>
+                    <option value="Suez">Suez (80 EGP)</option>
+                    <option value="Port Said">Port Said (80 EGP)</option>
+                    <option value="Beheira">Beheira (80 EGP)</option>
+                    <option value="Dakahlia">Dakahlia (80 EGP)</option>
+                    <option value="Menoufia">Menoufia (80 EGP)</option>
+                    <option value="Sharqia">Sharqia (80 EGP)</option>
+                    <option value="Kafr El-Sheikh">Kafr El-Sheikh (80 EGP)</option>
+                    <option value="Damietta">Damietta (80 EGP)</option>
+                    <option value="Gharbia">Gharbia (80 EGP)</option>
+                    <option value="Tanta">Tanta (80 EGP)</option>
+                    <option value="Mansoura">Mansoura (80 EGP)</option>
+                    <option value="Fayoum">Fayoum (85 EGP)</option>
+                    <option value="Beni Suef">Beni Suef (85 EGP)</option>
+                    <option value="Sohag">Sohag (85 EGP)</option>
+                    <option value="Minya">Minya (85 EGP)</option>
+                    <option value="Assiut">Assiut (85 EGP)</option>
+                    <option value="Qena">Qena (100 EGP)</option>
+                    <option value="Luxor">Luxor (100 EGP)</option>
+                    <option value="Aswan">Aswan (100 EGP)</option>
+                    <option value="Matrouh">Matrouh (110 EGP)</option>
+                    <option value="New Valley">New Valley (120 EGP)</option>
+                    <option value="North Coast">North Coast (120 EGP)</option>
+                    <option value="Red Sea">Red Sea (130 EGP)</option>
+                  </select>
                 </div>
 
                 <div>
@@ -242,12 +297,12 @@ export default function CheckoutPage() {
                     <span>{totalPrice.toFixed(2)} EGP</span>
                   </div>
                   <div className="flex justify-between text-sm font-light">
-                    <span>Shipping</span>
-                    <span>50.00 EGP</span>
+                    <span>Shipping {formData.city && `(${formData.city})`}</span>
+                    <span>{deliveryFee.toFixed(2)} EGP</span>
                   </div>
                   <div className="flex justify-between text-lg font-light pt-4 border-t border-gray-200">
                     <span>Total</span>
-                    <span>{(totalPrice + 50).toFixed(2)} EGP</span>
+                    <span>{(totalPrice + deliveryFee).toFixed(2)} EGP</span>
                   </div>
                 </div>
 

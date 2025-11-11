@@ -11,6 +11,7 @@ export interface Product {
   categoryAr: string;
   inStock: boolean;
   featured: boolean;
+  bestSeller?: boolean;
 }
 
 export interface CartItem extends Product {
