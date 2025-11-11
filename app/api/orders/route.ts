@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const orderData = await request.json();
     console.log('📦 Order received:', orderData.orderNumber);
     
-    // Google Sheets Web App URL - هتحطها من Google Apps Script
+    // Google Sheets Web App URL
     const GOOGLE_SHEETS_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL || '';
     
     const sheetData = {
@@ -21,54 +21,56 @@ export async function POST(request: Request) {
       date: new Date().toISOString(),
     };
 
-    // إرسال البيانات لـ Google Sheets
+    // ✅ Run Google Sheets and Email in background (don't await)
+    // This makes the response instant!
+    
+    // Background: Google Sheets
     if (GOOGLE_SHEETS_URL) {
-      try {
-        const response = await fetch(GOOGLE_SHEETS_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(sheetData),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to save order to Google Sheets');
+      fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sheetData),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('✅ Order saved to Google Sheets');
+        } else {
+          console.error('❌ Failed to save to Google Sheets');
         }
-      } catch (error) {
-        console.error('Google Sheets error:', error);
-      }
+      })
+      .catch(error => console.error('Google Sheets error:', error));
     }
 
-    // إرسال إيميل تأكيد للعميل
+    // Background: Email
     if (orderData.email && orderData.email !== 'N/A') {
-      try {
-        console.log('📧 Attempting to send email to:', orderData.email);
-        await emailService.sendPearlyOrderConfirmation({
-          name: orderData.customerName,
-          email: orderData.email,
-          phone: orderData.phone,
-          address: orderData.address,
-          city: orderData.city,
-          deliveryArea: orderData.city,
-          notes: orderData.notes,
-          items: orderData.items,
-          subtotal: orderData.subtotal || orderData.total,
-          deliveryFee: orderData.deliveryFee || 0,
-          discount: 0,
-          total: orderData.total,
-        });
-        console.log('✅ Order confirmation email sent successfully');
-      } catch (emailError) {
-        console.error('❌ Failed to send email:', emailError);
-        // لا نوقف العملية إذا فشل الإيميل
-      }
-    } else {
-      console.log('⚠️ No email provided, skipping email notification');
+      console.log('📧 Sending email to:', orderData.email);
+      emailService.sendPearlyOrderConfirmation({
+        name: orderData.customerName,
+        email: orderData.email,
+        phone: orderData.phone,
+        address: orderData.address,
+        city: orderData.city,
+        deliveryArea: orderData.city,
+        notes: orderData.notes,
+        items: orderData.items,
+        subtotal: orderData.subtotal || orderData.total,
+        deliveryFee: orderData.deliveryFee || 0,
+        discount: 0,
+        total: orderData.total,
+      })
+      .then(() => console.log('✅ Email sent successfully'))
+      .catch(error => console.error('❌ Email error:', error));
     }
 
-    console.log('✅ Order processed successfully:', orderData.orderNumber);
-    return NextResponse.json({ success: true, orderNumber: orderData.orderNumber });
+    // ⚡ Return immediately - don't wait for email/sheets
+    console.log('✅ Order accepted:', orderData.orderNumber);
+    return NextResponse.json({ 
+      success: true, 
+      orderNumber: orderData.orderNumber,
+      message: 'Order received and being processed'
+    });
   } catch (error) {
     console.error('Order submission error:', error);
     return NextResponse.json(
