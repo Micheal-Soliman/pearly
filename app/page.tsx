@@ -327,6 +327,96 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Client Moments Gallery */}
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
+              Client Moments
+            </h2>
+            <p className="text-lg text-gray-600 font-light">
+              capturing beautiful moments with pearly
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0025.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+            >
+              <Image
+                src="/Clients moments with pearly/IMG-20251110-WA0025.jpg"
+                alt="Client Moment"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Click to enlarge
+                </span>
+              </div>
+            </div>
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0042.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+            >
+              <Image
+                src="/Clients moments with pearly/IMG-20251110-WA0042.jpg"
+                alt="Client Moment"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Click to enlarge
+                </span>
+              </div>
+            </div>
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0097.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+            >
+              <Image
+                src="/Clients moments with pearly/IMG-20251110-WA0097.jpg"
+                alt="Client Moment"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Click to enlarge
+                </span>
+              </div>
+            </div>
+            <div 
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0099.jpg')}
+              className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+            >
+              <Image
+                src="/Clients moments with pearly/IMG-20251110-WA0099.jpg"
+                alt="Client Moment"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center pointer-events-none">
+                <span className="text-white text-sm font-light tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Click to enlarge
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/gallery"
+              className="inline-block bg-black text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors"
+            >
+              View Full Gallery
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Customer Reviews - Real Feedbacks */}
       <section className="py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -618,7 +708,11 @@ export default function Home() {
               className="relative max-w-5xl max-h-[90vh] w-full h-full"
             >
               <Image
-                src={`/Pearly feedbacks/${selectedFeedback}`}
+                src={
+                  selectedFeedback.startsWith('IMG-2025111') 
+                    ? `/Clients moments with pearly/${selectedFeedback}`
+                    : `/Pearly feedbacks/${selectedFeedback}`
+                }
                 alt="Customer Feedback"
                 fill
                 className="object-contain"
