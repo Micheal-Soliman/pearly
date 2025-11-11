@@ -67,7 +67,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => {
+      const itemPrice = item.selectedType === 'big-brush' ? 200 : item.price;
+      return sum + itemPrice * item.quantity;
+    },
     0
   );
 

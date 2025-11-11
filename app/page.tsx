@@ -8,10 +8,12 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
-import { X, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import { useFavorites } from '@/context/FavoritesContext';
+import { X, ChevronLeft, ChevronRight, ShoppingBag, Heart } from 'lucide-react';
 
 export default function Home() {
   const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss').slice(0, 4);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -50,6 +52,16 @@ export default function Home() {
       addToCart(productToAdd);
       setShowModal(false);
       setSelectedProduct(null);
+    }
+  };
+
+  const toggleFavorite = (e: React.MouseEvent, product: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isFavorite(product.id)) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
     }
   };
 
@@ -242,8 +254,34 @@ export default function Home() {
                     {/* Pink Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-pink-200/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
                     
+                    {/* Action Buttons */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+                      <button
+                        onClick={(e) => toggleFavorite(e, product)}
+                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-pink-50 shadow-lg hover:scale-110"
+                      >
+                        <Heart
+                          className={`w-5 h-5 transition-colors ${
+                            isFavorite(product.id)
+                              ? 'fill-pink-500 text-pink-500'
+                              : 'text-gray-700'
+                          }`}
+                        />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white shadow-lg hover:scale-110"
+                      >
+                        <ShoppingBag className="w-5 h-5" />
+                      </button>
+                    </div>
+                    
                     {/* Price Badge */}
-                    <div className="absolute top-4 left-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">
+                    <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">
                       {product.price} EGP
                     </div>
                     
@@ -328,15 +366,41 @@ export default function Home() {
                         {/* Pink Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-pink-200/40 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
                         
+                        {/* Action Buttons */}
+                        <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+                          <button
+                            onClick={(e) => toggleFavorite(e, product)}
+                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-pink-50 shadow-lg hover:scale-110"
+                          >
+                            <Heart
+                              className={`w-5 h-5 transition-colors ${
+                                isFavorite(product.id)
+                                  ? 'fill-pink-500 text-pink-500'
+                                  : 'text-gray-700'
+                              }`}
+                            />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleAddToCart(product);
+                            }}
+                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white shadow-lg hover:scale-110"
+                          >
+                            <ShoppingBag className="w-5 h-5" />
+                          </button>
+                        </div>
+                        
                         {/* Best Seller Badge */}
                         {product.bestSeller && (
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full animate-pulse">
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full animate-pulse z-10">
                             ⭐ Best Seller
                           </div>
                         )}
                         
                         {/* Price Badge */}
-                        <div className="absolute top-4 left-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg">
+                        <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg z-10">
                           {product.price} EGP
                         </div>
                       </div>

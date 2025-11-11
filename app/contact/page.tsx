@@ -36,61 +36,64 @@ export default function ContactPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-100/20 via-transparent to-pink-100/20"></div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-widest mb-4">
-              GET IN TOUCH
+          <div className="text-center text-white px-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-widest mb-4">
+              <span className="inline-block">💌</span>
+              <span> GET IN TOUCH </span>
+              <span className="inline-block">💌</span>
             </h1>
             <p className="text-lg font-light">
-              We'd love to hear from you
+              We'd love to hear from you 💕
             </p>
           </div>
         </div>
       </section>
 
-      <div className="py-20">
+      <div className="py-20 bg-gradient-to-b from-white to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div className="space-y-12">
               <div>
-                <h2 className="text-2xl font-light tracking-wide mb-8">
-                  contact information
+                <h2 className="text-xl sm:text-2xl font-light tracking-wide mb-8">
+                  <span className="inline-block">📞</span>
+                  <span className="text-gradient-pearly"> contact information</span>
                 </h2>
                 
                 <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-5 h-5" />
+                  <div className="flex items-start gap-4 bg-white rounded-2xl p-4 shadow-lg border-2 border-pink-100 hover:shadow-xl transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Mail className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm tracking-wide mb-1">EMAIL</p>
-                      <a href="mailto:info@pearly.com" className="text-gray-600 font-light hover:underline">
+                      <p className="text-sm tracking-wide mb-1 text-pink-600 font-medium">EMAIL</p>
+                      <a href="mailto:info@pearly.com" className="text-gray-600 font-light hover:text-pink-600 transition-colors">
                         info@pearly.com
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-5 h-5" />
+                  <div className="flex items-start gap-4 bg-white rounded-2xl p-4 shadow-lg border-2 border-pink-100 hover:shadow-xl transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Phone className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm tracking-wide mb-1">PHONE</p>
-                      <a href="tel:+201234567890" className="text-gray-600 font-light hover:underline">
+                      <p className="text-sm tracking-wide mb-1 text-pink-600 font-medium">PHONE</p>
+                      <a href="tel:+201234567890" className="text-gray-600 font-light hover:text-pink-600 transition-colors">
                         +20 123 456 7890
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-5 h-5" />
+                  <div className="flex items-start gap-4 bg-white rounded-2xl p-4 shadow-lg border-2 border-pink-100 hover:shadow-xl transition-all duration-300">
+                    <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <MapPin className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm tracking-wide mb-1">ADDRESS</p>
+                      <p className="text-sm tracking-wide mb-1 text-pink-600 font-medium">ADDRESS</p>
                       <p className="text-gray-600 font-light">
                         Cairo, Egypt
                       </p>
@@ -99,9 +102,9 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-xl font-light tracking-wide mb-4">
-                  business hours
+              <div className="bg-white rounded-3xl p-6 shadow-lg border-2 border-pink-100">
+                <h3 className="text-lg font-medium tracking-wide mb-4 text-pink-600">
+                  ⏰ business hours
                 </h3>
                 <div className="space-y-2 text-gray-600 font-light">
                   <p>Saturday - Thursday: 10:00 AM - 8:00 PM</p>
@@ -111,14 +114,15 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div>
-              <h2 className="text-2xl font-light tracking-wide mb-8">
-                send us a message
+            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-pink-100">
+              <h2 className="text-xl sm:text-2xl font-light tracking-wide mb-8">
+                <span className="inline-block">✉️</span>
+                <span className="text-gradient-pearly"> send us a message</span>
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm tracking-wide mb-2">
+                  <label htmlFor="name" className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">
                     NAME
                   </label>
                   <input
@@ -127,12 +131,12 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm tracking-wide mb-2">
+                  <label htmlFor="email" className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">
                     EMAIL
                   </label>
                   <input
@@ -141,12 +145,12 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm tracking-wide mb-2">
+                  <label htmlFor="message" className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">
                     MESSAGE
                   </label>
                   <textarea
@@ -155,16 +159,16 @@ export default function ContactPage() {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light resize-none"
+                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitted}
-                  className="w-full bg-black text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-colors duration-300 disabled:bg-gray-400"
+                  className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 disabled:opacity-50 rounded-full shadow-lg hover:shadow-xl"
                 >
-                  {submitted ? 'MESSAGE SENT!' : 'SEND MESSAGE'}
+                  {submitted ? '✨ MESSAGE SENT! ✨' : '💌 SEND MESSAGE 💌'}
                 </button>
               </form>
             </div>
