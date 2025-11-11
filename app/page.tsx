@@ -776,7 +776,7 @@ export default function Home() {
             >
               <Image
                 src={
-                  selectedFeedback.startsWith('IMG-2025111') 
+                  selectedFeedback.startsWith('IMG_') || selectedFeedback.startsWith('Screenshot_') || selectedFeedback.startsWith('VID-')
                     ? `/Clients moments with pearly/${selectedFeedback}`
                     : `/Pearly feedbacks/${selectedFeedback}`
                 }
