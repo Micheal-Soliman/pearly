@@ -3,12 +3,14 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-white to-pink-50 border-t border-pink-100">
+    <footer className="bg-[#ffe9f0] relative">
+      {/* Decorative top border */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#d6869d]/30 to-transparent"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-3xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly 💕</h3>
+            <h3 className="text-3xl text-[#d6869d]" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly 💕</h3>
             <p className="text-sm text-gray-600 font-light leading-relaxed">
               ✨ Luxury beauty for your everyday life
             </p>
@@ -84,7 +86,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white hover:border-pink-400 transition-all shadow-sm hover:shadow-lg"
+                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
               >
                 <Instagram className="w-4 h-4" />
               </a>
@@ -92,13 +94,13 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white hover:border-pink-400 transition-all shadow-sm hover:shadow-lg"
+                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
               >
                 <Facebook className="w-4 h-4" />
               </a>
               <a
                 href="mailto:info@pearly.com"
-                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white hover:border-pink-400 transition-all shadow-sm hover:shadow-lg"
+                className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
               >
                 <Mail className="w-4 h-4" />
               </a>

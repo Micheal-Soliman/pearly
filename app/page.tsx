@@ -72,27 +72,27 @@ export default function Home() {
       {/* Hero Section - Full Screen */}
       <section className="relative w-full h-screen mt-20 sm:mt-24">
         <Image
-          src="/hero.png"
+          src="/all products.png"
           alt="Pearly"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-pink-100/20 via-transparent to-pink-100/20"></div>
-        
+        <div className="absolute inset-0 bg-gradient-to-b from-[#d6869d]/20 via-transparent to-[#d6869d]/20"></div>
+
         {/* Floating Decorative Elements */}
-        <div className="absolute top-20 left-10 text-pink-300 text-4xl animate-float opacity-30">✨</div>
-        <div className="absolute top-40 right-20 text-pink-300 text-3xl animate-sparkle opacity-30">💕</div>
-        <div className="absolute bottom-32 left-20 text-pink-300 text-5xl animate-float opacity-30" style={{animationDelay: '1s'}}>🌸</div>
-        <div className="absolute bottom-20 right-10 text-pink-300 text-3xl animate-sparkle opacity-30" style={{animationDelay: '0.5s'}}>✨</div>
-        
+        <div className="absolute top-20 left-10 text-[#d6869d] text-4xl animate-float opacity-30"></div>
+        <div className="absolute top-40 right-20 text-[#d6869d] text-3xl animate-sparkle opacity-30"></div>
+        <div className="absolute bottom-32 left-20 text-[#d6869d] text-5xl animate-float opacity-30" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 right-10 text-[#d6869d] text-3xl animate-sparkle opacity-30" style={{ animationDelay: '0.5s' }}></div>
+
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-widest mb-6"
+              className="font-amsterdam text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-normal mb-6"
             >
               PEARLY
             </motion.h1>
@@ -102,7 +102,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-base sm:text-lg md:text-xl font-light tracking-widest uppercase mb-10"
             >
-              Luxury beauty for your everyday life
+              Discover Your Pearly Glow
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -111,9 +111,9 @@ export default function Home() {
             >
               <Link
                 href="/products"
-                className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-16 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 rounded-full glow-pink"
+                className="inline-block bg-[#d6869d] text-white px-16 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:opacity-90 rounded-full glow-pink"
               >
-                ✨ SHOP NOW ✨
+                SHOP NOW
               </Link>
             </motion.div>
           </div>
@@ -126,32 +126,31 @@ export default function Home() {
           {/* Section Title - Mobile Only */}
           <div className="text-center mb-8 md:hidden">
             <h2 className="text-xl sm:text-2xl font-light tracking-widest uppercase">
-              <span className="inline-block">💕</span>
-              <span className="text-gradient-pearly"> Shop By Category</span>
+              <span className="text-[#d6869d]"> Shop By Category</span>
             </h2>
             <p className="text-sm text-gray-600 font-light mt-2">
               Swipe to explore our collections
             </p>
           </div>
-          
+
           {/* Mobile: Horizontal Slider, Desktop: Grid */}
           <div className="md:grid md:grid-cols-2 md:gap-8 flex md:flex-none overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
             {/* Lipgloss Category */}
-            <Link href="/products?category=Lipgloss" className="group relative h-[400px] md:h-[500px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-3xl border-4 border-pink-200 md:border-transparent md:hover:border-pink-300 transition-all duration-300 shadow-xl hover:shadow-2xl snap-center">
+            <Link href="/products?category=Lipgloss" className="group relative h-[400px] md:h-[500px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-3xl border-4 border-[#ffe9f0] md:border-transparent md:hover:border-[#d6869d] transition-all duration-300 shadow-xl hover:shadow-2xl snap-center">
               <Image
                 src="/lipgloss-clear-1.jpg"
                 alt="Lipgloss"
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-pink-500/50 via-black/20 to-black/20 md:from-pink-500/40 md:group-hover:from-pink-400/60 md:group-hover:via-pink-300/30 transition-all duration-300"></div>
-              
+              <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/50 via-black/20 to-black/20 md:from-[#d6869d]/40 md:group-hover:from-[#d6869d]/60 md:group-hover:via-[#d6869d]/30 transition-all duration-300"></div>
+
               {/* Decorative Elements - Always visible on mobile */}
-              <div className="absolute top-6 right-6 text-white text-3xl md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 animate-sparkle">✨</div>
-              
+              <div className="absolute top-6 right-6 text-white text-3xl md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 animate-sparkle"></div>
+
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest mb-4 group-hover:scale-110 transition-transform duration-300">LIPGLOSS</h3>
-                
+
                 {/* Always visible on mobile, hover on desktop */}
                 <div className="flex items-center gap-2 text-white text-sm tracking-widest uppercase md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:transform md:translate-y-4 md:group-hover:translate-y-0">
                   <span>Shop Now</span>
@@ -160,29 +159,29 @@ export default function Home() {
                   </svg>
                 </div>
               </div>
-              
+
               {/* Corner Indicator - Always visible on mobile */}
-              <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                 View Collection →
               </div>
             </Link>
 
             {/* Eyebrow Wax Category */}
-            <Link href="/products?category=Eyebrow" className="group relative h-[400px] md:h-[500px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-3xl border-4 border-pink-200 md:border-transparent md:hover:border-pink-300 transition-all duration-300 shadow-xl hover:shadow-2xl snap-center">
+            <Link href="/products?category=Eyebrow" className="group relative h-[400px] md:h-[500px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-3xl border-4 border-[#ffe9f0] md:border-transparent md:hover:border-[#d6869d] transition-all duration-300 shadow-xl hover:shadow-2xl snap-center">
               <Image
                 src="/eyebrow-wax-1.jpg"
                 alt="Eyebrow Wax"
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-pink-500/50 via-black/20 to-black/20 md:from-pink-500/40 md:group-hover:from-pink-400/60 md:group-hover:via-pink-300/30 transition-all duration-300"></div>
-              
+              <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/50 via-black/20 to-black/20 md:from-[#d6869d]/40 md:group-hover:from-[#d6869d]/60 md:group-hover:via-[#d6869d]/30 transition-all duration-300"></div>
+
               {/* Decorative Elements - Always visible on mobile */}
-              <div className="absolute top-6 right-6 text-white text-3xl md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 animate-sparkle">✨</div>
-              
+              <div className="absolute top-6 right-6 text-white text-3xl md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 animate-sparkle"></div>
+
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-white text-4xl sm:text-5xl font-light tracking-widest mb-4 group-hover:scale-110 transition-transform duration-300">EYEBROW</h3>
-                
+
                 {/* Always visible on mobile, hover on desktop */}
                 <div className="flex items-center gap-2 text-white text-sm tracking-widest uppercase md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 md:transform md:translate-y-4 md:group-hover:translate-y-0">
                   <span>Shop Now</span>
@@ -191,9 +190,9 @@ export default function Home() {
                   </svg>
                 </div>
               </div>
-              
+
               {/* Corner Indicator - Always visible on mobile */}
-              <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                 View Collection →
               </div>
             </Link>
@@ -212,16 +211,14 @@ export default function Home() {
       </section>
 
       {/* Product Grid - Bundles */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-pink-50">
+      <section className="py-12 sm:py-16 bg-[#ffe9f0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">🎀</span>
-              <span className="text-gradient-pearly"> Bundles </span>
-              <span className="inline-block">🎀</span>
+              <span className="text-[#d6869d]"> Bundles </span>
             </h2>
-            <p className="text-lg text-pink-400 font-medium mb-2">
-              ✨ save more, shine brighter ✨
+            <p className="text-lg text-[#d6869d] font-medium mb-2">
+              save more, shine brighter
             </p>
             <p className="text-sm text-gray-600 font-light md:hidden">
               Swipe to see all bundles
@@ -240,32 +237,31 @@ export default function Home() {
                 className="group flex-none w-[80vw] sm:w-[45vw] md:w-auto snap-center"
               >
                 <Link href={`/products/${product.id}`}>
-                  <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-gradient-to-br from-white to-pink-50 border-2 border-pink-100 shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
                     {/* Decorative Elements */}
-                    <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10">💕</div>
-                    
+                    <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10"></div>
+
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
                     />
-                    
+
                     {/* Pink Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-pink-200/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+
                     {/* Action Buttons */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
                       <button
                         onClick={(e) => toggleFavorite(e, product)}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-pink-50 shadow-lg hover:scale-110"
+                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] shadow-lg hover:scale-110"
                       >
                         <Heart
-                          className={`w-5 h-5 transition-colors ${
-                            isFavorite(product.id)
-                              ? 'fill-pink-500 text-pink-500'
+                          className={`w-5 h-5 transition-colors ${isFavorite(product.id)
+                              ? 'fill-[#d6869d] text-[#d6869d]'
                               : 'text-gray-700'
-                          }`}
+                            }`}
                         />
                       </button>
                       <button
@@ -274,24 +270,24 @@ export default function Home() {
                           e.stopPropagation();
                           handleAddToCart(product);
                         }}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white shadow-lg hover:scale-110"
+                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#d6869d] hover:text-white shadow-lg hover:scale-110"
                       >
                         <ShoppingBag className="w-5 h-5" />
                       </button>
                     </div>
-                    
+
                     {/* Price Badge */}
-                    <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">
+                    <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">
                       {product.price} EGP
                     </div>
-                    
+
                     {/* Hover Glow */}
                     <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
                   </div>
-                  
+
                   <div className="text-center mt-4">
-                    <h3 className="text-lg font-light tracking-wide mb-2 text-gray-800 group-hover:text-pink-600 transition-colors">{product.name.toLowerCase()}</h3>
-                    <p className="text-xs tracking-widest uppercase text-pink-400 font-medium">✨ Bundle Deal</p>
+                    <h3 className="text-lg font-light tracking-wide mb-2 text-gray-800 group-hover:text-[#d6869d] transition-colors">{product.name.toLowerCase()}</h3>
+                    <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium">Bundle Deal</p>
                   </div>
                 </Link>
               </motion.div>
@@ -301,33 +297,29 @@ export default function Home() {
       </section>
 
       {/* Featured Products Slider */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-pink-50 via-white to-pink-50 relative overflow-hidden">
+      <section className="py-12 sm:py-16 bg-[#ffe9f0] relative overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-pink-200 text-6xl animate-float">🌸</div>
-          <div className="absolute top-20 right-20 text-pink-200 text-5xl animate-sparkle">✨</div>
-          <div className="absolute bottom-20 left-1/4 text-pink-200 text-7xl animate-float" style={{animationDelay: '1s'}}>💕</div>
-          <div className="absolute bottom-10 right-10 text-pink-200 text-6xl animate-sparkle" style={{animationDelay: '0.5s'}}>🎀</div>
+          <div className="absolute top-10 left-10 text-pink-200 text-6xl animate-float"></div>
+          <div className="absolute top-20 right-20 text-pink-200 text-5xl animate-sparkle"></div>
+          <div className="absolute bottom-20 left-1/4 text-pink-200 text-7xl animate-float" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-10 right-10 text-pink-200 text-6xl animate-sparkle" style={{ animationDelay: '0.5s' }}></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">✨</span>
-              <span className="text-gradient-pearly"> Lipgloss Collection </span>
-              <span className="inline-block">✨</span>
+              <span className="text-[#d6869d]"> Lipgloss Collection </span>
             </h2>
-            <p className="text-lg text-pink-400 font-medium mb-2">
+            <p className="text-lg text-[#d6869d] font-medium mb-2">
               shine bright with our signature glosses
             </p>
-            <p className="text-sm text-gray-600 font-light">
-              Swipe to explore all shades 💕
-            </p>
+            <p className="text-sm text-gray-600 font-light">Swipe to explore all shades</p>
           </div>
 
           <div className="relative">
             {/* Slider - No Arrows, Just Swipe */}
-            <div 
+            <div
               ref={sliderRef}
               className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide scroll-smooth -mx-4 px-4"
             >
@@ -341,98 +333,96 @@ export default function Home() {
                 })
                 .slice(0, 8)
                 .map((product, index) => (
-                <Link 
-                  key={product.id} 
-                  href={`/products/${product.id}`}
-                  className="flex-none w-[280px] sm:w-[320px] snap-start group/card"
-                >
-                  <div className="relative">
-                    {/* Card Container with Feminine Design */}
-                    <div className="relative h-[420px] sm:h-[460px] mb-5 overflow-hidden bg-gradient-to-br from-white to-pink-50 rounded-3xl shadow-xl group-hover/card:shadow-2xl transition-all duration-500 transform group-hover/card:-translate-y-3 border-2 border-pink-100">
-                      
-                      {/* Decorative Corner Elements */}
-                      <div className="absolute top-2 right-2 text-pink-200 text-2xl animate-sparkle">✨</div>
-                      <div className="absolute bottom-2 left-2 text-pink-200 text-xl animate-float">💕</div>
-                      
-                      {/* Image */}
-                      <div className="relative h-[280px] sm:h-[320px] overflow-hidden rounded-t-3xl">
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          className="object-cover group-hover/card:scale-110 transition-transform duration-700"
-                        />
-                        
-                        {/* Pink Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-pink-200/40 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-                        
-                        {/* Action Buttons */}
-                        <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-                          <button
-                            onClick={(e) => toggleFavorite(e, product)}
-                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-pink-50 shadow-lg hover:scale-110"
-                          >
-                            <Heart
-                              className={`w-5 h-5 transition-colors ${
-                                isFavorite(product.id)
-                                  ? 'fill-pink-500 text-pink-500'
-                                  : 'text-gray-700'
-                              }`}
-                            />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleAddToCart(product);
-                            }}
-                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white shadow-lg hover:scale-110"
-                          >
-                            <ShoppingBag className="w-5 h-5" />
-                          </button>
-                        </div>
-                        
-                        {/* Best Seller Badge */}
-                        {product.bestSeller && (
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full animate-pulse z-10">
-                            ⭐ Best Seller
-                          </div>
-                        )}
-                        
-                        {/* Price Badge */}
-                        <div className="absolute bottom-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg z-10">
-                          {product.price} EGP
-                        </div>
-                      </div>
-                      
-                      {/* Product Info */}
-                      <div className="p-6 bg-gradient-to-b from-white to-pink-50/50">
-                        <h3 className="text-lg font-light tracking-wide mb-3 line-clamp-2 text-gray-800 group-hover/card:text-pink-600 transition-colors">
-                          {product.name.toLowerCase()}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs tracking-widest uppercase text-pink-400 font-medium">
-                            ✨ Lipgloss
-                          </span>
-                          <span className="text-xs tracking-widest uppercase bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent opacity-0 group-hover/card:opacity-100 transition-opacity font-medium">
-                            View 💕
-                          </span>
-                        </div>
-                      </div>
+                  <Link
+                    key={product.id}
+                    href={`/products/${product.id}`}
+                    className="flex-none w-[280px] sm:w-[320px] snap-start group/card"
+                  >
+                    <div className="relative">
+                      {/* Card Container with Feminine Design */}
+                      <div className="relative h-[420px] sm:h-[460px] mb-5 overflow-hidden bg-[#d6869d] rounded-3xl shadow-xl group-hover/card:shadow-2xl transition-all duration-500 transform group-hover/card:-translate-y-3 border-2 border-[#d6869d]">
 
-                      {/* Hover Glow Effect */}
-                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
+                        {/* Decorative Corner Elements */}
+                        <div className="absolute top-2 right-2 text-pink-200 text-2xl animate-sparkle"></div>
+                        <div className="absolute bottom-2 left-2 text-pink-200 text-xl animate-float"></div>
+
+                        {/* Image */}
+                        <div className="relative h-[280px] sm:h-[320px] overflow-hidden rounded-t-3xl">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover/card:scale-110 transition-transform duration-700"
+                          />
+
+                          {/* Pink Gradient Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/40 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
+
+                          {/* Action Buttons */}
+                          <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+                            <button
+                              onClick={(e) => toggleFavorite(e, product)}
+                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] shadow-lg hover:scale-110"
+                            >
+                              <Heart
+                                className={`w-5 h-5 transition-colors ${isFavorite(product.id)
+                                    ? 'fill-[#d6869d] text-[#d6869d]'
+                                    : 'text-gray-700'
+                                  }`}
+                              />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleAddToCart(product);
+                              }}
+                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#d6869d] hover:text-white shadow-lg hover:scale-110"
+                            >
+                              <ShoppingBag className="w-5 h-5" />
+                            </button>
+                          </div>
+
+                          {/* Best Seller Badge */}
+                          {product.bestSeller && (
+                            <div className="absolute top-4 right-4 bg-[#d6869d] text-white px-4 py-2 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full animate-pulse z-10">
+                              Best Seller
+                            </div>
+                          )}
+
+                          {/* Price Badge */}
+                          <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg z-10">
+                            {product.price} EGP
+                          </div>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="p-6 bg-[#d6869d]">
+                          <h3 className="text-lg font-light tracking-wide mb-3 line-clamp-2 text-white group-hover/card:text-white transition-colors">
+                            {product.name.toLowerCase()}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs tracking-widest uppercase text-white font-medium">Lipgloss</span>
+                            <div className="max-w-[60%] text-right overflow-hidden">
+                              <span className="text-sm tracking-wide uppercase text-white/90 font-medium group-hover/card:hidden truncate whitespace-nowrap">View</span>
+                              <span className="text-sm tracking-wide uppercase text-white font-semibold hidden group-hover/card:inline truncate whitespace-nowrap">Enjoy</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Hover Glow Effect */}
+                        <div className="absolute inset-0 rounded-3xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
             </div>
           </div>
 
           <div className="text-center mt-16">
             <Link
               href="/products?category=Lipgloss"
-              className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-16 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 rounded-full"
+              className="inline-block bg-[#d6869d] text-white px-16 py-5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 hover:opacity-90 rounded-full"
             >
               View All Lipgloss
             </Link>
@@ -441,13 +431,11 @@ export default function Home() {
       </section>
 
       {/* Client Moments Gallery */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-pink-50 to-white">
+      <section className="py-12 sm:py-16 bg-[#ffe9f0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">💕</span>
-              <span className="text-gradient-pearly"> Client Moments </span>
-              <span className="inline-block">💕</span>
+              <span className="text-[#d6869d]"> Client Moments </span>
             </h2>
             <p className="text-lg text-gray-600 font-light">
               capturing beautiful moments with pearly
@@ -455,7 +443,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div 
+            <div
               onClick={() => setSelectedFeedback('IMG-20251110-WA0025.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
             >
@@ -471,7 +459,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div 
+            <div
               onClick={() => setSelectedFeedback('IMG-20251110-WA0042.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
             >
@@ -487,7 +475,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div 
+            <div
               onClick={() => setSelectedFeedback('IMG-20251110-WA0097.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
             >
@@ -503,7 +491,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div 
+            <div
               onClick={() => setSelectedFeedback('IMG-20251110-WA0099.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
             >
@@ -524,7 +512,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/gallery"
-              className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 shadow-lg hover:shadow-xl rounded-full"
+              className="inline-block bg-[#d6869d] text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:opacity-90 rounded-full"
             >
               View Full Gallery
             </Link>
@@ -537,9 +525,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">💗</span>
-              <span className="text-gradient-pearly"> What Our Customers Say </span>
-              <span className="inline-block">💗</span>
+              <span className="text-[#d6869d]"> What Our Customers Say </span>
             </h2>
             <p className="text-lg text-pink-400 font-medium mb-2">
               real reviews from real customers
@@ -551,13 +537,13 @@ export default function Home() {
 
           {/* Mobile: Horizontal Slider, Desktop: Grid */}
           <div className="md:grid md:grid-cols-3 md:gap-8 flex md:flex-none overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-            <div 
-              onClick={() => setSelectedFeedback('IMG-20251110-WA0018.jpg')}
+            <div
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0029.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl flex-none w-[85vw] md:w-auto snap-center"
             >
               <div className="relative h-[400px]">
                 <Image
-                  src="/Pearly feedbacks/IMG-20251110-WA0018.jpg"
+                  src="/Pearly feedbacks/IMG-20251110-WA0029.jpg"
                   alt="Customer Feedback"
                   fill
                   className="object-contain pointer-events-none"
@@ -569,13 +555,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div 
-              onClick={() => setSelectedFeedback('IMG-20251110-WA0021.jpg')}
+            <div
+              onClick={() => setSelectedFeedback('IMG-20251110-WA0030.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl flex-none w-[85vw] md:w-auto snap-center"
             >
               <div className="relative h-[400px]">
                 <Image
-                  src="/Pearly feedbacks/IMG-20251110-WA0021.jpg"
+                  src="/Pearly feedbacks/IMG-20251110-WA0030.jpg"
                   alt="Customer Feedback"
                   fill
                   className="object-contain pointer-events-none"
@@ -587,7 +573,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div 
+            <div
               onClick={() => setSelectedFeedback('IMG-20251110-WA0027.jpg')}
               className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl flex-none w-[85vw] md:w-auto snap-center"
             >
@@ -610,7 +596,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/testimonials"
-              className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 shadow-lg hover:shadow-xl rounded-full"
+              className="inline-block bg-[#d6869d] text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:opacity-90 rounded-full"
             >
               View All Reviews
             </Link>
@@ -619,13 +605,11 @@ export default function Home() {
       </section>
 
       {/* Featured Flavours Section */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-pink-50">
+      <section className="py-12 sm:py-16 bg-[#ffe9f0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">🌸</span>
-              <span className="text-gradient-pearly"> Choose Your Flavour </span>
-              <span className="inline-block">🌸</span>
+              <span className="text-[#d6869d]"> Choose Your Flavour </span>
             </h2>
             <p className="text-lg text-gray-600 font-light">
               Delicious scents that make you smile
@@ -660,55 +644,47 @@ export default function Home() {
       </section>
 
       {/* Bundle Savings Section */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-pink-50">
+      <section className="py-12 sm:py-16 bg-[#ffe9f0]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase mb-4">
-              <span className="inline-block">💰</span>
-              <span className="text-gradient-pearly"> Save More With Bundles </span>
-              <span className="inline-block">💰</span>
+              <span className="text-[#d6869d]"> Save More With Bundles </span>
             </h2>
-            <p className="text-lg text-pink-400 font-medium">
-              ✨ The more you buy, the more you save ✨
-            </p>
+            <p className="text-lg text-[#d6869d] font-medium">The more you buy, the more you save</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* SINGLE */}
-            <div className="text-center p-8 rounded-3xl bg-white border-2 border-pink-100 hover:border-pink-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
-              <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle">✨</div>
-              <p className="text-sm tracking-widest uppercase text-pink-400 font-medium mb-4">SINGLE</p>
+            <div className="text-center p-8 rounded-3xl bg-white border-2 border-[#ffe9f0] hover:border-[#d6869d] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
+              <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle"></div>
+              <p className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4">SINGLE</p>
               <p className="text-5xl font-light mb-2 text-gray-800">180 EGP</p>
               <p className="text-sm text-gray-600 font-light mb-6">Per lipgloss</p>
-              <Link href="/products?category=Lipgloss" className="inline-block border-2 border-pink-300 text-pink-600 px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-pink-50 transition-all duration-300 rounded-full">
+              <Link href="/products?category=Lipgloss" className="inline-block border-2 border-[#d6869d] text-[#d6869d] px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 rounded-full">
                 SHOP NOW
               </Link>
             </div>
 
             {/* DOUBLE - Featured */}
-            <div className="text-center p-8 rounded-3xl bg-gradient-to-br from-pink-50 to-white border-2 border-pink-300 relative shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg animate-pulse">
-                💕 SAVE 25 EGP
-              </div>
-              <div className="absolute top-3 right-3 text-pink-200 text-2xl animate-float">🎀</div>
-              <p className="text-sm tracking-widest uppercase text-pink-500 font-bold mb-4 mt-2">⭐ DOUBLE ⭐</p>
-              <p className="text-5xl font-light mb-2 bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">335 EGP</p>
+            <div className="text-center p-8 rounded-3xl bg-[#ffe9f0] border-2 border-[#d6869d] relative shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#d6869d] text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg animate-pulse">SAVE 120 EGP</div>
+              <div className="absolute top-3 right-3 text-pink-200 text-2xl animate-float"></div>
+              <p className="text-sm tracking-widest uppercase text-[#d6869d] font-bold mb-4 mt-2">DOUBLE</p>
+              <p className="text-5xl font-light mb-2 text-[#d6869d]">480 EGP</p>
               <p className="text-sm text-gray-600 font-light mb-6">2 lipgloss of your choice</p>
-              <Link href="/products/7" className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-xl">
+              <Link href="/products/7" className="inline-block bg-[#d6869d] text-white px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 rounded-full shadow-lg hover:shadow-xl hover:opacity-90">
                 SHOP NOW
               </Link>
             </div>
 
             {/* TRIPLE */}
-            <div className="text-center p-8 rounded-3xl bg-white border-2 border-pink-100 hover:border-pink-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg">
-                💰 SAVE 40 EGP
-              </div>
-              <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle">💕</div>
-              <p className="text-sm tracking-widest uppercase text-pink-400 font-medium mb-4 mt-2">TRIPLE</p>
-              <p className="text-5xl font-light mb-2 text-gray-800">500 EGP</p>
+            <div className="text-center p-8 rounded-3xl bg-white border-2 border-[#ffe9f0] hover:border-[#d6869d] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#d6869d] text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg">SAVE 160 EGP</div>
+              <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle"></div>
+              <p className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4 mt-2">TRIPLE</p>
+              <p className="text-5xl font-light mb-2 text-gray-800">700 EGP</p>
               <p className="text-sm text-gray-600 font-light mb-6">3 lipgloss of your choice</p>
-              <Link href="/products/8" className="inline-block border-2 border-pink-300 text-pink-600 px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-pink-50 transition-all duration-300 rounded-full">
+              <Link href="/products/8" className="inline-block border-2 border-[#d6869d] text-[#d6869d] px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 rounded-full">
                 SHOP NOW
               </Link>
             </div>
@@ -731,13 +707,14 @@ export default function Home() {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
             {[
               { name: 'Clear', color: 'bg-white border-2 border-gray-300', image: '/lipgloss-clear-1.jpg', productId: '15' },
-              { name: 'Nude', color: 'bg-[#E8C4A8]', image: '/lipgloss-gold-honey-1.jpg', productId: '24' },
+              { name: 'Nude', color: 'bg-[#E8C4A8]', image: '/lipgloss-gold-honey-1.jpg', productId: '19' },
               { name: 'Pink', color: 'bg-[#FFB6C1]', image: '/lipgloss-blossom-1.jpg', productId: '10' },
-              { name: 'Rose', color: 'bg-[#FF69B4]', image: '/lipgloss-georgia-1.jpg', productId: '20' },
-              { name: 'Red', color: 'bg-[#DC143C]', image: '/lipgloss-libre-1.jpg', productId: '14' },
-              { name: 'Brown', color: 'bg-[#8B4513]', image: '/lipgloss-chestnut-1.jpg', productId: '11' },
-              { name: 'Coral', color: 'bg-[#FF7F50]', image: '/lipgloss-daisy-1.jpg', productId: '28' },
-              { name: 'Berry', color: 'bg-[#8B008B]', image: '/lipgloss-cinnamon-1.jpg', productId: '16' },
+              { name: 'Rose', color: 'bg-[#FF69B4]', image: '/lipgloss-georgia-1.jpg', productId: '27' },
+              { name: 'Red', color: 'bg-[#DC143C]', image: '/lipgloss-libre-1.jpg', productId: '28' },
+              { name: 'Brown', color: 'bg-[#8B4513]', image: '/lipgloss-chestnut-1.jpg', productId: '29' },
+              { name: 'Coral', color: 'bg-[#FF7F50]', image: '/lipgloss-daisy-1.jpg', productId: '12' },
+              { name: 'Berry', color: 'bg-[#8B008B]', image: '/lipgloss-cinnamon-1.jpg', productId: '26' },
+              { name: 'Sparkle', color: 'bg-[#D18A7C]', image: '/lipgloss-cozy-dream-1.jpg', productId: '14' },
             ].map((shade, idx) => (
               <Link key={idx} href={`/products/${shade.productId}`} className="text-center group">
                 <div className={`w-16 h-16 mx-auto mb-3 rounded-full ${shade.color} group-hover:scale-110 transition-transform shadow-lg`}></div>
@@ -747,7 +724,7 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/products?category=Lipgloss" className="inline-block bg-gradient-to-r from-pink-400 to-rose-400 text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 shadow-lg hover:shadow-xl rounded-full">
+            <Link href="/products?category=Lipgloss" className="inline-block bg-[#d6869d] text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:opacity-90 rounded-full">
               VIEW ALL SHADES
             </Link>
           </div>
@@ -771,11 +748,10 @@ export default function Home() {
             <div className="space-y-3 mb-6">
               <button
                 onClick={() => setSelectedType('squeez')}
-                className={`w-full p-4 border-2 transition-all rounded-lg ${
-                  selectedType === 'squeez'
-                    ? 'border-pink-400 bg-gradient-to-r from-pink-400 to-rose-400 text-white'
+                className={`w-full p-4 border-2 transition-all rounded-lg ${selectedType === 'squeez'
+                    ? 'border-pink-400 bg-[#d6869d] text-white'
                     : 'border-gray-300 hover:border-pink-300'
-                }`}
+                  }`}
               >
                 <div className="text-left">
                   <p className="font-medium">Squeez</p>
@@ -785,11 +761,10 @@ export default function Home() {
 
               <button
                 onClick={() => setSelectedType('big-brush')}
-                className={`w-full p-4 border-2 transition-all rounded-lg ${
-                  selectedType === 'big-brush'
-                    ? 'border-pink-400 bg-gradient-to-r from-pink-400 to-rose-400 text-white'
+                className={`w-full p-4 border-2 transition-all rounded-lg ${selectedType === 'big-brush'
+                    ? 'border-pink-400 bg-[#d6869d] text-white'
                     : 'border-gray-300 hover:border-pink-300'
-                }`}
+                  }`}
               >
                 <div className="text-left">
                   <p className="font-medium">Big Brush</p>
@@ -800,7 +775,7 @@ export default function Home() {
 
             <button
               onClick={confirmAddToCart}
-              className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl"
+              className="w-full bg-[#d6869d] text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
             >
               <ShoppingBag className="w-5 h-5" />
               ADD TO CART
@@ -809,7 +784,9 @@ export default function Home() {
         </div>
       )}
 
-      <Footer />
+      <div className="pt-12">
+        <Footer />
+      </div>
 
       {/* Feedback Lightbox Modal */}
       <AnimatePresence>

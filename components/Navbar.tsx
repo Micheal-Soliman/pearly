@@ -27,7 +27,6 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <span className="text-3xl sm:text-4xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -66,7 +65,7 @@ export default function Navbar() {
             >
               <Heart className="w-5 h-5" />
               {favorites.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#d6869d] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {favorites.length}
                 </span>
               )}
@@ -77,7 +76,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="w-5 h-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#d6869d] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}

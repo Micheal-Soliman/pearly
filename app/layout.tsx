@@ -17,6 +17,13 @@ const dancingScript = Dancing_Script({
   weight: ["400", "700"],
 });
 
+const amsterdam = localFont({
+  src: "../public/Amsterdam Four_ttf 400.ttf",
+  variable: "--font-amsterdam",
+  weight: "400",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Pearly - Luxury Beauty Products",
   description: "Discover your pearly glow with our luxury beauty products. Shop lip gloss, eyebrow wax, and more with cash on delivery.",
@@ -35,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${alice.variable} ${dancingScript.variable}`}>
+    <html lang="en" className={`${alice.variable} ${dancingScript.variable} ${amsterdam.variable}`}>
       <body>
         <CartProvider>
           <FavoritesProvider>

@@ -97,29 +97,26 @@ function ProductsContent() {
       {/* Banner */}
       <section className="relative w-full h-[60vh] mt-20 sm:mt-24">
         <Image
-          src="/all products.png"
+          src="/hero.png"
           alt="All Products"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-pink-100/20 via-transparent to-pink-100/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#d6869d]/20 via-transparent to-[#d6869d]/20"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-widest text-white">
-            <span className="inline-block">✨</span>
             <span> SHOP </span>
-            <span className="inline-block">✨</span>
           </h1>
         </div>
       </section>
 
       {/* Category Filter */}
-      <section className="py-12 border-b border-pink-100 bg-gradient-to-b from-white to-pink-50">
+      <section className="py-12 border-b border-[#ffe9f0] bg-[#ffe9f0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-lg sm:text-xl font-light tracking-widest uppercase mb-2">
-              <span className="inline-block">🔍</span>
-              <span className="text-gradient-pearly"> Filter By Category</span>
+              <span className="text-[#d6869d]"> Filter By Category</span>
             </h2>
             <p className="text-sm text-gray-600 font-light">
               Choose a category to find your perfect products
@@ -132,8 +129,8 @@ function ProductsContent() {
                 onClick={() => setSelectedCategory(cat.name)}
                 className={`px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 rounded-full ${
                   selectedCategory === cat.name
-                    ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-lg'
-                    : 'border-2 border-pink-200 text-pink-600 hover:border-pink-400 hover:bg-pink-50'
+                    ? 'bg-[#d6869d] text-white shadow-lg'
+                    : 'border-2 border-[#ffe9f0] text-[#d6869d] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
                 }`}
               >
                 {cat.name}
@@ -156,8 +153,8 @@ function ProductsContent() {
                 onClick={() => setViewMode('single')}
                 className={`p-2 rounded-lg transition-all duration-300 ${
                   viewMode === 'single'
-                    ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white'
-                    : 'border-2 border-pink-200 text-pink-600'
+                    ? 'bg-[#d6869d] text-white'
+                    : 'border-2 border-[#ffe9f0] text-[#d6869d]'
                 }`}
               >
                 <Grid className="w-5 h-5" />
@@ -166,8 +163,8 @@ function ProductsContent() {
                 onClick={() => setViewMode('double')}
                 className={`p-2 rounded-lg transition-all duration-300 ${
                   viewMode === 'double'
-                    ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white'
-                    : 'border-2 border-pink-200 text-pink-600'
+                    ? 'bg-[#d6869d] text-white'
+                    : 'border-2 border-[#ffe9f0] text-[#d6869d]'
                 }`}
               >
                 <LayoutGrid className="w-5 h-5" />
@@ -183,9 +180,9 @@ function ProductsContent() {
             {currentProducts.map((product) => (
               <div key={product.id} className="group relative">
                 <Link href={`/products/${product.id}`}>
-                  <div className="relative h-[350px] sm:h-[450px] mb-4 overflow-hidden rounded-3xl bg-gradient-to-br from-white to-pink-50 border-2 border-pink-100 shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="relative h-[350px] sm:h-[450px] mb-4 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
                     {/* Decorative Element */}
-                    <div className="absolute top-2 right-2 text-pink-200 text-xl animate-sparkle z-10">✨</div>
+                    <div className="absolute top-2 right-2 text-pink-200 text-xl animate-sparkle z-10"></div>
                     
                     <Image
                       src={product.image}
@@ -194,18 +191,18 @@ function ProductsContent() {
                       className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
                     />
                     
-                    {/* Pink Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-pink-200/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                    {/* Pink Overlay within palette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
                     
                     {/* Favorite Button */}
                     <button
                       onClick={(e) => toggleFavorite(e, product)}
-                      className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-pink-50 z-10 shadow-lg"
+                      className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] z-10 shadow-lg"
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
                           isFavorite(product.id)
-                            ? 'fill-pink-500 text-pink-500'
+                            ? 'fill-[#d6869d] text-[#d6869d]'
                             : 'text-gray-700'
                         }`}
                       />
@@ -213,22 +210,20 @@ function ProductsContent() {
 
                     {/* Best Seller Badge */}
                     {product.bestSeller && (
-                      <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-400 to-rose-400 text-white px-3 py-1 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full z-10">
-                        ⭐ Best
-                      </div>
+                      <div className="absolute top-4 right-4 bg-[#d6869d] text-white px-3 py-1 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full z-10">Best</div>
                     )}
                   </div>
                 </Link>
 
                 <div className="space-y-2 text-center">
                   <Link href={`/products/${product.id}`}>
-                    <h3 className="text-base font-light tracking-wide hover:text-pink-600 transition-colors">
+                    <h3 className="text-base font-light tracking-wide hover:text-[#d6869d] transition-colors">
                       {product.name.toLowerCase()}
                     </h3>
                   </Link>
                   
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-pink-600 font-medium">
+                    <p className="text-sm text-[#d6869d] font-medium">
                       {product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP
                     </p>
                     
@@ -238,7 +233,7 @@ function ProductsContent() {
                         e.stopPropagation();
                         handleAddToCart(product);
                       }}
-                      className="w-9 h-9 border-2 border-pink-300 text-pink-600 rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-pink-400 hover:to-rose-400 hover:text-white hover:border-pink-400 transition-all duration-300 shadow-sm hover:shadow-lg"
+                      className="w-9 h-9 border-2 border-[#d6869d] text-[#d6869d] rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all duration-300 shadow-sm hover:shadow-lg"
                     >
                       <ShoppingBag className="w-4 h-4" />
                     </button>
@@ -260,7 +255,7 @@ function ProductsContent() {
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-full border-2 border-pink-200 text-pink-600 hover:bg-pink-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                className="p-2 rounded-full border-2 border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -271,8 +266,8 @@ function ProductsContent() {
                   onClick={() => setCurrentPage(page)}
                   className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
                     currentPage === page
-                      ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-lg'
-                      : 'border-2 border-pink-200 text-pink-600 hover:bg-pink-50'
+                      ? 'bg-[#d6869d] text-white shadow-lg'
+                      : 'border-2 border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0]'
                   }`}
                 >
                   {page}
@@ -282,7 +277,7 @@ function ProductsContent() {
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-full border-2 border-pink-200 text-pink-600 hover:bg-pink-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                className="p-2 rounded-full border-2 border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -302,7 +297,7 @@ function ProductsContent() {
               <X className="w-6 h-6" />
             </button>
 
-            <h2 className="text-2xl font-light tracking-wide mb-2 text-gradient-pearly">Choose Your Option</h2>
+            <h2 className="text-2xl font-light tracking-wide mb-2 text-[#d6869d]">Choose Your Option</h2>
             <p className="text-pink-600 font-medium mb-6">{selectedProduct.name}</p>
 
             <div className="space-y-3 mb-6">
@@ -310,8 +305,8 @@ function ProductsContent() {
                 onClick={() => setSelectedType('squeez')}
                 className={`w-full p-4 border-2 transition-all rounded-2xl ${
                   selectedType === 'squeez'
-                    ? 'border-pink-400 bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-lg'
-                    : 'border-pink-200 hover:border-pink-400 hover:bg-pink-50'
+                    ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
+                    : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
                 }`}
               >
                 <div className="text-left">
@@ -324,8 +319,8 @@ function ProductsContent() {
                 onClick={() => setSelectedType('big-brush')}
                 className={`w-full p-4 border-2 transition-all rounded-2xl ${
                   selectedType === 'big-brush'
-                    ? 'border-pink-400 bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-lg'
-                    : 'border-pink-200 hover:border-pink-400 hover:bg-pink-50'
+                    ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
+                    : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
                 }`}
               >
                 <div className="text-left">
@@ -337,7 +332,7 @@ function ProductsContent() {
 
             <button
               onClick={confirmAddToCart}
-              className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl"
+              className="w-full bg-[#d6869d] text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
             >
               <ShoppingBag className="w-5 h-5" />
               ADD TO CART

@@ -112,7 +112,7 @@ export default function CheckoutPage() {
       }
     } catch (error) {
       console.error('Order submission error:', error);
-      alert('❌ Failed to submit order. Please try again or contact us directly.');
+      alert('Failed to submit order. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
     }
@@ -123,89 +123,86 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-pink-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       <div className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl font-light tracking-widest mb-12 text-center">
-            <span className="inline-block">💳</span>
-            <span className="text-gradient-pearly"> CHECKOUT </span>
-            <span className="inline-block">💳</span>
+            <span className="text-[#d6869d]"> CHECKOUT </span>
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Checkout Form */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-pink-100">
+            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-[#ffe9f0]">
               <h2 className="text-xl sm:text-2xl font-medium tracking-wide mb-8">
-                <span className="inline-block">📦</span>
-                <span className="text-gradient-pearly"> shipping information</span>
+                <span className="text-[#d6869d]"> shipping information</span>
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">FIRST NAME</label>
+                    <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">FIRST NAME</label>
                     <input
                       type="text"
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
+                      className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">LAST NAME</label>
+                    <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">LAST NAME</label>
                     <input
                       type="text"
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
+                      className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">EMAIL</label>
+                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">EMAIL</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
+                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">PHONE</label>
+                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">PHONE</label>
                   <input
                     type="tel"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
+                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">ADDRESS</label>
+                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">ADDRESS</label>
                   <input
                     type="text"
                     required
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light"
+                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">CITY / GOVERNORATE</label>
+                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">CITY / GOVERNORATE</label>
                   <select
                     required
                     value={formData.city}
                     onChange={(e) => handleCityChange(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light bg-white"
+                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light bg-white"
                   >
                     <option value="">Select your city</option>
                     <option value="Cairo">Cairo (65 EGP)</option>
@@ -241,36 +238,35 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm tracking-wide mb-2 text-pink-600 font-medium">ORDER NOTES (OPTIONAL)</label>
+                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">ORDER NOTES (OPTIONAL)</label>
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     rows={4}
-                    className="w-full px-4 py-3 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 transition-colors font-light resize-none"
+                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium hover:from-pink-500 hover:to-rose-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-full shadow-lg hover:shadow-xl"
+                  className="w-full bg-[#d6869d] text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
                 >
-                  {isSubmitting ? '⏳ PROCESSING...' : '💖 PLACE ORDER 💖'}
+                  {isSubmitting ? 'Processing...' : 'Place Order'}
                 </button>
               </form>
             </div>
 
             {/* Order Summary */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-pink-100">
+            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-[#ffe9f0]">
               <h2 className="text-xl sm:text-2xl font-medium tracking-wide mb-8">
-                <span className="inline-block">📝</span>
-                <span className="text-gradient-pearly"> order summary</span>
+                <span className="text-[#d6869d]"> order summary</span>
               </h2>
 
               <div className="space-y-6">
                 {cart.map((item) => (
-                  <div key={`${item.id}-${item.selectedType || ''}`} className="flex gap-4 pb-6 border-b border-pink-100 last:border-0">
-                    <div className="relative w-20 h-20 flex-shrink-0 bg-gradient-to-br from-white to-pink-50 rounded-2xl overflow-hidden">
+                  <div key={`${item.id}-${item.selectedType || ''}`} className="flex gap-4 pb-6 border-b border-[#ffe9f0] last:border-0">
+                    <div className="relative w-20 h-20 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden">
                       <Image
                         src={item.image}
                         alt={item.name}
@@ -281,8 +277,8 @@ export default function CheckoutPage() {
                     <div className="flex-1">
                       <h3 className="text-sm font-medium tracking-wide mb-1 text-gray-800">{item.name}</h3>
                       {item.selectedType && (
-                        <p className="text-xs text-pink-500 font-medium">
-                          {item.selectedType === 'squeez' ? '✨ Squeez' : '✨ Big Brush'}
+                        <p className="text-xs text-[#d6869d] font-medium">
+                          {item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}
                         </p>
                       )}
                       <div className="flex justify-between items-center mt-2">
@@ -298,22 +294,20 @@ export default function CheckoutPage() {
                 <div className="space-y-4 pt-6">
                   <div className="flex justify-between text-sm font-light">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="text-pink-600 font-medium">{totalPrice.toFixed(2)} EGP</span>
+                    <span className="text-[#d6869d] font-medium">{totalPrice.toFixed(2)} EGP</span>
                   </div>
                   <div className="flex justify-between text-sm font-light">
                     <span className="text-gray-600">Shipping {formData.city && `(${formData.city})`}</span>
-                    <span className="text-pink-600 font-medium">{deliveryFee.toFixed(2)} EGP</span>
+                    <span className="text-[#d6869d] font-medium">{deliveryFee.toFixed(2)} EGP</span>
                   </div>
-                  <div className="flex justify-between text-lg font-medium pt-4 border-t border-pink-100">
+                  <div className="flex justify-between text-lg font-medium pt-4 border-t border-[#ffe9f0]">
                     <span className="text-gray-800">Total</span>
-                    <span className="text-pink-600">{(totalPrice + deliveryFee).toFixed(2)} EGP</span>
+                    <span className="text-[#d6869d]">{(totalPrice + deliveryFee).toFixed(2)} EGP</span>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-pink-100 bg-pink-50 rounded-2xl p-4">
-                  <p className="text-sm text-pink-600 font-medium text-center">
-                    💳 Payment Method: Cash on Delivery
-                  </p>
+                <div className="pt-6 border-t border-[#ffe9f0] bg-[#ffe9f0] rounded-2xl p-4">
+                  <p className="text-sm text-[#d6869d] font-medium text-center">Payment Method: Cash on Delivery</p>
                 </div>
               </div>
             </div>
