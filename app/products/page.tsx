@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -9,10 +9,12 @@ import { products, categories } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { Heart, ShoppingBag, X, Grid, LayoutGrid, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const categoryFromUrl = searchParams.get('category');
   
   const { addToCart } = useCart();
@@ -24,6 +26,7 @@ function ProductsContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'single' | 'double'>('double'); // Mobile view mode
   const [isMobile, setIsMobile] = useState(false);
+  const prevCategoryRef = useRef(selectedCategory);
 
   // Check if mobile
   useEffect(() => {
@@ -34,6 +37,24 @@ function ProductsContent() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Helper to update query string (preserve others)
+  const updateQuery = (patch: Record<string, string | null>) => {
+    const sp = new URLSearchParams(searchParams.toString());
+    Object.entries(patch).forEach(([key, value]) => {
+      if (value === null) sp.delete(key);
+      else sp.set(key, value);
+    });
+    router.push(`${pathname}?${sp.toString()}`, { scroll: false });
+  };
+
+  // Initialize/sync current page from URL (?page=)
+  useEffect(() => {
+    const p = parseInt(searchParams.get('page') || '1', 10);
+    if (!Number.isNaN(p) && p !== currentPage) {
+      setCurrentPage(p);
+    }
+  }, [searchParams]);
 
   const productsPerPage = isMobile ? 5 : 8;
 
@@ -53,9 +74,14 @@ function ProductsContent() {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Reset to page 1 when category changes
+  // If category actually changes (user action), reset to page 1 and push to URL.
+  // Do NOT run on initial mount to preserve ?page when returning via Back.
   useEffect(() => {
-    setCurrentPage(1);
+    if (prevCategoryRef.current !== selectedCategory) {
+      setCurrentPage(1);
+      updateQuery({ category: selectedCategory, page: '1' });
+    }
+    prevCategoryRef.current = selectedCategory;
   }, [selectedCategory]);
 
   const handleAddToCart = (product: any) => {
@@ -126,7 +152,10 @@ function ProductsContent() {
             {categories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => setSelectedCategory(cat.name)}
+                onClick={() => {
+                  setSelectedCategory(cat.name);
+                  updateQuery({ category: cat.name, page: '1' });
+                }}
                 className={`px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 rounded-full ${
                   selectedCategory === cat.name
                     ? 'bg-[#d6869d] text-white shadow-lg'
@@ -179,7 +208,7 @@ function ProductsContent() {
           }`}>
             {currentProducts.map((product) => (
               <div key={product.id} className="group relative">
-                <Link href={`/products/${product.id}`}>
+                <Link href={{ pathname: `/products/${product.id}`, query: { category: selectedCategory, page: String(currentPage) } }}>
                   <div className="relative h-[350px] sm:h-[450px] mb-4 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
                     {/* Decorative Element */}
                     <div className="absolute top-2 right-2 text-pink-200 text-xl animate-sparkle z-10"></div>
@@ -253,7 +282,11 @@ function ProductsContent() {
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-2 mt-12">
               <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                onClick={() => {
+                  const newPage = Math.max(currentPage - 1, 1);
+                  setCurrentPage(newPage);
+                  updateQuery({ page: String(newPage) });
+                }}
                 disabled={currentPage === 1}
                 className="p-2 rounded-full border-2 border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >
@@ -263,7 +296,10 @@ function ProductsContent() {
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
-                  onClick={() => setCurrentPage(page)}
+                  onClick={() => {
+                    setCurrentPage(page);
+                    updateQuery({ page: String(page) });
+                  }}
                   className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
                     currentPage === page
                       ? 'bg-[#d6869d] text-white shadow-lg'
@@ -275,7 +311,11 @@ function ProductsContent() {
               ))}
 
               <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                onClick={() => {
+                  const newPage = Math.min(currentPage + 1, totalPages);
+                  setCurrentPage(newPage);
+                  updateQuery({ page: String(newPage) });
+                }}
                 disabled={currentPage === totalPages}
                 className="p-2 rounded-full border-2 border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >

@@ -620,12 +620,12 @@ export default function Home() {
             {[
               { name: 'Bubble Gum', image: '/lipgloss-blossom-1.jpg', productId: '10' },
               { name: 'Coffee', image: '/lipgloss-chestnut-1.jpg', productId: '11' },
-              { name: 'Vanilla', image: '/lipgloss-heaven-1.jpg', productId: '12' },
-              { name: 'Coconut', image: '/lipgloss-cozydream-1.jpg', productId: '13' },
-              { name: 'Mixed Berries', image: '/lipgloss-libre-1.jpg', productId: '14' },
-              { name: 'Strawberry', image: '/lipgloss-georgia-1.jpg', productId: '20' },
-              { name: 'Watermelon', image: '/lipgloss-daisy-1.jpg', productId: '28' },
-              { name: 'Cheesecake', image: '/lipgloss-gold-honey-1.jpg', productId: '24' },
+              { name: 'Vanilla', image: '/lipgloss-gold-honey-1.jpg', productId: '17' },
+              { name: 'Coconut', image: '/lipgloss-clear-1.jpg', productId: '13' },
+              { name: 'Mixed Berries', image: '/lipgloss-cozy-dream-1.jpg', productId: '14' },
+              { name: 'Strawberry', image: '/lipgloss-lover-1.jpg', productId: '20' },
+              { name: 'Watermelon', image: '/lipgloss-velvet-cherry-1.jpg', productId: '28' },
+              { name: 'Cheesecake', image: '/lipgloss-sandstone-1.jpg', productId: '24' },
             ].map((flavour, idx) => (
               <Link key={idx} href={`/products/${flavour.productId}`} className="group text-center">
                 <div className="relative w-full aspect-square mb-4 bg-white rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-black transition-colors">

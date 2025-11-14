@@ -179,7 +179,7 @@ export const products: Product[] = [
     descriptionAr: 'ليب جلوس مرطب للغاية بملمس خفيف وتركيبة غير لاصقة وطويلة الأمد. نكهة التوت المشكل.',
     price: 180,
     image: '/lipgloss-libre-1.jpg',
-    images: ['/lipgloss-libre-1.jpg', '/lipgloss-libre-2.jpg', '/lipgloss-libre-3.jpg', '/lipgloss-libre-4.jpg'],
+    images: ['/lipgloss-libre-1.jpg', '/lipgloss-libre-2.jpg', '/lipgloss-libre-3.jpg', '/lipgloss-libre-4.MOV'],
     category: 'Lipgloss',
     categoryAr: 'ليب جلوس',
     inStock: true,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -13,6 +13,8 @@ import { ShoppingBag, Heart, Minus, Plus, Check } from 'lucide-react';
 
 export default function ProductPage() {
   const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -70,12 +72,17 @@ export default function ProductPage() {
 
       <div className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link 
-            href="/products" 
+          <button 
+            type="button"
+            onClick={() => {
+              const cat = searchParams.get('category') || 'All';
+              const page = searchParams.get('page') || '1';
+              router.push(`/products?category=${encodeURIComponent(cat)}&page=${encodeURIComponent(page)}`);
+            }}
             className="inline-flex items-center gap-2 text-sm tracking-widest uppercase mb-8 text-[#d6869d] hover:opacity-80 transition-colors font-medium"
           >
             Back to Shop
-          </Link>
+          </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="space-y-4">
