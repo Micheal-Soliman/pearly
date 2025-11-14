@@ -8,6 +8,9 @@ interface Product {
   price: number;
   image: string;
   category: string;
+  description?: string;
+  isNew?: boolean;
+  rating?: number | string;
 }
 
 interface FavoritesContextType {

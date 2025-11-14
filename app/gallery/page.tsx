@@ -48,7 +48,7 @@ export default function GalleryPage() {
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#d6869d]/20 via-transparent to-[#d6869d]/20"></div>
         <div className="relative z-10 text-center text-white px-4">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -58,6 +58,7 @@ export default function GalleryPage() {
           >
             Client Moments
           </motion.h1>
+          <div className="w-24 h-1 bg-[#d6869d]/30 mx-auto mb-4"></div>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -70,12 +71,13 @@ export default function GalleryPage() {
       </section>
 
       {/* Gallery Grid */}
-      <section className="py-16 sm:py-24">
+      <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-[#fff9fb]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-widest uppercase mb-4">
               Our Happy Clients
             </h2>
+            <div className="w-24 h-1 bg-[#d6869d]/30 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 font-light">
               {clientMoments.length} beautiful moments and counting
             </p>
@@ -93,7 +95,7 @@ export default function GalleryPage() {
                   console.log('Clicked:', moment);
                   setSelectedImage(moment);
                 }}
-                className="relative group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square rounded-2xl"
+                className="relative group overflow-hidden bg-white border-2 border-pink-100 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer aspect-square"
               >
                 <Image
                   src={`/Clients moments with pearly/${moment}`}
@@ -118,7 +120,7 @@ export default function GalleryPage() {
             </p>
             <a
               href="/products"
-              className="inline-block bg-black text-white px-16 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-2xl"
+              className="inline-block bg-[#d6869d] text-white px-12 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:opacity-90 rounded-full"
             >
               Shop Now
             </a>
