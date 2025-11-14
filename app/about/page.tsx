@@ -42,7 +42,7 @@ export default function AboutPage() {
               className="w-full lg:w-1/2 h-96 lg:h-[500px] relative rounded-3xl overflow-hidden shadow-xl"
             >
               <Image
-                src="/about-us.jpg"
+                src="/lipgloss-cozy-dream-1.jpg"
                 alt="Our Story"
                 fill
                 className="object-cover"
