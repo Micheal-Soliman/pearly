@@ -39,7 +39,7 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     const productToAdd = product.category === 'Lipgloss' 
-      ? { ...product, selectedType, price: selectedType === 'big-brush' ? 200 : 180 }
+      ? { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 }
       : product;
     
     for (let i = 0; i < quantity; i++) {
@@ -51,7 +51,7 @@ export default function ProductPage() {
 
   const getCurrentPrice = () => {
     if (product.category === 'Lipgloss') {
-      return selectedType === 'big-brush' ? 200 : 180;
+      return selectedType === 'big-brush' ? 250 : 180;
     }
     return product.price;
   };
@@ -150,8 +150,13 @@ export default function ProductPage() {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide mb-6 text-gray-800">
                   {product.name}
                 </h1>
-                <p className="text-4xl font-medium text-[#d6869d]">
-                  {getCurrentPrice()} EGP
+                <p className="text-4xl font-medium text-[#d6869d] flex items-baseline gap-3">
+                  {product.category === 'Lipgloss' && (
+                    <span className="text-2xl line-through text-gray-400">
+                      {selectedType === 'big-brush' ? '280' : '205'} EGP
+                    </span>
+                  )}
+                  <span>{getCurrentPrice()} EGP</span>
                 </p>
                 {product.bestSeller && (
                   <div className="mt-4 inline-flex items-center gap-2 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg">
@@ -180,7 +185,10 @@ export default function ProductPage() {
                       }`}
                     >
                       <p className="font-medium">Squeez</p>
-                      <p className="text-sm opacity-80">180 EGP</p>
+                      <p className="text-sm opacity-80">
+                        <span className="line-through mr-2 opacity-70">205 EGP</span>
+                        <span className="font-semibold">180 EGP</span>
+                      </p>
                     </button>
                     <button
                       onClick={() => setSelectedType('big-brush')}
@@ -191,7 +199,10 @@ export default function ProductPage() {
                       }`}
                     >
                       <p className="font-medium">Big Brush</p>
-                      <p className="text-sm opacity-80">200 EGP</p>
+                      <p className="text-sm opacity-80">
+                        <span className="line-through mr-2 opacity-70">280 EGP</span>
+                        <span className="font-semibold">250 EGP</span>
+                      </p>
                     </button>
                   </div>
                 </div>

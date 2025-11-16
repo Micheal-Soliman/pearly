@@ -76,7 +76,7 @@ export default function CartPage() {
                         </button>
                       </div>
                       <p className="text-sm text-pink-600 font-medium">
-                        {item.selectedType === 'big-brush' ? 200 : item.price} EGP
+                        {item.selectedType === 'big-brush' ? 250 : item.price} EGP
                       </p>
                     </div>
 
@@ -97,7 +97,7 @@ export default function CartPage() {
                         </button>
                       </div>
                       <p className="text-sm font-medium text-gray-800">
-                        {((item.selectedType === 'big-brush' ? 200 : item.price) * item.quantity).toFixed(2)} EGP
+                        {((item.selectedType === 'big-brush' ? 250 : item.price) * item.quantity).toFixed(2)} EGP
                       </p>
                     </div>
                   </div>

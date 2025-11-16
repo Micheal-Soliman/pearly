@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         items: cart.map(item => ({
           name: item.name,
           quantity: item.quantity,
-          price: item.selectedType === 'big-brush' ? 200 : item.price,
+          price: item.selectedType === 'big-brush' ? 250 : item.price,
           type: item.selectedType || 'standard'
         })),
         subtotal: totalPrice,
@@ -284,7 +284,7 @@ export default function CheckoutPage() {
                       <div className="flex justify-between items-center mt-2">
                         <p className="text-sm text-gray-600 font-light">Qty: {item.quantity}</p>
                         <p className="text-sm font-light">
-                          {((item.selectedType === 'big-brush' ? 200 : item.price) * item.quantity).toFixed(2)} EGP
+                          {((item.selectedType === 'big-brush' ? 250 : item.price) * item.quantity).toFixed(2)} EGP
                         </p>
                       </div>
                     </div>

@@ -157,7 +157,7 @@ export default function FavoritesPage() {
                     )}
                     <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
                       <div className="flex items-center justify-between">
-                        <span className="text-white font-medium">${product.price.toFixed(2)}</span>
+                        <span className="text-white font-medium">{product.price} EGP</span>
                         <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
                           <Star className="w-3.5 h-3.5 text-yellow-400 fill-current mr-1" />
                           <span className="text-xs text-white font-medium">{product.rating || '4.8'}</span>
@@ -227,7 +227,10 @@ export default function FavoritesPage() {
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-900">Squeeze Tube</span>
-                      <span className="text-[#d6869d] font-medium">${selectedProduct.price.toFixed(2)}</span>
+                      <span className="text-[#d6869d] font-medium">
+                        <span className="line-through mr-2 opacity-70">205 EGP</span>
+                        <span className="font-semibold">180 EGP</span>
+                      </span>
                     </div>
                     <p className="text-sm text-gray-500">Standard size, perfect for on-the-go</p>
                   </div>
@@ -243,7 +246,10 @@ export default function FavoritesPage() {
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-900">Big Brush</span>
-                      <span className="text-[#d6869d] font-medium">${(selectedProduct.price + 2).toFixed(2)}</span>
+                      <span className="text-[#d6869d] font-medium">
+                        <span className="line-through mr-2 opacity-70">280 EGP</span>
+                        <span className="font-semibold">250 EGP</span>
+                      </span>
                     </div>
                     <p className="text-sm text-gray-500">Larger size with precision applicator</p>
                   </div>
@@ -255,7 +261,7 @@ export default function FavoritesPage() {
                 className="w-full bg-[#d6869d] hover:bg-[#c5758c] text-white font-medium py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center"
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
-                Add to Cart - ${selectedType === 'big-brush' ? (selectedProduct.price + 2).toFixed(2) : selectedProduct.price.toFixed(2)}
+                Add to Cart - {selectedType === 'big-brush' ? 250 : selectedProduct.price} EGP
               </button>
             </motion.div>
           </motion.div>

@@ -92,17 +92,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="font-amsterdam text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-normal mb-6"
+              className="font-amsterdam text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-[0.25em] mb-6"
             >
-              PEARLY
+              Pearly
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-base sm:text-lg md:text-xl font-light tracking-widest uppercase mb-10"
+              className="text-lg sm:text-xl md:text-2xl font-light leading-relaxed tracking-wide mb-10 drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)] max-w-2xl md:max-w-3xl mx-auto"
             >
-              Discover Your Pearly Glow
+              Discover your pearly glow
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -111,9 +111,9 @@ export default function Home() {
             >
               <Link
                 href="/products"
-                className="inline-block bg-[#d6869d] text-white px-16 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:opacity-90 rounded-full glow-pink"
+                className="inline-block bg-[#d6869d] text-white px-16 py-4 text-xs tracking-[0.3em] font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:opacity-90 rounded-full glow-pink"
               >
-                SHOP NOW
+                Shop now
               </Link>
             </motion.div>
           </div>
@@ -391,8 +391,9 @@ export default function Home() {
                           )}
 
                           {/* Price Badge */}
-                          <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg z-10">
-                            {product.price} EGP
+                          <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 text-xs sm:text-sm font-medium rounded-full shadow-lg z-10 flex items-center gap-2">
+                            <span className="line-through opacity-80">from 205 EGP</span>
+                            <span>from {product.price} EGP</span>
                           </div>
                         </div>
 
@@ -658,7 +659,7 @@ export default function Home() {
             <div className="text-center p-8 rounded-3xl bg-white border-2 border-[#ffe9f0] hover:border-[#d6869d] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
               <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle"></div>
               <p className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4">SINGLE</p>
-              <p className="text-5xl font-light mb-2 text-gray-800">180 EGP</p>
+              <p className="text-5xl font-light mb-2 text-gray-800">250 EGP</p>
               <p className="text-sm text-gray-600 font-light mb-6">Per lipgloss</p>
               <Link href="/products?category=Lipgloss" className="inline-block border-2 border-[#d6869d] text-[#d6869d] px-8 py-3 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 rounded-full">
                 SHOP NOW
@@ -755,7 +756,10 @@ export default function Home() {
               >
                 <div className="text-left">
                   <p className="font-medium">Squeez</p>
-                  <p className="text-sm opacity-80">180 EGP</p>
+                  <p className="text-sm opacity-80">
+                    <span className="line-through mr-2 opacity-70">205 EGP</span>
+                    <span className="font-semibold">180 EGP</span>
+                  </p>
                 </div>
               </button>
 
@@ -768,7 +772,10 @@ export default function Home() {
               >
                 <div className="text-left">
                   <p className="font-medium">Big Brush</p>
-                  <p className="text-sm opacity-80">200 EGP</p>
+                  <p className="text-sm opacity-80">
+                    <span className="line-through mr-2 opacity-70">280 EGP</span>
+                    <span className="font-semibold">250 EGP</span>
+                  </p>
                 </div>
               </button>
             </div>

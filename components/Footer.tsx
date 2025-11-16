@@ -10,7 +10,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-3xl text-[#d6869d]" style={{ fontFamily: 'var(--font-dancing)' }}>Pearly 💕</h3>
+            <h3 className="font-amsterdam text-[#d6869d] text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-normal mb-6">
+              Pearly
+            </h3>
             <p className="text-sm text-gray-600 font-light leading-relaxed">
               ✨ Luxury beauty for your everyday life
             </p>

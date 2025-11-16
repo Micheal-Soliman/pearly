@@ -229,10 +229,9 @@ function ProductsContent() {
                       className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] z-10 shadow-lg"
                     >
                       <Heart
-                        className={`w-5 h-5 transition-colors ${
-                          isFavorite(product.id)
-                            ? 'fill-[#d6869d] text-[#d6869d]'
-                            : 'text-gray-700'
+                        className={`w-5 h-5 transition-colors ${isFavorite(product.id)
+                          ? 'fill-[#d6869d] text-[#d6869d]'
+                          : 'text-gray-700'
                         }`}
                       />
                     </button>
@@ -252,8 +251,11 @@ function ProductsContent() {
                   </Link>
                   
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-[#d6869d] font-medium">
-                      {product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP
+                    <p className="text-sm text-[#d6869d] font-medium flex items-center gap-2">
+                      {product.category === 'Lipgloss' && (
+                        <span className="line-through text-gray-400">from 205 EGP</span>
+                      )}
+                      <span>{product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP</span>
                     </p>
                     
                     <button
@@ -270,6 +272,7 @@ function ProductsContent() {
                 </div>
               </div>
             ))}
+
           </div>
 
           {filteredProducts.length === 0 && (
@@ -351,7 +354,10 @@ function ProductsContent() {
               >
                 <div className="text-left">
                   <p className="font-medium">Squeez</p>
-                  <p className="text-sm opacity-80">180 EGP</p>
+                  <p className="text-sm opacity-80">
+                    <span className="line-through mr-2 opacity-70">205 EGP</span>
+                    <span className="font-semibold">180 EGP</span>
+                  </p>
                 </div>
               </button>
 
@@ -365,7 +371,10 @@ function ProductsContent() {
               >
                 <div className="text-left">
                   <p className="font-medium">Big Brush</p>
-                  <p className="text-sm opacity-80">200 EGP</p>
+                  <p className="text-sm opacity-80">
+                    <span className="line-through mr-2 opacity-70">280 EGP</span>
+                    <span className="font-semibold">250 EGP</span>
+                  </p>
                 </div>
               </button>
             </div>
