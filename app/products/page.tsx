@@ -24,7 +24,7 @@ function ProductsContent() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
   const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState<'single' | 'double'>('double'); // Mobile view mode
+  const [viewMode, setViewMode] = useState<'single' | 'double'>('single'); // Mobile view mode (default: single)
   const [isMobile, setIsMobile] = useState(false);
   const prevCategoryRef = useRef(selectedCategory);
 
@@ -56,7 +56,7 @@ function ProductsContent() {
     }
   }, [searchParams]);
 
-  const productsPerPage = isMobile ? 5 : 8;
+  const productsPerPage = isMobile ? 6 : 8;
 
   useEffect(() => {
     if (categoryFromUrl) {
@@ -252,10 +252,10 @@ function ProductsContent() {
                   
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-[#d6869d] font-medium flex items-center gap-2">
+                      <span>{product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP</span>
                       {product.category === 'Lipgloss' && (
                         <span className="line-through text-gray-400">from 205 EGP</span>
                       )}
-                      <span>{product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP</span>
                     </p>
                     
                     <button
@@ -355,8 +355,8 @@ function ProductsContent() {
                 <div className="text-left">
                   <p className="font-medium">Squeez</p>
                   <p className="text-sm opacity-80">
-                    <span className="line-through mr-2 opacity-70">205 EGP</span>
                     <span className="font-semibold">180 EGP</span>
+                    <span className="line-through ml-2 opacity-70">205 EGP</span>
                   </p>
                 </div>
               </button>
@@ -372,8 +372,8 @@ function ProductsContent() {
                 <div className="text-left">
                   <p className="font-medium">Big Brush</p>
                   <p className="text-sm opacity-80">
-                    <span className="line-through mr-2 opacity-70">280 EGP</span>
                     <span className="font-semibold">250 EGP</span>
+                    <span className="line-through ml-2 opacity-70">300 EGP</span>
                   </p>
                 </div>
               </button>

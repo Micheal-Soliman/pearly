@@ -17,6 +17,7 @@ export interface Product {
 export interface CartItem extends Product {
   quantity: number;
   selectedType?: string;
+  bundleShades?: string[];
 }
 
 export interface OrderDetails {

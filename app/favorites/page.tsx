@@ -228,8 +228,8 @@ export default function FavoritesPage() {
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-900">Squeeze Tube</span>
                       <span className="text-[#d6869d] font-medium">
-                        <span className="line-through mr-2 opacity-70">205 EGP</span>
                         <span className="font-semibold">180 EGP</span>
+                        <span className="line-through ml-2 opacity-70">205 EGP</span>
                       </span>
                     </div>
                     <p className="text-sm text-gray-500">Standard size, perfect for on-the-go</p>
@@ -247,8 +247,8 @@ export default function FavoritesPage() {
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-900">Big Brush</span>
                       <span className="text-[#d6869d] font-medium">
-                        <span className="line-through mr-2 opacity-70">280 EGP</span>
                         <span className="font-semibold">250 EGP</span>
+                        <span className="line-through ml-2 opacity-70">300 EGP</span>
                       </span>
                     </div>
                     <p className="text-sm text-gray-500">Larger size with precision applicator</p>

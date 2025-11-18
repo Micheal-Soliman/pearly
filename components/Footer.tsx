@@ -1,4 +1,5 @@
 import { Instagram, Facebook, Mail } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -107,6 +108,18 @@ export default function Footer() {
                 <Mail className="w-4 h-4" />
               </a>
             </div>
+            <div className="mt-2">
+              <a
+                href="https://wa.me/201288144869"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-[#d6869d] transition-colors"
+                aria-label="WhatsApp"
+              >
+                <FaWhatsapp className="w-4 h-4 text-[#d6869d]" />
+                <span className="font-medium">01288144869</span>
+              </a>
+            </div>
             <p className="text-xs text-pink-600 font-medium">
               💳 Cash on Delivery Available
             </p>
@@ -119,6 +132,16 @@ export default function Footer() {
           </p>
         </div>
       </div>
+      {/* Floating WhatsApp Icon (site-wide) */}
+      <a
+        href="https://wa.me/201288144869"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-5 right-4 z-50 bg-[#d6869d] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-2xl active:scale-95 transition-all"
+        aria-label="Chat on WhatsApp"
+      >
+        <FaWhatsapp className="w-6 h-6" />
+      </a>
     </footer>
   );
 }

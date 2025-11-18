@@ -21,6 +21,8 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedShades, setSelectedShades] = useState<string[]>([]);
+  const [showShadesModal, setShowShadesModal] = useState(false);
 
   const product = products.find((p) => p.id === params.id);
 
@@ -38,10 +40,29 @@ export default function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    const productToAdd = product.category === 'Lipgloss' 
-      ? { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 }
-      : product;
-    
+    let productToAdd: any = product;
+    if (product.category === 'Lipgloss') {
+      productToAdd = { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 };
+    } else if (product.category === 'Bundles') {
+      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      if (required > 0 && selectedShades.length !== required) {
+        return;
+      }
+      // Group duplicate shades for clearer naming, e.g., "Blossom x2"
+      const counts: Record<string, number> = {};
+      selectedShades.forEach((sid) => { counts[sid] = (counts[sid] || 0) + 1; });
+      const shadeNames = Object.entries(counts).map(([sid, c]) => {
+        const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+        return c > 1 ? `${base} x${c}` : base;
+      });
+      const uniqueId = `${product.id}-b-${selectedShades.join('-')}`;
+      productToAdd = {
+        ...product,
+        id: uniqueId,
+        name: `${product.name} (${shadeNames.join(', ')})`,
+        bundleShades: selectedShades,
+      };
+    }
     for (let i = 0; i < quantity; i++) {
       addToCart(productToAdd);
     }
@@ -65,6 +86,8 @@ export default function ProductPage() {
   };
 
   const images = product.images || [product.image];
+  const lipglossShades = products.filter((p) => p.category === 'Lipgloss');
+  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
 
   return (
     <div className="min-h-screen bg-white">
@@ -151,12 +174,12 @@ export default function ProductPage() {
                   {product.name}
                 </h1>
                 <p className="text-4xl font-medium text-[#d6869d] flex items-baseline gap-3">
+                  <span>{getCurrentPrice()} EGP</span>
                   {product.category === 'Lipgloss' && (
                     <span className="text-2xl line-through text-gray-400">
-                      {selectedType === 'big-brush' ? '280' : '205'} EGP
+                      {selectedType === 'big-brush' ? '300' : '205'} EGP
                     </span>
                   )}
-                  <span>{getCurrentPrice()} EGP</span>
                 </p>
                 {product.bestSeller && (
                   <div className="mt-4 inline-flex items-center gap-2 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg">
@@ -172,6 +195,39 @@ export default function ProductPage() {
                 </p>
               </div>
 
+              {product.category === 'Bundles' && (
+                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Shades</p>
+                      <p className="text-xs text-gray-600">{selectedShades.length}/{requiredBundleCount} selected</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowShadesModal(true)}
+                      className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md hover:shadow-lg"
+                    >
+                      {selectedShades.length === requiredBundleCount ? 'Edit' : 'Select'}
+                    </button>
+                  </div>
+                  {selectedShades.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {Object.entries(selectedShades.reduce((acc: Record<string, number>, sid) => {
+                        acc[sid] = (acc[sid] || 0) + 1; return acc;
+                      }, {})).map(([sid, count]) => {
+                        const shade = products.find((p) => p.id === sid);
+                        const label = shade?.name?.replace('Lipgloss - ', '') || sid;
+                        return (
+                          <span key={sid} className="px-3 py-1 rounded-full text-xs bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
+                            {label}{count > 1 ? ` x${count}` : ''}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {product.category === 'Lipgloss' && (
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
                   <p className="text-sm tracking-wide mb-4 text-[#d6869d] font-medium">SELECT TYPE</p>
@@ -186,8 +242,8 @@ export default function ProductPage() {
                     >
                       <p className="font-medium">Squeez</p>
                       <p className="text-sm opacity-80">
-                        <span className="line-through mr-2 opacity-70">205 EGP</span>
                         <span className="font-semibold">180 EGP</span>
+                        <span className="line-through ml-2 opacity-70">205 EGP</span>
                       </p>
                     </button>
                     <button
@@ -200,8 +256,8 @@ export default function ProductPage() {
                     >
                       <p className="font-medium">Big Brush</p>
                       <p className="text-sm opacity-80">
-                        <span className="line-through mr-2 opacity-70">280 EGP</span>
                         <span className="font-semibold">250 EGP</span>
+                        <span className="line-through ml-2 opacity-70">300 EGP</span>
                       </p>
                     </button>
                   </div>
@@ -230,7 +286,7 @@ export default function ProductPage() {
               <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
-                  disabled={addedToCart}
+                  disabled={addedToCart || (product.category === 'Bundles' && requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount)}
                   className="w-full bg-[#d6869d] text-white px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:opacity-90"
                 >
                   {addedToCart ? (
@@ -241,7 +297,9 @@ export default function ProductPage() {
                   ) : (
                     <>
                       <ShoppingBag className="w-5 h-5" />
-                      ADD TO CART
+                      {product.category === 'Bundles' && selectedShades.length !== requiredBundleCount && requiredBundleCount > 0
+                        ? `SELECT ${requiredBundleCount} SHADES`
+                        : 'ADD TO CART'}
                     </>
                   )}
                 </button>
@@ -311,6 +369,93 @@ export default function ProductPage() {
       </div>
 
       <Footer />
+      {showShadesModal && product.category === 'Bundles' && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowShadesModal(false)}
+        >
+          <div
+            className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-[#d6869d]">Select {requiredBundleCount} Shades</h3>
+              <button
+                type="button"
+                className="text-sm text-gray-500 hover:text-[#d6869d]"
+                onClick={() => setShowShadesModal(false)}
+              >
+                Close
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
+              {lipglossShades.map((shade) => {
+                const count = selectedShades.filter((sid) => sid === shade.id).length;
+                const isSelected = count > 0;
+                return (
+                  <div
+                    key={shade.id}
+                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${
+                      isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
+                    }`}
+                  >
+                    {/* Add occurrence on card click */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedShades((prev) => {
+                          if (requiredBundleCount && prev.length >= requiredBundleCount) return prev;
+                          return [...prev, shade.id];
+                        });
+                      }}
+                      className="block w-full"
+                    >
+                      <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden bg-[#ffe9f0]">
+                        <Image src={shade.image} alt={shade.name} fill className="object-cover" />
+                        {count > 0 && (
+                          <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
+                            x{count}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
+                    </button>
+                    {count > 0 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedShades((prev) => {
+                            const idx = prev.indexOf(shade.id);
+                            if (idx === -1) return prev;
+                            const next = [...prev];
+                            next.splice(idx, 1);
+                            return next;
+                          });
+                        }}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/90 text-[#d6869d] flex items-center justify-center shadow"
+                        aria-label="Remove one"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowShadesModal(false)}
+                disabled={selectedShades.length !== requiredBundleCount}
+                className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

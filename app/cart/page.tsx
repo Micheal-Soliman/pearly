@@ -37,7 +37,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      <div className="pt-32 pb-20">
+      <div className="pt-32 pb-28 md:pb-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl font-light tracking-widest mb-12 text-center">
             <span className="text-[#d6869d]"> YOUR CART </span>
@@ -47,8 +47,8 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-6">
               {cart.map((item) => (
-                <div key={`${item.id}-${item.selectedType || ''}`} className="flex gap-6 p-6 bg-white rounded-3xl shadow-lg border-2 border-[#ffe9f0] hover:shadow-xl transition-all duration-300">
-                  <div className="relative w-32 h-32 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden">
+                <div key={`${item.id}-${item.selectedType || ''}`} className="relative flex flex-col sm:flex-row items-start sm:items-stretch gap-4 sm:gap-6 p-4 sm:p-6 bg-white rounded-3xl shadow-lg border-2 border-[#ffe9f0] hover:shadow-xl transition-all duration-300">
+                  <div className="relative w-full h-40 sm:w-32 sm:h-32 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden">
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -59,7 +59,7 @@ export default function CartPage() {
 
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="relative flex items-start mb-2">
                         <div>
                           <h3 className="text-base font-medium tracking-wide text-gray-800">{item.name}</h3>
                           {item.selectedType && (
@@ -70,17 +70,26 @@ export default function CartPage() {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="text-gray-400 hover:text-pink-600 transition-colors"
+                          className="absolute top-0 right-0 text-gray-400 hover:text-pink-600 transition-colors"
                         >
                           <X className="w-5 h-5" />
                         </button>
                       </div>
-                      <p className="text-sm text-pink-600 font-medium">
-                        {item.selectedType === 'big-brush' ? 250 : item.price} EGP
-                      </p>
+                      {item.category === 'Lipgloss' ? (
+                        <div className="text-sm font-medium">
+                          <span className="text-pink-600">
+                            {item.selectedType === 'big-brush' ? 250 : 180} EGP
+                          </span>
+                          <span className="line-through text-gray-400 ml-2">
+                            {item.selectedType === 'big-brush' ? '300' : '205'} EGP
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-pink-600 font-medium">{item.price} EGP</p>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-4 mt-4">
+                    <div className="flex items-center gap-4 mt-4 sm:mt-2 justify-between sm:justify-start w-full">
                       <div className="flex items-center border-2 border-pink-200 rounded-full overflow-hidden">
                         <button
                           onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
@@ -96,8 +105,8 @@ export default function CartPage() {
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-sm font-medium text-gray-800">
-                        {((item.selectedType === 'big-brush' ? 250 : item.price) * item.quantity).toFixed(2)} EGP
+                      <p className="text-sm font-medium text-gray-800 ml-auto sm:ml-0">
+                        {((item.selectedType === 'big-brush' ? 250 : item.selectedType === 'squeez' ? 180 : item.price) * item.quantity).toFixed(2)} EGP
                       </p>
                     </div>
                   </div>
@@ -107,7 +116,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl border-2 border-[#ffe9f0] p-8 shadow-xl">
+              <div className="bg-white rounded-3xl border-2 border-[#ffe9f0] p-6 sm:p-8 shadow-xl lg:sticky lg:top-28">
                 <h2 className="text-xl font-medium tracking-wide mb-6 text-[#d6869d]">ORDER SUMMARY</h2>
                 
                 <div className="space-y-4 mb-6 pb-6 border-b border-[#ffe9f0]">
@@ -142,6 +151,22 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile sticky checkout bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#ffe9f0]">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-[11px] uppercase tracking-widest text-gray-500">Total</p>
+            <p className="text-lg font-semibold text-[#d6869d]">{totalPrice.toFixed(2)} EGP</p>
+          </div>
+          <Link
+            href="/checkout"
+            className="flex-1 text-center bg-[#d6869d] text-white px-5 py-3 rounded-full text-xs tracking-[0.3em] uppercase font-medium shadow-lg hover:shadow-xl hover:opacity-90"
+          >
+            Checkout
+          </Link>
         </div>
       </div>
 
