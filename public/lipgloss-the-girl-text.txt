@@ -1,9 +1,9 @@
 Price:
 Big Brush : 250 instead of 280
-Squeez : 180 instead of 205
+Squeez : 180 instead of 210
+
+
  
-
-
 Size:
 Big Brush : 6 ml
 Squeez : 8 ml 

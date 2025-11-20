@@ -229,7 +229,7 @@ export default function FavoritesPage() {
                       <span className="font-medium text-gray-900">Squeeze Tube</span>
                       <span className="text-[#d6869d] font-medium">
                         <span className="font-semibold">180 EGP</span>
-                        <span className="line-through ml-2 opacity-70">205 EGP</span>
+                        <span className="line-through ml-2 opacity-70">210 EGP</span>
                       </span>
                     </div>
                     <p className="text-sm text-gray-500">Standard size, perfect for on-the-go</p>

@@ -177,7 +177,7 @@ export default function ProductPage() {
                   <span>{getCurrentPrice()} EGP</span>
                   {product.category === 'Lipgloss' && (
                     <span className="text-2xl line-through text-gray-400">
-                      {selectedType === 'big-brush' ? '300' : '205'} EGP
+                      {selectedType === 'big-brush' ? '300' : '210'} EGP
                     </span>
                   )}
                 </p>
@@ -243,7 +243,7 @@ export default function ProductPage() {
                       <p className="font-medium">Squeez</p>
                       <p className="text-sm opacity-80">
                         <span className="font-semibold">180 EGP</span>
-                        <span className="line-through ml-2 opacity-70">205 EGP</span>
+                        <span className="line-through ml-2 opacity-70">210 EGP</span>
                       </p>
                     </button>
                     <button

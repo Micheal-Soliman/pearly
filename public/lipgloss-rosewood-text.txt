@@ -1,6 +1,6 @@
 Price:
 Big Brush : 250 instead of 280
-Squeez : 180 instead of 205
+Squeez : 180 instead of 210
 
 
 

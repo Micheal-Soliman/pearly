@@ -72,7 +72,7 @@ export default function Home() {
       {/* Hero Section - Full Screen */}
       <section className="relative w-full h-screen mt-20 sm:mt-24">
         <Image
-          src="/all products.png"
+          src="/All Products Upp.jpg"
           alt="Pearly"
           fill
           className="object-cover"
@@ -568,7 +568,7 @@ export default function Home() {
                           {/* Price Badge */}
                           <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white text-[11px] sm:text-sm rounded-full shadow-lg z-10 flex items-center justify-between gap-3 px-3 py-1.5 sm:px-4 sm:py-2">
                             <span className="font-semibold">from {product.price} EGP</span>
-                            <span className="line-through opacity-80 text-[10px] sm:text-xs">205 EGP</span>
+                            <span className="line-through opacity-80 text-[10px] sm:text-xs">210 EGP</span>
                           </div>
                         </div>
 
@@ -685,7 +685,7 @@ export default function Home() {
 
             {/* TRIPLE */}
             <div className="text-center p-8 rounded-3xl bg-white border-2 border-[#ffe9f0] hover:border-[#d6869d] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 relative group">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#d6869d] text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg">SAVE 160 EGP</div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#d6869d] text-white px-6 py-2 text-xs tracking-widest uppercase rounded-full shadow-lg">SAVE 50 EGP</div>
               <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle"></div>
               <p className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4 mt-2">TRIPLE</p>
               <p className="text-5xl font-light mb-2 text-gray-800">700 EGP</p>
@@ -763,7 +763,7 @@ export default function Home() {
                   <p className="font-medium">Squeez</p>
                   <p className="text-sm opacity-80">
                     <span className="font-semibold">180 EGP</span>
-                    <span className="line-through ml-2 opacity-70">205 EGP</span>
+                    <span className="line-through ml-2 opacity-70">210 EGP</span>
                   </p>
                 </div>
               </button>

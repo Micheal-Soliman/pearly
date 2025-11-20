@@ -20,7 +20,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-0">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20">
               <Image
-                src="/logo.png"
+                src="/pearly logo.png"
                 alt="Pearly"
                 fill
                 className="object-contain"

@@ -81,7 +81,7 @@ export default function CartPage() {
                             {item.selectedType === 'big-brush' ? 250 : 180} EGP
                           </span>
                           <span className="line-through text-gray-400 ml-2">
-                            {item.selectedType === 'big-brush' ? '300' : '205'} EGP
+                            {item.selectedType === 'big-brush' ? '300' : '210'} EGP
                           </span>
                         </div>
                       ) : (

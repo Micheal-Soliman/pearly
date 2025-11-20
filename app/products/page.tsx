@@ -123,7 +123,7 @@ function ProductsContent() {
       {/* Banner */}
       <section className="relative w-full h-[60vh] mt-20 sm:mt-24">
         <Image
-          src="/hero.png"
+          src="/Hero Upp.jpg"
           alt="All Products"
           fill
           className="object-cover object-[40%_center] md:object-[50%_center]"
@@ -254,7 +254,7 @@ function ProductsContent() {
                     <p className="text-sm text-[#d6869d] font-medium flex items-center gap-2">
                       <span>{product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP</span>
                       {product.category === 'Lipgloss' && (
-                        <span className="line-through text-gray-400">from 205 EGP</span>
+                        <span className="line-through text-gray-400">from 210 EGP</span>
                       )}
                     </p>
                     
@@ -356,7 +356,7 @@ function ProductsContent() {
                   <p className="font-medium">Squeez</p>
                   <p className="text-sm opacity-80">
                     <span className="font-semibold">180 EGP</span>
-                    <span className="line-through ml-2 opacity-70">205 EGP</span>
+                    <span className="line-through ml-2 opacity-70">210 EGP</span>
                   </p>
                 </div>
               </button>
