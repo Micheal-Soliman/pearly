@@ -75,7 +75,7 @@ export default function Home() {
           src="/All Products Upp.jpg"
           alt="Pearly"
           fill
-          className="object-cover"
+          className="object-cover object-[45%_center]"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#d6869d]/20 via-transparent to-[#d6869d]/20"></div>

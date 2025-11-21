@@ -126,7 +126,7 @@ function ProductsContent() {
           src="/Hero Upp.jpg"
           alt="All Products"
           fill
-          className="object-cover object-[40%_center] md:object-[50%_center]"
+          className="object-cover object-[50%_center] md:object-[70%_center]"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#d6869d]/20 via-transparent to-[#d6869d]/20"></div>
