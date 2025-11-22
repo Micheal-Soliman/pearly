@@ -277,7 +277,7 @@ function OrderSuccessContent() {
               If you have any questions, feel free to contact us:
             </p>
             <p className="text-sm font-light">
-              📱 Phone: <a href="tel:+201205055118" className="hover:underline">01205055118</a>
+              📱 Phone: <a href="tel:+201288144869" className="hover:underline">01288144869</a>
             </p>
             {orderData.email && orderData.email !== 'N/A' && (
               <p className="text-sm font-light mt-1">

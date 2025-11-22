@@ -19,6 +19,7 @@ export async function POST(request: Request) {
       items: orderData.items,
       total: orderData.total,
       date: new Date().toISOString(),
+      notes: orderData.notes || '',
     };
 
     // ✅ Run Google Sheets and Email in background (don't await)

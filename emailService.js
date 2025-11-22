@@ -251,7 +251,7 @@ export const emailService = {
             <div class="mobile-padding" style="background-color: #fce7f3; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
               <h3 class="mobile-font-medium" style="margin: 0 0 10px 0; color: #ec4899; font-size: 16px;">Contact Us</h3>
               <p class="mobile-font-small" style="margin: 5px 0; font-size: 14px; color: #831843;">
-                📱 Phone: <a href="tel:+201205055118" style="color: #ec4899; text-decoration: none; font-weight: bold;">01205055118</a>
+                📱 Phone: <a href="tel:+201288144869" style="color: #ec4899; text-decoration: none; font-weight: bold;">01288144869</a>
               </p>
               <p class="mobile-font-small" style="margin: 5px 0; font-size: 14px; color: #831843;">
                 📧 Email: <a href="mailto:ahmedmohamed010134@gmail.com" style="color: #ec4899; text-decoration: none; font-weight: bold;">ahmedmohamed010134@gmail.com</a>
@@ -312,7 +312,7 @@ Payment Method: Cash on Delivery
 We will contact you soon to confirm the order and arrange delivery.
 
 Contact Us:
-Phone: 01205055118
+Phone: 01288144869
 Email: ahmedmohamed010134@gmail.com
 
 Thank you for choosing Pearly! Discover your pearly glow ✨
