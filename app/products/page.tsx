@@ -89,6 +89,8 @@ function ProductsContent() {
       setSelectedProduct(product);
       setSelectedType('squeez');
       setShowModal(true);
+    } else if (product.category === 'Bundles') {
+      router.push(`/products/${product.id}?category=${encodeURIComponent(selectedCategory)}&page=${encodeURIComponent(String(currentPage))}`);
     } else {
       addToCart(product);
     }
@@ -253,9 +255,11 @@ function ProductsContent() {
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-[#d6869d] font-medium flex items-center gap-2">
                       <span>{product.category === 'Lipgloss' ? 'from ' : ''}{product.price} EGP</span>
-                      {product.category === 'Lipgloss' && (
+                      {product.category === 'Lipgloss' ? (
                         <span className="line-through text-gray-400">from 210 EGP</span>
-                      )}
+                      ) : product.originalPrice ? (
+                        <span className="line-through text-gray-400">{product.originalPrice} EGP</span>
+                      ) : null}
                     </p>
                     
                     <button

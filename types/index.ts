@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   descriptionAr: string;
   price: number;
+  originalPrice?: number;
   image: string;
   images: string[];
   category: string;
@@ -18,6 +19,7 @@ export interface CartItem extends Product {
   quantity: number;
   selectedType?: string;
   bundleShades?: string[];
+  bundleMiniShade?: string;
 }
 
 export interface OrderDetails {

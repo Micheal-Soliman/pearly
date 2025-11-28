@@ -23,6 +23,8 @@ export default function ProductPage() {
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
   const [selectedShades, setSelectedShades] = useState<string[]>([]);
   const [showShadesModal, setShowShadesModal] = useState(false);
+  const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
+  const [showMiniModal, setShowMiniModal] = useState(false);
 
   const product = products.find((p) => p.id === params.id);
 
@@ -44,8 +46,11 @@ export default function ProductPage() {
     if (product.category === 'Lipgloss') {
       productToAdd = { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 };
     } else if (product.category === 'Bundles') {
-      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : product.id === '30' ? 1 : 0;
       if (required > 0 && selectedShades.length !== required) {
+        return;
+      }
+      if (product.id === '30' && !selectedMiniShade) {
         return;
       }
       // Group duplicate shades for clearer naming, e.g., "Blossom x2"
@@ -55,12 +60,14 @@ export default function ProductPage() {
         const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
         return c > 1 ? `${base} x${c}` : base;
       });
-      const uniqueId = `${product.id}-b-${selectedShades.join('-')}`;
+      const miniShadeName = selectedMiniShade ? (products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade) : null;
+      const uniqueId = `${product.id}-b-${selectedShades.join('-')}${selectedMiniShade ? `-m-${selectedMiniShade}` : ''}`;
       productToAdd = {
         ...product,
         id: uniqueId,
-        name: `${product.name} (${shadeNames.join(', ')})`,
+        name: `${product.name} (${shadeNames.join(', ')}${miniShadeName ? `, Mini: ${miniShadeName}` : ''})`,
         bundleShades: selectedShades,
+        bundleMiniShade: selectedMiniShade || undefined,
       };
     }
     for (let i = 0; i < quantity; i++) {
@@ -87,7 +94,7 @@ export default function ProductPage() {
 
   const images = product.images || [product.image];
   const lipglossShades = products.filter((p) => p.category === 'Lipgloss');
-  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
+  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : product.id === '30' ? 1 : 0) : 0;
 
   return (
     <div className="min-h-screen bg-white">
@@ -175,11 +182,15 @@ export default function ProductPage() {
                 </h1>
                 <p className="text-4xl font-medium text-[#d6869d] flex items-baseline gap-3">
                   <span>{getCurrentPrice()} EGP</span>
-                  {product.category === 'Lipgloss' && (
+                  {product.category === 'Lipgloss' ? (
                     <span className="text-2xl line-through text-gray-400">
                       {selectedType === 'big-brush' ? '300' : '210'} EGP
                     </span>
-                  )}
+                  ) : product.originalPrice ? (
+                    <span className="text-2xl line-through text-gray-400">
+                      {product.originalPrice} EGP
+                    </span>
+                  ) : null}
                 </p>
                 {product.bestSeller && (
                   <div className="mt-4 inline-flex items-center gap-2 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg">
@@ -223,6 +234,37 @@ export default function ProductPage() {
                           </span>
                         );
                       })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {product.category === 'Bundles' && product.id === '30' && (
+                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Mini Shade</p>
+                      <p className="text-xs text-gray-600">{selectedMiniShade ? '1/1 selected' : '0/1 selected'}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMiniModal(true)}
+                      className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md hover:shadow-lg"
+                    >
+                      {selectedMiniShade ? 'Edit' : 'Select'}
+                    </button>
+                  </div>
+                  {selectedMiniShade && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {(() => {
+                        const shade = products.find((p) => p.id === selectedMiniShade!);
+                        const label = shade?.name?.replace('Lipgloss - ', '') || selectedMiniShade!;
+                        return (
+                          <span className="px-3 py-1 rounded-full text-xs bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
+                            Mini: {label}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
@@ -286,7 +328,14 @@ export default function ProductPage() {
               <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
-                  disabled={addedToCart || (product.category === 'Bundles' && requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount)}
+                  disabled={
+                    addedToCart || (
+                      product.category === 'Bundles' && (
+                        (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount) ||
+                        (product.id === '30' && !selectedMiniShade)
+                      )
+                    )
+                  }
                   className="w-full bg-[#d6869d] text-white px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:opacity-90"
                 >
                   {addedToCart ? (
@@ -297,8 +346,12 @@ export default function ProductPage() {
                   ) : (
                     <>
                       <ShoppingBag className="w-5 h-5" />
-                      {product.category === 'Bundles' && selectedShades.length !== requiredBundleCount && requiredBundleCount > 0
-                        ? `SELECT ${requiredBundleCount} SHADES`
+                      {product.category === 'Bundles'
+                        ? (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount
+                            ? `SELECT ${requiredBundleCount} SHADES`
+                            : (product.id === '30' && !selectedMiniShade)
+                              ? 'SELECT MINI'
+                              : 'ADD TO CART')
                         : 'ADD TO CART'}
                     </>
                   )}
@@ -448,6 +501,64 @@ export default function ProductPage() {
                 type="button"
                 onClick={() => setShowShadesModal(false)}
                 disabled={selectedShades.length !== requiredBundleCount}
+                className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showMiniModal && product.category === 'Bundles' && product.id === '30' && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowMiniModal(false)}
+        >
+          <div
+            className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-[#d6869d]">Select 1 Mini Shade</h3>
+              <button
+                type="button"
+                className="text-sm text-gray-500 hover:text-[#d6869d]"
+                onClick={() => setShowMiniModal(false)}
+              >
+                Close
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
+              {lipglossShades.map((shade) => {
+                const isSelected = selectedMiniShade === shade.id;
+                return (
+                  <button
+                    key={shade.id}
+                    type="button"
+                    onClick={() => setSelectedMiniShade(shade.id)}
+                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${
+                      isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
+                    }`}
+                  >
+                    <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden bg-[#ffe9f0]">
+                      <Image src={shade.image} alt={shade.name} fill className="object-cover" />
+                      {isSelected && (
+                        <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
+                          Selected
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowMiniModal(false)}
+                disabled={!selectedMiniShade}
                 className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
               >
                 Done

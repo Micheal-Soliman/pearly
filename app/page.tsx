@@ -10,10 +10,12 @@ import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { X, ChevronLeft, ChevronRight, ShoppingBag, Heart } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const router = useRouter();
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss').slice(0, 4);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -38,6 +40,8 @@ export default function Home() {
       setSelectedProduct(product);
       setSelectedType('squeez');
       setShowModal(true);
+    } else if (product.category === 'Bundles') {
+      router.push(`/products/${product.id}?category=Bundles&page=1`);
     } else {
       addToCart(product);
     }
@@ -402,7 +406,16 @@ export default function Home() {
 
           {/* Mobile: Horizontal Slider, Desktop: Grid */}
           <div className="lg:grid lg:grid-cols-3 md:grid md:grid-cols-2 md:gap-8 flex md:flex-none overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-            {products.filter(p => p.category === 'Bundles').map((product, index) => (
+            {products
+              .filter(p => p.category === 'Bundles')
+              .sort((a, b) => {
+                if (a.originalPrice && !b.originalPrice) return -1;
+                if (!a.originalPrice && b.originalPrice) return 1;
+                if (a.featured && !b.featured) return -1;
+                if (!a.featured && b.featured) return 1;
+                return 0;
+              })
+              .map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -415,6 +428,13 @@ export default function Home() {
                   <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
                     {/* Decorative Elements */}
                     <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10"></div>
+
+                    {/* Sale Badge */}
+                    {product.originalPrice && (
+                      <div className="absolute top-4 right-4 bg-white text-[#d6869d] px-3 py-1 rounded-full text-xs font-semibold shadow z-10">
+                        Sale
+                      </div>
+                    )}
 
                     <Image
                       src={product.image}
@@ -452,8 +472,11 @@ export default function Home() {
                     </div>
 
                     {/* Price Badge */}
-                    <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10">
-                      {product.price} EGP
+                    <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10 flex items-center gap-2">
+                      <span>{product.price} EGP</span>
+                      {product.originalPrice && (
+                        <span className="line-through opacity-80">{product.originalPrice} EGP</span>
+                      )}
                     </div>
 
                     {/* Hover Glow */}
