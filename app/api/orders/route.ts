@@ -22,26 +22,25 @@ export async function POST(request: Request) {
       notes: orderData.notes || '',
     };
 
-    // ✅ Run Google Sheets and Email in background (don't await)
-    // This makes the response instant!
-    
-    // Background: Google Sheets
-    if (GOOGLE_SHEETS_URL) {
-      fetch(GOOGLE_SHEETS_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sheetData),
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('✅ Order saved to Google Sheets');
+    // ✅ Save to Google Sheets (await to avoid serverless background termination)
+    if (!GOOGLE_SHEETS_URL) {
+      console.error('❌ NEXT_PUBLIC_GOOGLE_SHEETS_URL is not set');
+    } else {
+      try {
+        const resp = await fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sheetData),
+        });
+        const respText = await resp.text();
+        if (resp.ok) {
+          console.log('✅ Order saved to Google Sheets:', respText);
         } else {
-          console.error('❌ Failed to save to Google Sheets');
+          console.error('❌ Failed to save to Google Sheets:', resp.status, respText);
         }
-      })
-      .catch(error => console.error('Google Sheets error:', error));
+      } catch (error) {
+        console.error('Google Sheets error:', error);
+      }
     }
 
     // Background: Email
