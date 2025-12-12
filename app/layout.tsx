@@ -25,7 +25,7 @@ const amsterdam = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Pearly | Luxury Beauty Products",
+  title: "Pearly - Luxury Beauty Products",
   description: "Discover your pearly glow with our luxury beauty products. Shop lip gloss, eyebrow wax, and more with cash on delivery.",
   icons: {
     icon: [
