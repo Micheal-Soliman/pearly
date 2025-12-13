@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { emailService } from '@/emailService';
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
@@ -46,27 +47,30 @@ export async function POST(request: Request) {
     // Background: Email
     if (orderData.email && orderData.email !== 'N/A') {
       console.log('📧 Sending email to:', orderData.email);
-      emailService.sendPearlyOrderConfirmation({
-        name: orderData.customerName,
-        email: orderData.email,
-        phone: orderData.phone,
-        address: orderData.address,
-        city: orderData.city,
-        deliveryArea: orderData.city,
-        notes: orderData.notes,
-        items: orderData.items,
-        subtotal: orderData.subtotal || orderData.total,
-        deliveryFee: orderData.deliveryFee || 0,
-        discount: 0,
-        total: orderData.total,
-      })
-      .then(() => console.log('✅ Email sent successfully'))
-      .catch(error => console.error('❌ Email error:', error));
+      try {
+        await emailService.sendPearlyOrderConfirmation({
+          name: orderData.customerName,
+          email: orderData.email,
+          phone: orderData.phone,
+          address: orderData.address,
+          city: orderData.city,
+          deliveryArea: orderData.city,
+          notes: orderData.notes,
+          items: orderData.items,
+          subtotal: orderData.subtotal || orderData.total,
+          deliveryFee: orderData.deliveryFee || 0,
+          discount: 0,
+          total: orderData.total,
+        });
+        console.log('✅ Email sent successfully');
+      } catch (error) {
+        console.error('❌ Email error:', error);
+      }
     }
 
     // Always notify brand owner/admin
-    emailService
-      .sendPearlyOrderAdminNotification({
+    try {
+      await emailService.sendPearlyOrderAdminNotification({
         orderNumber: orderData.orderNumber,
         name: orderData.customerName,
         email: orderData.email,
@@ -79,9 +83,11 @@ export async function POST(request: Request) {
         deliveryFee: orderData.deliveryFee || 0,
         discount: 0,
         total: orderData.total,
-      })
-      .then(() => console.log('✅ Admin notification sent'))
-      .catch((err) => console.error('❌ Admin email error:', err));
+      });
+      console.log('✅ Admin notification sent');
+    } catch (err) {
+      console.error('❌ Admin email error:', err);
+    }
 
     // ⚡ Return immediately - don't wait for email/sheets
     console.log('✅ Order accepted:', orderData.orderNumber);
