@@ -64,6 +64,25 @@ export async function POST(request: Request) {
       .catch(error => console.error('❌ Email error:', error));
     }
 
+    // Always notify brand owner/admin
+    emailService
+      .sendPearlyOrderAdminNotification({
+        orderNumber: orderData.orderNumber,
+        name: orderData.customerName,
+        email: orderData.email,
+        phone: orderData.phone,
+        address: orderData.address,
+        city: orderData.city,
+        notes: orderData.notes,
+        items: orderData.items,
+        subtotal: orderData.subtotal || orderData.total,
+        deliveryFee: orderData.deliveryFee || 0,
+        discount: 0,
+        total: orderData.total,
+      })
+      .then(() => console.log('✅ Admin notification sent'))
+      .catch((err) => console.error('❌ Admin email error:', err));
+
     // ⚡ Return immediately - don't wait for email/sheets
     console.log('✅ Order accepted:', orderData.orderNumber);
     return NextResponse.json({ 

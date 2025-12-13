@@ -32,7 +32,7 @@ if (isSmtpConfigured()) {
 }
 
 export const emailService = {
-  async sendEmail(to, subject, html, text = "") {
+  async sendEmail(to, subject, html, text = "", extra = {}) {
     if (!transporter) {
       throw new Error(
         "Email service is not configured. Please check SMTP settings: SMTP_HOST, SMTP_USER, SMTP_PASS"
@@ -41,11 +41,12 @@ export const emailService = {
 
     try {
       const mailOptions = {
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        from: `Pearly <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
         to,
         subject,
         html,
         text,
+        ...extra,
       };
 
       const info = await transporter.sendMail(mailOptions);
@@ -64,7 +65,7 @@ export const emailService = {
       throw new Error("Invalid order data or email");
     }
 
-    const subject = `Your Pearly Order Confirmation 💖`;
+    const subject = `Pearly order confirmation${orderData.orderNumber ? ` #${orderData.orderNumber}` : ''}`;
     
     // إنشاء جدول المنتجات
     const itemsHtml = orderData.items.map(item => `
@@ -254,7 +255,7 @@ export const emailService = {
                 📱 Phone: <a href="tel:+201288144869" style="color: #ec4899; text-decoration: none; font-weight: bold;">01288144869</a>
               </p>
               <p class="mobile-font-small" style="margin: 5px 0; font-size: 14px; color: #831843;">
-                📧 Email: <a href="mailto:ahmedmohamed010134@gmail.com" style="color: #ec4899; text-decoration: none; font-weight: bold;">ahmedmohamed010134@gmail.com</a>
+                📧 Email: <a href="mailto:${process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER}" style="color: #ec4899; text-decoration: none; font-weight: bold;">${process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER}</a>
               </p>
               <p class="mobile-font-small" style="margin: 5px 0; font-size: 14px; color: #831843;">
                 If you have any questions, feel free to contact us 💖
@@ -313,11 +314,125 @@ We will contact you soon to confirm the order and arrange delivery.
 
 Contact Us:
 Phone: 01288144869
-Email: ahmedmohamed010134@gmail.com
+Email: ${process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER}
 
 Thank you for choosing Pearly! Discover your pearly glow ✨
     `;
 
-    return this.sendEmail(orderData.email, subject, html, text);
+    const replyTo = process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER;
+    return this.sendEmail(orderData.email, subject, html, text, { replyTo });
+  },
+  async sendPearlyOrderAdminNotification(orderData) {
+    if (!transporter) {
+      throw new Error(
+        "Email service is not configured. Please check SMTP settings: SMTP_HOST, SMTP_USER, SMTP_PASS"
+      );
+    }
+
+    const adminEmail =
+      process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER;
+    if (!adminEmail) {
+      throw new Error("Admin notification email is not configured");
+    }
+
+    const name = orderData.name || orderData.customerName || "Customer";
+    const subject = `New Order Received - ${orderData.orderNumber || "-"} - ${name}`;
+
+    const itemsHtml = (orderData.items || [])
+      .map(
+        (item) => `
+      <tr>
+        <td style=\"padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left;\">${
+          item.name || item.nameAr
+        }</td>
+        <td style=\"padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;\">${
+          item.quantity
+        }</td>
+        <td style=\"padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;\">${
+          item.price
+        } EGP</td>
+        <td style=\"padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: bold;\">${
+          item.price * item.quantity
+        } EGP</td>
+      </tr>
+    `
+      )
+      .join("");
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang=\"en\">
+      <body style=\"font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background-color: #ffffff; color: #111827;\">
+        <div style=\"max-width: 640px; margin:0 auto; padding: 20px;\">
+          <h2 style=\"margin: 0 0 12px 0;\">New Order Received</h2>
+          <p style=\"margin: 0 0 8px 0;\">Order Number: <strong>${
+            orderData.orderNumber || "-"
+          }</strong></p>
+          <p style=\"margin: 0 0 8px 0;\">Customer: <strong>${name}</strong></p>
+          <p style=\"margin: 0 0 8px 0;\">Email: ${orderData.email || "-"}</p>
+          <p style=\"margin: 0 0 8px 0;\">Phone: ${orderData.phone || "-"}</p>
+          <p style=\"margin: 0 0 8px 0;\">City: ${orderData.city || "-"}</p>
+          <p style=\"margin: 0 0 8px 0;\">Address: ${orderData.address || "-"}</p>
+          ${
+            orderData.notes
+              ? `<p style=\"margin: 0 0 8px 0;\">Notes: ${orderData.notes}</p>`
+              : ""
+          }
+          <div style=\"margin-top:16px;\">
+            <table style=\"width: 100%; border-collapse: collapse; font-size: 14px;\">
+              <thead>
+                <tr style=\"background: #f9fafb;\">
+                  <th style=\"text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;\">Product</th>
+                  <th style=\"text-align: center; padding: 8px; border-bottom: 1px solid #e5e7eb;\">Qty</th>
+                  <th style=\"text-align: right; padding: 8px; border-bottom: 1px solid #e5e7eb;\">Price</th>
+                  <th style=\"text-align: right; padding: 8px; border-bottom: 1px solid #e5e7eb;\">Total</th>
+                </tr>
+              </thead>
+              <tbody>${itemsHtml}</tbody>
+            </table>
+          </div>
+          <div style=\"margin-top:12px; border-top:1px solid #e5e7eb; padding-top:12px;\">
+            <p style=\"margin: 0 0 6px 0;\">Subtotal: <strong>${
+              orderData.subtotal
+            } EGP</strong></p>
+            <p style=\"margin: 0 0 6px 0;\">Delivery Fee: <strong>${
+              orderData.deliveryFee
+            } EGP</strong></p>
+            ${
+              orderData.discount > 0
+                ? `<p style=\"margin: 0 0 6px 0;\">Discount: <strong>-${orderData.discount} EGP</strong></p>`
+                : ""
+            }
+            <p style=\"margin: 0 0 6px 0;\">Total: <strong>${
+              orderData.total
+            } EGP</strong></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+New Order Received
+Order Number: ${orderData.orderNumber || '-'}
+Customer: ${name}
+Email: ${orderData.email || '-'}
+Phone: ${orderData.phone || '-'}
+City: ${orderData.city || '-'}
+Address: ${orderData.address || '-'}
+${orderData.notes ? `Notes: ${orderData.notes}` : ''}
+
+Items:
+${(orderData.items || []).map(item => `- ${item.name} (x${item.quantity}) - ${item.price * item.quantity} EGP`).join('\n')}
+
+Summary:
+- Subtotal: ${orderData.subtotal} EGP
+- Delivery Fee: ${orderData.deliveryFee} EGP
+${orderData.discount > 0 ? `- Discount: -${orderData.discount} EGP\n` : ''}- Total: ${orderData.total} EGP
+    `;
+
+    return this.sendEmail(adminEmail, subject, html, text, {
+      replyTo: orderData.email || undefined,
+    });
   },
 };

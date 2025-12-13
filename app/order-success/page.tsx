@@ -36,6 +36,7 @@ function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const COMPANY_EMAIL = process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'thepearly.shop49@gmail.com';
 
   useEffect(() => {
     const data = searchParams.get('data');
@@ -281,7 +282,7 @@ function OrderSuccessContent() {
             </p>
             {orderData.email && orderData.email !== 'N/A' && (
               <p className="text-sm font-light mt-1">
-                📧 Email: <a href="mailto:ahmedmohamed010134@gmail.com" className="hover:underline">ahmedmohamed010134@gmail.com</a>
+                📧 Email: <a href={`mailto:${COMPANY_EMAIL}`} className="hover:underline">{COMPANY_EMAIL}</a>
               </p>
             )}
           </motion.div>
