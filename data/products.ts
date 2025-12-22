@@ -17,8 +17,8 @@ export const products: Product[] = [
   },
   {
     id: '8',
-    name: 'Pink Friday #1',
-    nameAr: 'تريبل جلوس',
+    name: 'Triple bundle',
+    nameAr: 'Triple bundle',
     description: '3 big brush Lipgloss of your choice 6 ml',
     descriptionAr: '3 ليب جلوس فل سايز من اختيارك',
     price: 575,
@@ -32,8 +32,8 @@ export const products: Product[] = [
   },
   {
     id: '30',
-    name: 'Pink Friday #2',
-    nameAr: 'بينك فرايداي #2',
+    name: 'Squeeze offer',
+    nameAr: 'squeeze offer',
     description: '1 squeez Lipgloss of your choice 9 ml + 1 mini size',
     descriptionAr: '1 ليب جلوس سكويز من اختيارك 9 مل + 1 ميني سايز',
     price: 180,
