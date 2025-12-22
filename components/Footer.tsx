@@ -86,7 +86,7 @@ export default function Footer() {
             <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">💕 CONNECT</h4>
             <div className="flex gap-4 mb-6">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/the_pearly_shop/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
