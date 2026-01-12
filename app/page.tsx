@@ -33,7 +33,7 @@ export default function Home() {
         setShowPromoModal(true);
         sessionStorage.setItem(key, '1');
       }
-    } catch {}
+    } catch { }
   }, [squeezeOffer]);
 
   const scrollLeft = () => {
@@ -429,80 +429,80 @@ export default function Home() {
                 return 0;
               })
               .map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group flex-none w-[80vw] sm:w-[45vw] md:w-auto snap-center"
-              >
-                <Link href={`/products/${product.id}`}>
-                  <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                    {/* Decorative Elements */}
-                    <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10"></div>
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="group flex-none w-[80vw] sm:w-[45vw] md:w-auto snap-center"
+                >
+                  <Link href={`/products/${product.id}`}>
+                    <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                      {/* Decorative Elements */}
+                      <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10"></div>
 
-                    {/* Sale Badge */}
-                    {product.originalPrice && (
-                      <div className="absolute top-4 right-4 bg-white text-[#d6869d] px-3 py-1 rounded-full text-xs font-semibold shadow z-10">
-                        Sale
-                      </div>
-                    )}
-
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
-                    />
-
-                    {/* Pink Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-
-                    {/* Action Buttons */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-                      <button
-                        onClick={(e) => toggleFavorite(e, product)}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] shadow-lg hover:scale-110"
-                      >
-                        <Heart
-                          className={`w-5 h-5 transition-colors ${isFavorite(product.id)
-                            ? 'fill-[#d6869d] text-[#d6869d]'
-                            : 'text-gray-700'
-                            }`}
-                        />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#d6869d] hover:text-white shadow-lg hover:scale-110"
-                      >
-                        <ShoppingBag className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    {/* Price Badge */}
-                    <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10 flex items-center gap-2">
-                      <span>{product.price} EGP</span>
+                      {/* Sale Badge */}
                       {product.originalPrice && (
-                        <span className="line-through opacity-80">{product.originalPrice} EGP</span>
+                        <div className="absolute top-4 right-4 bg-white text-[#d6869d] px-3 py-1 rounded-full text-xs font-semibold shadow z-10">
+                          Sale
+                        </div>
                       )}
+
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
+                      />
+
+                      {/* Pink Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+
+                      {/* Action Buttons */}
+                      <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+                        <button
+                          onClick={(e) => toggleFavorite(e, product)}
+                          className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] shadow-lg hover:scale-110"
+                        >
+                          <Heart
+                            className={`w-5 h-5 transition-colors ${isFavorite(product.id)
+                              ? 'fill-[#d6869d] text-[#d6869d]'
+                              : 'text-gray-700'
+                              }`}
+                          />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                          className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#d6869d] hover:text-white shadow-lg hover:scale-110"
+                        >
+                          <ShoppingBag className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {/* Price Badge */}
+                      <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10 flex items-center gap-2">
+                        <span>{product.price} EGP</span>
+                        {product.originalPrice && (
+                          <span className="line-through opacity-80">{product.originalPrice} EGP</span>
+                        )}
+                      </div>
+
+                      {/* Hover Glow */}
+                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
                     </div>
 
-                    {/* Hover Glow */}
-                    <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
-                  </div>
-
-                  <div className="text-center mt-4">
-                    <h3 className="text-lg font-light tracking-wide mb-2 text-gray-800 group-hover:text-[#d6869d] transition-colors">{product.name.toLowerCase()}</h3>
-                    <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium">Bundle Deal</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                    <div className="text-center mt-4">
+                      <h3 className="text-lg font-light tracking-wide mb-2 text-gray-800 group-hover:text-[#d6869d] transition-colors">{product.name.toLowerCase()}</h3>
+                      <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium">Bundle Deal</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
@@ -774,40 +774,72 @@ export default function Home() {
       </section>
 
       {showPromoModal && squeezeOffer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[120] p-4">
-          <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden relative">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[120] p-4 transition-all duration-500">
+          {/* Modal Container: Added deep shadow and smoother corners */}
+          <div className="bg-white w-full max-w-2xl rounded-[1.5rem] overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.3)] transform transition-all">
+
+            {/* Close Button: Elevated and cleaner */}
             <button
               onClick={() => setShowPromoModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white p-2 rounded-full text-gray-400 hover:text-black transition-all shadow-md group"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
             </button>
+
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="relative h-64 md:h-full">
-                <Image src={squeezeOffer.image} alt={squeezeOffer.name} fill className="object-cover" />
+              {/* Image Section: Increased height and added a subtle zoom effect */}
+              <div className="relative h-72 md:h-[450px] overflow-hidden">
+                <Image
+                  src={squeezeOffer.image}
+                  alt={squeezeOffer.name}
+                  fill
+                  className="object-cover hover:scale-110 transition-transform duration-[2000ms]"
+                />
+                {/* Badge */}
+                <div className="absolute top-4 left-4 bg-black text-white text-[10px] px-3 py-1.5 rounded-full uppercase tracking-[0.2em] font-bold">
+                  Exclusive Deal
+                </div>
               </div>
-              <div className="p-6 md:p-8">
-                <h2 className="text-2xl font-light tracking-wide mb-2">{squeezeOffer.name}</h2>
-                <p className="text-gray-600 mb-4">{squeezeOffer.description}</p>
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-xl font-semibold text-[#d6869d]">{squeezeOffer.price} EGP</span>
+
+              {/* Content Section: Better spacing and typography */}
+              <div className="p-8 md:p-10 flex flex-col justify-center bg-gray-50/50">
+                <span className="text-[#d6869d] text-xs font-bold uppercase tracking-[0.3em] mb-2 block">
+                  Limited Time Offer
+                </span>
+
+                <h2 className="text-3xl font-serif text-gray-900 mb-3 leading-tight italic">
+                  {squeezeOffer.name}
+                </h2>
+
+                <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                  {squeezeOffer.description}
+                </p>
+
+                <div className="flex items-baseline gap-4 mb-10">
+                  <span className="text-3xl font-light text-gray-900">
+                    {squeezeOffer.price} <span className="text-sm font-medium">EGP</span>
+                  </span>
                   {squeezeOffer.originalPrice && (
-                    <span className="text-gray-500 line-through">{squeezeOffer.originalPrice} EGP</span>
+                    <span className="text-gray-400 line-through text-lg decoration-[#d6869d]/50">
+                      {squeezeOffer.originalPrice} EGP
+                    </span>
                   )}
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
+
+                <div className="flex flex-col gap-4">
                   <Link
                     href={`/products/${squeezeOffer.id}`}
-                    className="flex-1 bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium text-center rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
+                    className="w-full bg-[#d6869d] text-white py-4 text-[11px] tracking-[0.25em] uppercase font-bold text-center rounded-lg shadow-lg shadow-[#d6869d]/20 hover:shadow-[#d6869d]/40 hover:-translate-y-0.5 transition-all duration-300"
                     onClick={() => setShowPromoModal(false)}
                   >
-                    Shop Now
+                    Claim This Offer
                   </Link>
+
                   <button
                     onClick={() => setShowPromoModal(false)}
-                    className="flex-1 border border-gray-300 px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium rounded-full hover:bg-gray-50"
+                    className="w-full text-gray-400 py-2 text-[10px] tracking-[0.2em] uppercase font-semibold hover:text-gray-800 transition-colors"
                   >
-                    Not Now
+                    No thanks, I'll pass
                   </button>
                 </div>
               </div>
