@@ -94,6 +94,28 @@ export default function ProductPage() {
 
   const images = product.images || [product.image];
   const lipglossShades = products.filter((p) => p.category === 'Lipgloss');
+  const shadeSwatches: Record<string, string> = {
+    '10': '#F8BBD0',
+    '11': '#8B5E3C',
+    '12': '#C1693C',
+    '13': '#FFFFFF',
+    '14': '#C28AA5',
+    '15': '#FFB3AB',
+    '16': '#FF7FA8',
+    '17': '#E8C4A8',
+    '18': '#FFC0CB',
+    '19': '#C63A3A',
+    '20': '#FF6F7D',
+    '21': '#F3E5F5',
+    '22': '#A9745B',
+    '23': '#B56576',
+    '24': '#C2A283',
+    '25': '#9C6B45',
+    '26': '#7E2A76',
+    '27': '#FF6FAE',
+    '28': '#A1122A',
+    '29': '#6B4F3B',
+  };
   const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : product.id === '30' ? 1 : 0) : 0;
 
   return (
@@ -463,8 +485,8 @@ export default function ProductPage() {
                       }}
                       className="block w-full"
                     >
-                      <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden bg-[#ffe9f0]">
-                        <Image src={shade.image} alt={shade.name} fill className="object-cover" />
+                      <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden border-2 border-[#ffd3df]">
+                        <div className="absolute inset-0" style={{ backgroundColor: (shade as any).swatchColor || shadeSwatches[shade.id] || '#ffe9f0' }} />
                         {count > 0 && (
                           <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
                             x{count}
@@ -541,8 +563,8 @@ export default function ProductPage() {
                       isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
                     }`}
                   >
-                    <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden bg-[#ffe9f0]">
-                      <Image src={shade.image} alt={shade.name} fill className="object-cover" />
+                    <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden border-2 border-[#ffd3df]">
+                      <div className="absolute inset-0" style={{ backgroundColor: (shade as any).swatchColor || shadeSwatches[shade.id] || '#ffe9f0' }} />
                       {isSelected && (
                         <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
                           Selected
