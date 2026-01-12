@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,11 +17,24 @@ export default function Home() {
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const router = useRouter();
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss').slice(0, 4);
+  const squeezeOffer = products.find((p) => p.id === '30');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
+  const [showPromoModal, setShowPromoModal] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const key = 'pearly-promo-30-shown';
+    try {
+      const shown = sessionStorage.getItem(key);
+      if (!shown && squeezeOffer) {
+        setShowPromoModal(true);
+        sessionStorage.setItem(key, '1');
+      }
+    } catch {}
+  }, [squeezeOffer]);
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -759,6 +772,49 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {showPromoModal && squeezeOffer && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[120] p-4">
+          <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden relative">
+            <button
+              onClick={() => setShowPromoModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="relative h-64 md:h-full">
+                <Image src={squeezeOffer.image} alt={squeezeOffer.name} fill className="object-cover" />
+              </div>
+              <div className="p-6 md:p-8">
+                <h2 className="text-2xl font-light tracking-wide mb-2">{squeezeOffer.name}</h2>
+                <p className="text-gray-600 mb-4">{squeezeOffer.description}</p>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-xl font-semibold text-[#d6869d]">{squeezeOffer.price} EGP</span>
+                  {squeezeOffer.originalPrice && (
+                    <span className="text-gray-500 line-through">{squeezeOffer.originalPrice} EGP</span>
+                  )}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link
+                    href={`/products/${squeezeOffer.id}`}
+                    className="flex-1 bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium text-center rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
+                    onClick={() => setShowPromoModal(false)}
+                  >
+                    Shop Now
+                  </Link>
+                  <button
+                    onClick={() => setShowPromoModal(false)}
+                    className="flex-1 border border-gray-300 px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium rounded-full hover:bg-gray-50"
+                  >
+                    Not Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for Lipgloss Options */}
       {showModal && selectedProduct && (
