@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Dancing_Script } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from '@/context/FavoritesContext';
@@ -48,7 +49,9 @@ export default function RootLayout({
         <CartProvider>
           <FavoritesProvider>
             {children}
-            <FABSearch />
+            <Suspense fallback={null}>
+              <FABSearch />
+            </Suspense>
           </FavoritesProvider>
         </CartProvider>
       </body>
