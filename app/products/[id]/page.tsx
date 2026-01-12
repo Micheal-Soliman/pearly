@@ -124,7 +124,7 @@ export default function ProductPage() {
 
       <div className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button 
+          <button
             type="button"
             onClick={() => {
               const cat = searchParams.get('category') || 'All';
@@ -139,8 +139,8 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="space-y-4">
               <div className="relative h-[500px] lg:h-[700px] bg-[#ffe9f0] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffe9f0]">
-                {images[selectedImage].toLowerCase().endsWith('.mov') || 
-                 images[selectedImage].toLowerCase().endsWith('.mp4') ? (
+                {images[selectedImage].toLowerCase().endsWith('.mov') ||
+                  images[selectedImage].toLowerCase().endsWith('.mp4') ? (
                   <video
                     src={images[selectedImage]}
                     controls
@@ -158,16 +158,15 @@ export default function ProductPage() {
                   />
                 )}
               </div>
-              
+
               {images.length > 1 && (
                 <div className="grid grid-cols-4 gap-4">
                   {images.map((img: string, idx: number) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`relative h-28 bg-[#ffe9f0] rounded-2xl overflow-hidden transition-all duration-300 ${
-                        selectedImage === idx ? 'ring-4 ring-[#d6869d] shadow-lg scale-105' : 'ring-2 ring-[#ffe9f0] hover:ring-[#d6869d]'
-                      }`}
+                      className={`relative h-28 bg-[#ffe9f0] rounded-2xl overflow-hidden transition-all duration-300 ${selectedImage === idx ? 'ring-4 ring-[#d6869d] shadow-lg scale-105' : 'ring-2 ring-[#ffe9f0] hover:ring-[#d6869d]'
+                        }`}
                     >
                       {img.toLowerCase().endsWith('.mov') || img.toLowerCase().endsWith('.mp4') ? (
                         <div className="w-full h-full bg-gray-900 flex items-center justify-center">
@@ -219,13 +218,6 @@ export default function ProductPage() {
                     Best Seller
                   </div>
                 )}
-              </div>
-
-              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                <h3 className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4">Description</h3>
-                <p className="text-gray-600 font-light leading-relaxed">
-                  {product.description}
-                </p>
               </div>
 
               {product.category === 'Bundles' && (
@@ -298,11 +290,10 @@ export default function ProductPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <button
                       onClick={() => setSelectedType('squeez')}
-                      className={`p-4 border-2 text-left transition-all rounded-2xl ${
-                        selectedType === 'squeez'
+                      className={`p-4 border-2 text-left transition-all rounded-2xl ${selectedType === 'squeez'
                           ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg scale-105'
                           : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                      }`}
+                        }`}
                     >
                       <p className="font-medium">Squeez</p>
                       <p className="text-sm opacity-80">
@@ -312,11 +303,10 @@ export default function ProductPage() {
                     </button>
                     <button
                       onClick={() => setSelectedType('big-brush')}
-                      className={`p-4 border-2 text-left transition-all rounded-2xl ${
-                        selectedType === 'big-brush'
+                      className={`p-4 border-2 text-left transition-all rounded-2xl ${selectedType === 'big-brush'
                           ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg scale-105'
                           : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                      }`}
+                        }`}
                     >
                       <p className="font-medium">Big Brush</p>
                       <p className="text-sm opacity-80">
@@ -327,6 +317,13 @@ export default function ProductPage() {
                   </div>
                 </div>
               )}
+
+              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
+                <h3 className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4">Description</h3>
+                <p className="text-gray-600 font-light leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
 
               <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
                 <p className="text-sm tracking-wide mb-4 text-[#d6869d] font-medium">QUANTITY</p>
@@ -370,10 +367,10 @@ export default function ProductPage() {
                       <ShoppingBag className="w-5 h-5" />
                       {product.category === 'Bundles'
                         ? (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount
-                            ? `SELECT ${requiredBundleCount} SHADES`
-                            : (product.id === '30' && !selectedMiniShade)
-                              ? 'SELECT MINI'
-                              : 'ADD TO CART')
+                          ? `SELECT ${requiredBundleCount} SHADES`
+                          : (product.id === '30' && !selectedMiniShade)
+                            ? 'SELECT MINI'
+                            : 'ADD TO CART')
                         : 'ADD TO CART'}
                     </>
                   )}
@@ -384,9 +381,8 @@ export default function ProductPage() {
                   className="w-full border-2 border-[#d6869d] text-[#d6869d] px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl"
                 >
                   <Heart
-                    className={`w-5 h-5 ${
-                      isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : ''
-                    }`}
+                    className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : ''
+                      }`}
                   />
                   {isFavorite(product.id) ? 'REMOVE FROM FAVORITES' : 'ADD TO FAVORITES'}
                 </button>
@@ -399,9 +395,8 @@ export default function ProductPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#d6869d] font-medium">Availability</span>
-                  <span className={`font-medium ${
-                    product.inStock ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <span className={`font-medium ${product.inStock ? 'text-green-600' : 'text-red-600'
+                    }`}>
                     {product.inStock ? 'In Stock' : 'Out of Stock'}
                   </span>
                 </div>
@@ -470,9 +465,8 @@ export default function ProductPage() {
                 return (
                   <div
                     key={shade.id}
-                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${
-                      isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
-                    }`}
+                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
+                      }`}
                   >
                     {/* Add occurrence on card click */}
                     <button
@@ -559,9 +553,8 @@ export default function ProductPage() {
                     key={shade.id}
                     type="button"
                     onClick={() => setSelectedMiniShade(shade.id)}
-                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${
-                      isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
-                    }`}
+                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
+                      }`}
                   >
                     <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden border-2 border-[#ffd3df]">
                       <div className="absolute inset-0" style={{ backgroundColor: (shade as any).swatchColor || shadeSwatches[shade.id] || '#ffe9f0' }} />

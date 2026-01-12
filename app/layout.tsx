@@ -4,6 +4,7 @@ import { Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from '@/context/FavoritesContext';
+import FABSearch from '@/components/FABSearch';
 
 const alice = localFont({
   src: "./fonts/Alice-Regular.ttf",
@@ -47,6 +48,7 @@ export default function RootLayout({
         <CartProvider>
           <FavoritesProvider>
             {children}
+            <FABSearch />
           </FavoritesProvider>
         </CartProvider>
       </body>
