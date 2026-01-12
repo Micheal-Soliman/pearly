@@ -773,76 +773,48 @@ export default function Home() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {showPromoModal && squeezeOffer && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm p-4 flex items-center justify-center"
-            onClick={() => setShowPromoModal(false)}
-          >
-            <motion.div
-              initial={{ y: 24, opacity: 0, scale: 0.98 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 24, opacity: 0, scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl"
+      {showPromoModal && squeezeOffer && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[120] p-4">
+          <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden relative">
+            <button
+              onClick={() => setShowPromoModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-200 via-pink-400 to-rose-300 rounded-3xl blur opacity-30 animate-pulse pointer-events-none"></div>
-
-              <div className="relative bg-white rounded-2xl overflow-hidden shadow-2xl">
-                <button
-                  onClick={() => setShowPromoModal(false)}
-                  className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-
-                <div className="absolute left-4 top-4 z-10">
-                  <span className="px-3 py-1 rounded-full text-[10px] tracking-widest uppercase bg-gradient-to-r from-[#d6869d] to-rose-400 text-white shadow-md">
-                    Limited Offer
-                  </span>
+              <X className="w-6 h-6" />
+            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="relative h-64 md:h-full">
+                <Image src={squeezeOffer.image} alt={squeezeOffer.name} fill className="object-cover" />
+              </div>
+              <div className="p-6 md:p-8">
+                <h2 className="text-2xl font-light tracking-wide mb-2">{squeezeOffer.name}</h2>
+                <p className="text-gray-600 mb-4">{squeezeOffer.description}</p>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-xl font-semibold text-[#d6869d]">{squeezeOffer.price} EGP</span>
+                  {squeezeOffer.originalPrice && (
+                    <span className="text-gray-500 line-through">{squeezeOffer.originalPrice} EGP</span>
+                  )}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                  <div className="relative h-64 md:h-full">
-                    <Image src={squeezeOffer.image} alt={squeezeOffer.name} fill className="object-cover" />
-                    <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-pink-300/30 rounded-full blur-2xl"></div>
-                    <div className="absolute -top-6 -left-6 w-24 h-24 bg-rose-300/30 rounded-full blur-2xl"></div>
-                  </div>
-                  <div className="p-6 md:p-8">
-                    <h2 className="text-3xl font-light tracking-wide mb-2">{squeezeOffer.name}</h2>
-                    <p className="text-gray-600 mb-5">{squeezeOffer.description}</p>
-                    <div className="flex items-center gap-3 mb-7">
-                      <span className="text-2xl font-semibold text-[#d6869d]">{squeezeOffer.price} EGP</span>
-                      {squeezeOffer.originalPrice && (
-                        <span className="text-gray-400 line-through">{squeezeOffer.originalPrice} EGP</span>
-                      )}
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Link
-                        href={`/products/${squeezeOffer.id}`}
-                        className="flex-1 bg-gradient-to-r from-[#d6869d] to-rose-400 text-white px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium text-center rounded-full shadow-lg hover:shadow-xl hover:opacity-90 hover:-translate-y-0.5 transition-all"
-                        onClick={() => setShowPromoModal(false)}
-                      >
-                        Shop Now
-                      </Link>
-                      <button
-                        onClick={() => setShowPromoModal(false)}
-                        className="flex-1 border border-gray-300 px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium rounded-full hover:bg-gray-50"
-                      >
-                        Not Now
-                      </button>
-                    </div>
-                  </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link
+                    href={`/products/${squeezeOffer.id}`}
+                    className="flex-1 bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium text-center rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
+                    onClick={() => setShowPromoModal(false)}
+                  >
+                    Shop Now
+                  </Link>
+                  <button
+                    onClick={() => setShowPromoModal(false)}
+                    className="flex-1 border border-gray-300 px-6 py-3 text-xs tracking-[0.3em] uppercase font-medium rounded-full hover:bg-gray-50"
+                  >
+                    Not Now
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for Lipgloss Options */}
       {showModal && selectedProduct && (
