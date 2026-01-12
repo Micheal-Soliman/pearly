@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
+import CheckoutSummary from '@/components/CheckoutSummary';
+import CheckoutForm from '@/components/CheckoutForm';
 
 // Delivery fees by city
 const deliveryFees: { [key: string]: number } = {
@@ -42,7 +43,7 @@ const deliveryFees: { [key: string]: number } = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, totalPrice, clearCart } = useCart();
+  const { cart, totalPrice } = useCart();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -52,7 +53,6 @@ export default function CheckoutPage() {
     city: '',
     notes: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [deliveryFee, setDeliveryFee] = useState(65);
 
@@ -66,56 +66,6 @@ export default function CheckoutPage() {
   const handleCityChange = (city: string) => {
     setFormData({ ...formData, city });
     setDeliveryFee(deliveryFees[city] || 65);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setIsProcessing(true);
-
-    try {
-      const orderNumber = `ORD-${Date.now()}`;
-      const orderData = {
-        orderNumber,
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email || 'N/A',
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        notes: formData.notes,
-        items: cart.map(item => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.selectedType === 'big-brush' ? 250 : item.price,
-          type: item.selectedType || 'standard'
-        })),
-        subtotal: totalPrice,
-        deliveryFee: deliveryFee,
-        total: totalPrice + deliveryFee,
-      };
-
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (response.ok) {
-        clearCart();
-        // Redirect to success page with order data
-        const encodedData = encodeURIComponent(JSON.stringify(orderData));
-        router.push(`/order-success?data=${encodedData}`);
-      } else {
-        throw new Error('Failed to submit order');
-      }
-    } catch (error) {
-      console.error('Order submission error:', error);
-      alert('Failed to submit order. Please try again or contact us directly.');
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   if (cart.length === 0) {
@@ -134,183 +84,17 @@ export default function CheckoutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Checkout Form */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-[#ffe9f0]">
-              <h2 className="text-xl sm:text-2xl font-medium tracking-wide mb-8">
-                <span className="text-[#d6869d]"> shipping information</span>
-              </h2>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">FIRST NAME</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">LAST NAME</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">EMAIL</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">PHONE</label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">ADDRESS</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">CITY / GOVERNORATE</label>
-                  <select
-                    required
-                    value={formData.city}
-                    onChange={(e) => handleCityChange(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light bg-white"
-                  >
-                    <option value="">Select your city</option>
-                    <option value="Cairo">Cairo (65 EGP)</option>
-                    <option value="Giza">Giza (65 EGP)</option>
-                    <option value="Al Asher mn Ramadan">Al Asher mn Ramadan (75 EGP)</option>
-                    <option value="Alexandria">Alexandria (75 EGP)</option>
-                    <option value="Qalyubia">Qalyubia (75 EGP)</option>
-                    <option value="Ismailia">Ismailia (80 EGP)</option>
-                    <option value="Suez">Suez (80 EGP)</option>
-                    <option value="Port Said">Port Said (80 EGP)</option>
-                    <option value="Beheira">Beheira (80 EGP)</option>
-                    <option value="Dakahlia">Dakahlia (80 EGP)</option>
-                    <option value="Menoufia">Menoufia (80 EGP)</option>
-                    <option value="Sharqia">Sharqia (80 EGP)</option>
-                    <option value="Kafr El-Sheikh">Kafr El-Sheikh (80 EGP)</option>
-                    <option value="Damietta">Damietta (80 EGP)</option>
-                    <option value="Gharbia">Gharbia (80 EGP)</option>
-                    <option value="Tanta">Tanta (80 EGP)</option>
-                    <option value="Mansoura">Mansoura (80 EGP)</option>
-                    <option value="Fayoum">Fayoum (85 EGP)</option>
-                    <option value="Beni Suef">Beni Suef (85 EGP)</option>
-                    <option value="Sohag">Sohag (85 EGP)</option>
-                    <option value="Minya">Minya (85 EGP)</option>
-                    <option value="Assiut">Assiut (85 EGP)</option>
-                    <option value="Qena">Qena (100 EGP)</option>
-                    <option value="Luxor">Luxor (100 EGP)</option>
-                    <option value="Aswan">Aswan (100 EGP)</option>
-                    <option value="Matrouh">Matrouh (110 EGP)</option>
-                    <option value="New Valley">New Valley (120 EGP)</option>
-                    <option value="North Coast">North Coast (120 EGP)</option>
-                    <option value="Red Sea">Red Sea (130 EGP)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm tracking-wide mb-2 text-[#d6869d] font-medium">ORDER NOTES (OPTIONAL)</label>
-                  <textarea
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    rows={4}
-                    className="w-full px-4 py-3 border-2 border-[#ffe9f0] rounded-2xl focus:outline-none focus:border-[#d6869d] transition-colors font-light resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#d6869d] text-white px-8 py-4 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
-                >
-                  {isSubmitting ? 'Processing...' : 'Place Order'}
-                </button>
-              </form>
-            </div>
+            <CheckoutForm
+              cart={cart as any}
+              subtotal={totalPrice}
+              deliveryFee={deliveryFee}
+              deliveryFees={deliveryFees}
+              onCitySelected={handleCityChange}
+              setIsProcessing={setIsProcessing}
+            />
 
             {/* Order Summary */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-[#ffe9f0]">
-              <h2 className="text-xl sm:text-2xl font-medium tracking-wide mb-8">
-                <span className="text-[#d6869d]"> order summary</span>
-              </h2>
-
-              <div className="space-y-6">
-                {cart.map((item) => (
-                  <div key={`${item.id}-${item.selectedType || ''}`} className="flex gap-4 pb-6 border-b border-[#ffe9f0] last:border-0">
-                    <div className="relative w-20 h-20 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-medium tracking-wide mb-1 text-gray-800">{item.name}</h3>
-                      {item.selectedType && (
-                        <p className="text-xs text-[#d6869d] font-medium">
-                          {item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}
-                        </p>
-                      )}
-                      <div className="flex justify-between items-center mt-2">
-                        <p className="text-sm text-gray-600 font-light">Qty: {item.quantity}</p>
-                        <p className="text-sm font-light">
-                          {((item.selectedType === 'big-brush' ? 250 : item.price) * item.quantity).toFixed(2)} EGP
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                <div className="space-y-4 pt-6">
-                  <div className="flex justify-between text-sm font-light">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="text-[#d6869d] font-medium">{totalPrice.toFixed(2)} EGP</span>
-                  </div>
-                  <div className="flex justify-between text-sm font-light">
-                    <span className="text-gray-600">Shipping {formData.city && `(${formData.city})`}</span>
-                    <span className="text-[#d6869d] font-medium">{deliveryFee.toFixed(2)} EGP</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-medium pt-4 border-t border-[#ffe9f0]">
-                    <span className="text-gray-800">Total</span>
-                    <span className="text-[#d6869d]">{(totalPrice + deliveryFee).toFixed(2)} EGP</span>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-[#ffe9f0] bg-[#ffe9f0] rounded-2xl p-4">
-                  <p className="text-sm text-[#d6869d] font-medium text-center">Payment Method: Cash on Delivery</p>
-                </div>
-              </div>
-            </div>
+            <CheckoutSummary cart={cart as any} subtotal={totalPrice} deliveryFee={deliveryFee} city={formData.city} />
           </div>
         </div>
       </div>

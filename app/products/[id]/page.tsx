@@ -9,7 +9,12 @@ import Footer from '@/components/Footer';
 import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
-import { ShoppingBag, Heart, Minus, Plus, Check } from 'lucide-react';
+import { ShoppingBag, Heart, Check } from 'lucide-react';
+import ProductMediaGallery from '@/components/ProductMediaGallery';
+import ProductHeaderPrice from '@/components/ProductHeaderPrice';
+import QuantitySelector from '@/components/QuantitySelector';
+import ShadesModal from '@/components/ShadesModal';
+import MiniShadesModal from '@/components/MiniShadesModal';
 
 export default function ProductPage() {
   const params = useParams();
@@ -137,88 +142,18 @@ export default function ProductPage() {
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <div className="space-y-4">
-              <div className="relative h-[500px] lg:h-[700px] bg-[#ffe9f0] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffe9f0]">
-                {images[selectedImage].toLowerCase().endsWith('.mov') ||
-                  images[selectedImage].toLowerCase().endsWith('.mp4') ? (
-                  <video
-                    src={images[selectedImage]}
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <Image
-                    src={images[selectedImage]}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
-                )}
-              </div>
-
-              {images.length > 1 && (
-                <div className="grid grid-cols-4 gap-4">
-                  {images.map((img: string, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedImage(idx)}
-                      className={`relative h-28 bg-[#ffe9f0] rounded-2xl overflow-hidden transition-all duration-300 ${selectedImage === idx ? 'ring-4 ring-[#d6869d] shadow-lg scale-105' : 'ring-2 ring-[#ffe9f0] hover:ring-[#d6869d]'
-                        }`}
-                    >
-                      {img.toLowerCase().endsWith('.mov') || img.toLowerCase().endsWith('.mp4') ? (
-                        <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                          <div className="text-white text-center">
-                            <div className="w-8 h-8 mx-auto mb-1 rounded-full bg-black flex items-center justify-center">
-                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                              </svg>
-                            </div>
-                            <span className="text-xs">Video</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <Image
-                          src={img}
-                          alt={`${product.name} ${idx + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <ProductMediaGallery images={images} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
 
             <div className="space-y-8">
-              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium mb-3 flex items-center gap-2">
-                  {product.category}
-                </p>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide mb-6 text-gray-800">
-                  {product.name}
-                </h1>
-                <p className="text-4xl font-medium text-[#d6869d] flex items-baseline gap-3">
-                  <span>{getCurrentPrice()} EGP</span>
-                  {product.category === 'Lipgloss' ? (
-                    <span className="text-2xl line-through text-gray-400">
-                      {selectedType === 'big-brush' ? '300' : '210'} EGP
-                    </span>
-                  ) : product.originalPrice ? (
-                    <span className="text-2xl line-through text-gray-400">
-                      {product.originalPrice} EGP
-                    </span>
-                  ) : null}
-                </p>
-                {product.bestSeller && (
-                  <div className="mt-4 inline-flex items-center gap-2 bg-[#d6869d] text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg">
-                    Best Seller
-                  </div>
-                )}
-              </div>
+              <ProductHeaderPrice
+                category={product.category}
+                name={product.name}
+                currentPrice={getCurrentPrice()}
+                isLipgloss={product.category === 'Lipgloss'}
+                selectedType={selectedType}
+                originalPrice={product.originalPrice}
+                bestSeller={product.bestSeller}
+              />
 
               {product.category === 'Bundles' && (
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
@@ -325,24 +260,7 @@ export default function ProductPage() {
                 </p>
               </div>
 
-              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                <p className="text-sm tracking-wide mb-4 text-[#d6869d] font-medium">QUANTITY</p>
-                <div className="flex items-center border-2 border-[#ffe9f0] rounded-full overflow-hidden w-fit">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 flex items-center justify-center hover:bg-[#ffe9f0] transition-colors text-[#d6869d]"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="w-16 text-center font-medium text-[#d6869d]">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-12 h-12 flex items-center justify-center hover:bg-[#ffe9f0] transition-colors text-[#d6869d]"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
 
               <div className="space-y-4">
                 <button
@@ -439,149 +357,24 @@ export default function ProductPage() {
       </div>
 
       <Footer />
-      {showShadesModal && product.category === 'Bundles' && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => setShowShadesModal(false)}
-        >
-          <div
-            className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-[#d6869d]">Select {requiredBundleCount} Shades</h3>
-              <button
-                type="button"
-                className="text-sm text-gray-500 hover:text-[#d6869d]"
-                onClick={() => setShowShadesModal(false)}
-              >
-                Close
-              </button>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
-              {lipglossShades.map((shade) => {
-                const count = selectedShades.filter((sid) => sid === shade.id).length;
-                const isSelected = count > 0;
-                return (
-                  <div
-                    key={shade.id}
-                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
-                      }`}
-                  >
-                    {/* Add occurrence on card click */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedShades((prev) => {
-                          if (requiredBundleCount && prev.length >= requiredBundleCount) return prev;
-                          return [...prev, shade.id];
-                        });
-                      }}
-                      className="block w-full"
-                    >
-                      <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden border-2 border-[#ffd3df]">
-                        <div className="absolute inset-0" style={{ backgroundColor: (shade as any).swatchColor || shadeSwatches[shade.id] || '#ffe9f0' }} />
-                        {count > 0 && (
-                          <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
-                            x{count}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
-                    </button>
-                    {count > 0 && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedShades((prev) => {
-                            const idx = prev.indexOf(shade.id);
-                            if (idx === -1) return prev;
-                            const next = [...prev];
-                            next.splice(idx, 1);
-                            return next;
-                          });
-                        }}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/90 text-[#d6869d] flex items-center justify-center shadow"
-                        aria-label="Remove one"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setShowShadesModal(false)}
-                disabled={selectedShades.length !== requiredBundleCount}
-                className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ShadesModal
+        show={showShadesModal && product.category === 'Bundles'}
+        onClose={() => setShowShadesModal(false)}
+        lipglossShades={lipglossShades as any}
+        selectedShades={selectedShades}
+        setSelectedShades={setSelectedShades}
+        requiredCount={requiredBundleCount}
+        shadeSwatches={shadeSwatches}
+      />
 
-      {showMiniModal && product.category === 'Bundles' && product.id === '30' && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => setShowMiniModal(false)}
-        >
-          <div
-            className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-[#d6869d]">Select 1 Mini Shade</h3>
-              <button
-                type="button"
-                className="text-sm text-gray-500 hover:text-[#d6869d]"
-                onClick={() => setShowMiniModal(false)}
-              >
-                Close
-              </button>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
-              {lipglossShades.map((shade) => {
-                const isSelected = selectedMiniShade === shade.id;
-                return (
-                  <button
-                    key={shade.id}
-                    type="button"
-                    onClick={() => setSelectedMiniShade(shade.id)}
-                    className={`relative p-3 border-2 rounded-2xl text-left transition-all ${isSelected ? 'border-[#d6869d] bg-[#ffe9f0] shadow-lg' : 'border-[#ffe9f0] hover:border-[#d6869d]'
-                      }`}
-                  >
-                    <div className="relative w-full aspect-square mb-2 rounded-xl overflow-hidden border-2 border-[#ffd3df]">
-                      <div className="absolute inset-0" style={{ backgroundColor: (shade as any).swatchColor || shadeSwatches[shade.id] || '#ffe9f0' }} />
-                      {isSelected && (
-                        <span className="absolute top-2 left-2 bg-[#d6869d] text-white text-xs rounded-full px-2 py-0.5 shadow">
-                          Selected
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setShowMiniModal(false)}
-                disabled={!selectedMiniShade}
-                className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <MiniShadesModal
+        show={showMiniModal && product.category === 'Bundles' && product.id === '30'}
+        onClose={() => setShowMiniModal(false)}
+        lipglossShades={lipglossShades as any}
+        selectedMiniShade={selectedMiniShade}
+        setSelectedMiniShade={setSelectedMiniShade}
+        shadeSwatches={shadeSwatches}
+      />
     </div>
   );
 }
