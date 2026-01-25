@@ -7,6 +7,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import FABSearch from '@/components/FABSearch';
+import ToastProvider from '@/components/ToastProvider';
 
 const alice = localFont({
   src: "./fonts/Alice-Regular.ttf",
@@ -73,6 +74,7 @@ fbq('track', 'PageView');`}
         <CartProvider>
           <FavoritesProvider>
             {children}
+            <ToastProvider />
             <Suspense fallback={null}>
               <FABSearch />
             </Suspense>

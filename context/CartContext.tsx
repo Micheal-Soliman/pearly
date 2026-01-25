@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product } from '@/types';
 import { getUnitPrice } from '@/lib/pricing';
+import { showToast } from '@/components/ToastProvider';
 
 interface CartContextType {
   cart: CartItem[];
@@ -33,6 +34,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [cart]);
 
   const addToCart = (product: Product) => {
+    showToast({ message: `Added to cart: ${product.name.replace('Lipgloss - ', '')}` });
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {

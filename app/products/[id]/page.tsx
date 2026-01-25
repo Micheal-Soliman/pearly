@@ -73,6 +73,7 @@ export default function ProductPage() {
     } else if (product.category === 'Bundles') {
       const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
       if (required > 0 && selectedShades.length !== required) {
+        setShowShadesModal(true);
         return;
       }
       // Group duplicate shades for clearer naming, e.g., "Blossom x2"
@@ -137,6 +138,9 @@ export default function ProductPage() {
     '29': '#6B4F3B',
   };
   const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
+  const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
+  const isSqueezMiniComplete = product.category !== 'Lipgloss' || selectedType !== 'squeez' || !!selectedMiniShade;
+  const canAddToCart = !addedToCart && isBundleSelectionComplete && isSqueezMiniComplete;
 
   return (
     <div className="min-h-screen bg-white">
@@ -239,13 +243,7 @@ export default function ProductPage() {
               <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
-                  disabled={
-                    addedToCart || (
-                      product.category === 'Bundles' && (
-                        (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount)
-                      )
-                    )
-                  }
+                  disabled={!canAddToCart}
                   className="w-full bg-[#d6869d] text-white px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:opacity-90"
                 >
                   {addedToCart ? (
@@ -256,16 +254,20 @@ export default function ProductPage() {
                   ) : (
                     <>
                       <ShoppingBag className="w-5 h-5" />
-                      {product.category === 'Bundles'
-                        ? (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount
-                          ? `SELECT ${requiredBundleCount} SHADES`
-                          : 'ADD TO CART')
-                        : (product.category === 'Lipgloss' && selectedType === 'squeez' && !selectedMiniShade)
-                          ? 'SELECT MINI'
-                          : 'ADD TO CART'}
+                      ADD TO CART
                     </>
                   )}
                 </button>
+
+                {!canAddToCart && !addedToCart && (
+                  <p className="text-xs text-gray-600 text-center">
+                    {product.category === 'Bundles' && !isBundleSelectionComplete
+                      ? `Please select ${requiredBundleCount} shades first.`
+                      : (product.category === 'Lipgloss' && selectedType === 'squeez' && !isSqueezMiniComplete)
+                        ? 'Please select a mini shade first.'
+                        : ''}
+                  </p>
+                )}
 
                 <button
                   onClick={toggleFavorite}
@@ -344,27 +346,7 @@ export default function ProductPage() {
         show={showMiniModal && product.category === 'Lipgloss' && selectedType === 'squeez'}
         onClose={() => setShowMiniModal(false)}
         onDone={() => {
-          if (!selectedMiniShade) return;
-
-          const miniShadeName =
-            products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
-
-          const uniqueId = `${product.id}-t-squeez-m-${selectedMiniShade}`;
-          const productToAdd: any = {
-            ...product,
-            id: uniqueId,
-            name: `${product.name} (Squeez, Mini: ${miniShadeName})`,
-            selectedType: 'squeez',
-            miniShade: selectedMiniShade,
-          };
-
-          for (let i = 0; i < quantity; i++) {
-            addToCart(productToAdd);
-          }
-
           setShowMiniModal(false);
-          setAddedToCart(true);
-          setTimeout(() => setAddedToCart(false), 3000);
         }}
         lipglossShades={lipglossShades as any}
         selectedMiniShade={selectedMiniShade}
