@@ -15,6 +15,7 @@ import ProductHeaderPrice from '@/components/ProductHeaderPrice';
 import QuantitySelector from '@/components/QuantitySelector';
 import ShadesModal from '@/components/ShadesModal';
 import MiniShadesModal from '@/components/MiniShadesModal';
+import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 
 export default function ProductPage() {
   const params = useParams();
@@ -33,6 +34,9 @@ export default function ProductPage() {
 
   const product = products.find((p) => p.id === params.id);
 
+  const squeezPricing = getLipglossVariantPricing('squeez');
+  const bigBrushPricing = getLipglossVariantPricing('big-brush');
+
   if (!product) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -49,13 +53,26 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     let productToAdd: any = product;
     if (product.category === 'Lipgloss') {
-      productToAdd = { ...product, selectedType, price: selectedType === 'big-brush' ? 250 : 180 };
-    } else if (product.category === 'Bundles') {
-      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : product.id === '30' ? 1 : 0;
-      if (required > 0 && selectedShades.length !== required) {
+      if (selectedType === 'squeez' && !selectedMiniShade) {
+        setShowMiniModal(true);
         return;
       }
-      if (product.id === '30' && !selectedMiniShade) {
+
+      const miniShadeName = selectedMiniShade
+        ? (products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade)
+        : null;
+
+      const uniqueId = `${product.id}-t-${selectedType}${selectedType === 'squeez' && selectedMiniShade ? `-m-${selectedMiniShade}` : ''}`;
+      productToAdd = {
+        ...product,
+        id: uniqueId,
+        name: `${product.name} (${selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}${miniShadeName ? `, Mini: ${miniShadeName}` : ''})`,
+        selectedType,
+        miniShade: selectedMiniShade || undefined,
+      };
+    } else if (product.category === 'Bundles') {
+      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      if (required > 0 && selectedShades.length !== required) {
         return;
       }
       // Group duplicate shades for clearer naming, e.g., "Blossom x2"
@@ -65,14 +82,12 @@ export default function ProductPage() {
         const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
         return c > 1 ? `${base} x${c}` : base;
       });
-      const miniShadeName = selectedMiniShade ? (products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade) : null;
-      const uniqueId = `${product.id}-b-${selectedShades.join('-')}${selectedMiniShade ? `-m-${selectedMiniShade}` : ''}`;
+      const uniqueId = `${product.id}-b-${selectedShades.join('-')}`;
       productToAdd = {
         ...product,
         id: uniqueId,
-        name: `${product.name} (${shadeNames.join(', ')}${miniShadeName ? `, Mini: ${miniShadeName}` : ''})`,
+        name: `${product.name} (${shadeNames.join(', ')})`,
         bundleShades: selectedShades,
-        bundleMiniShade: selectedMiniShade || undefined,
       };
     }
     for (let i = 0; i < quantity; i++) {
@@ -84,7 +99,7 @@ export default function ProductPage() {
 
   const getCurrentPrice = () => {
     if (product.category === 'Lipgloss') {
-      return selectedType === 'big-brush' ? 250 : 180;
+      return getUnitPrice({ category: 'Lipgloss', price: product.price, selectedType });
     }
     return product.price;
   };
@@ -121,7 +136,7 @@ export default function ProductPage() {
     '28': '#A1122A',
     '29': '#6B4F3B',
   };
-  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : product.id === '30' ? 1 : 0) : 0;
+  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
 
   return (
     <div className="min-h-screen bg-white">
@@ -188,7 +203,7 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {product.category === 'Bundles' && product.id === '30' && (
+              {product.category === 'Lipgloss' && selectedType === 'squeez' && (
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
                   <div className="flex items-center justify-between">
                     <div>
@@ -219,47 +234,6 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {product.category === 'Lipgloss' && (
-                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                  <p className="text-sm tracking-wide mb-4 text-[#d6869d] font-medium">SELECT TYPE</p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      onClick={() => setSelectedType('squeez')}
-                      className={`p-4 border-2 text-left transition-all rounded-2xl ${selectedType === 'squeez'
-                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg scale-105'
-                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                        }`}
-                    >
-                      <p className="font-medium">Squeez</p>
-                      <p className="text-sm opacity-80">
-                        <span className="font-semibold">180 EGP</span>
-                        <span className="line-through ml-2 opacity-70">210 EGP</span>
-                      </p>
-                    </button>
-                    <button
-                      onClick={() => setSelectedType('big-brush')}
-                      className={`p-4 border-2 text-left transition-all rounded-2xl ${selectedType === 'big-brush'
-                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg scale-105'
-                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                        }`}
-                    >
-                      <p className="font-medium">Big Brush</p>
-                      <p className="text-sm opacity-80">
-                        <span className="font-semibold">250 EGP</span>
-                        <span className="line-through ml-2 opacity-70">300 EGP</span>
-                      </p>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                <h3 className="text-sm tracking-widest uppercase text-[#d6869d] font-medium mb-4">Description</h3>
-                <p className="text-gray-600 font-light leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
-
               <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
 
               <div className="space-y-4">
@@ -268,8 +242,7 @@ export default function ProductPage() {
                   disabled={
                     addedToCart || (
                       product.category === 'Bundles' && (
-                        (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount) ||
-                        (product.id === '30' && !selectedMiniShade)
+                        (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount)
                       )
                     )
                   }
@@ -286,10 +259,10 @@ export default function ProductPage() {
                       {product.category === 'Bundles'
                         ? (requiredBundleCount > 0 && selectedShades.length !== requiredBundleCount
                           ? `SELECT ${requiredBundleCount} SHADES`
-                          : (product.id === '30' && !selectedMiniShade)
-                            ? 'SELECT MINI'
-                            : 'ADD TO CART')
-                        : 'ADD TO CART'}
+                          : 'ADD TO CART')
+                        : (product.category === 'Lipgloss' && selectedType === 'squeez' && !selectedMiniShade)
+                          ? 'SELECT MINI'
+                          : 'ADD TO CART'}
                     </>
                   )}
                 </button>
@@ -368,8 +341,31 @@ export default function ProductPage() {
       />
 
       <MiniShadesModal
-        show={showMiniModal && product.category === 'Bundles' && product.id === '30'}
+        show={showMiniModal && product.category === 'Lipgloss' && selectedType === 'squeez'}
         onClose={() => setShowMiniModal(false)}
+        onDone={() => {
+          if (!selectedMiniShade) return;
+
+          const miniShadeName =
+            products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
+
+          const uniqueId = `${product.id}-t-squeez-m-${selectedMiniShade}`;
+          const productToAdd: any = {
+            ...product,
+            id: uniqueId,
+            name: `${product.name} (Squeez, Mini: ${miniShadeName})`,
+            selectedType: 'squeez',
+            miniShade: selectedMiniShade,
+          };
+
+          for (let i = 0; i < quantity; i++) {
+            addToCart(productToAdd);
+          }
+
+          setShowMiniModal(false);
+          setAddedToCart(true);
+          setTimeout(() => setAddedToCart(false), 3000);
+        }}
         lipglossShades={lipglossShades as any}
         selectedMiniShade={selectedMiniShade}
         setSelectedMiniShade={setSelectedMiniShade}

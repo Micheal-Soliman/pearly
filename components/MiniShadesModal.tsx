@@ -7,13 +7,14 @@ type Shade = { id: string; name: string; swatchColor?: string };
 type Props = {
   show: boolean;
   onClose: () => void;
+  onDone: () => void;
   lipglossShades: Shade[];
   selectedMiniShade: string | null;
   setSelectedMiniShade: Dispatch<SetStateAction<string | null>>;
   shadeSwatches: Record<string, string>;
 };
 
-export default function MiniShadesModal({ show, onClose, lipglossShades, selectedMiniShade, setSelectedMiniShade, shadeSwatches }: Props) {
+export default function MiniShadesModal({ show, onClose, onDone, lipglossShades, selectedMiniShade, setSelectedMiniShade, shadeSwatches }: Props) {
   if (!show) return null;
 
   return (
@@ -47,7 +48,7 @@ export default function MiniShadesModal({ show, onClose, lipglossShades, selecte
         <div className="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={onDone}
             disabled={!selectedMiniShade}
             className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
           >

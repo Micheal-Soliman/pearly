@@ -1,5 +1,7 @@
 'use client';
 
+import { getLipglossVariantPricing } from '@/lib/pricing';
+
 type Props = {
   category: string;
   name: string;
@@ -11,6 +13,8 @@ type Props = {
 };
 
 export default function ProductHeaderPrice({ category, name, currentPrice, isLipgloss, selectedType, originalPrice, bestSeller }: Props) {
+  const lipglossOriginalPrice = isLipgloss ? getLipglossVariantPricing(selectedType).originalPrice : undefined;
+
   return (
     <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
       <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium mb-3 flex items-center gap-2">
@@ -23,7 +27,7 @@ export default function ProductHeaderPrice({ category, name, currentPrice, isLip
         <span>{currentPrice} EGP</span>
         {isLipgloss ? (
           <span className="text-2xl line-through text-gray-400">
-            {selectedType === 'big-brush' ? '300' : '210'} EGP
+            {lipglossOriginalPrice} EGP
           </span>
         ) : originalPrice ? (
           <span className="text-2xl line-through text-gray-400">{originalPrice} EGP</span>

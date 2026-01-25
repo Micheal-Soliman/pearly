@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import { getUnitPrice } from '@/lib/pricing';
 
 type CartItem = {
   id: string;
   name: string;
   image: string;
+  category: string;
   quantity: number;
   price: number;
   selectedType?: 'big-brush' | 'squeez';
@@ -38,7 +40,7 @@ export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: P
               <div className="flex justify-between items-center mt-2">
                 <p className="text-sm text-gray-600 font-light">Qty: {item.quantity}</p>
                 <p className="text-sm font-light">
-                  {((item.selectedType === 'big-brush' ? 250 : item.price) * item.quantity).toFixed(2)} EGP
+                  {(getUnitPrice(item) * item.quantity).toFixed(2)} EGP
                 </p>
               </div>
             </div>
@@ -56,7 +58,7 @@ export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: P
           </div>
           <div className="flex justify-between text-lg font-medium pt-4 border-t border-[#ffe9f0]">
             <span className="text-gray-800">Total</span>
-            <span className="text-[#d6869d]">{(subtotal + deliveryFee).toFixed(2)} EGP</span>
+            <span id="checkout-order-total" data-meta="order-total" className="text-[#d6869d]">{(subtotal + deliveryFee).toFixed(2)} EGP</span>
           </div>
         </div>
 

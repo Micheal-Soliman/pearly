@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
+import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 
 type CartItem = {
   id: string;
@@ -20,8 +21,9 @@ type Props = {
 };
 
 export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
-  const unitPrice = item.selectedType === 'big-brush' ? 250 : item.selectedType === 'squeez' ? 180 : item.price;
+  const unitPrice = getUnitPrice(item);
   const total = (unitPrice * item.quantity).toFixed(2);
+  const lipglossPricing = item.category === 'Lipgloss' ? getLipglossVariantPricing(item.selectedType) : null;
 
   return (
     <div className="relative flex flex-col sm:flex-row items-start sm:items-stretch gap-4 sm:gap-6 p-4 sm:p-6 bg-white rounded-3xl shadow-lg border-2 border-[#ffe9f0] hover:shadow-xl transition-all duration-300">
@@ -47,7 +49,9 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
           {item.category === 'Lipgloss' ? (
             <div className="text-sm font-medium">
               <span className="text-pink-600">{unitPrice} EGP</span>
-              <span className="line-through text-gray-400 ml-2">{item.selectedType === 'big-brush' ? '300' : '210'} EGP</span>
+              {lipglossPricing && (
+                <span className="line-through text-gray-400 ml-2">{lipglossPricing.originalPrice} EGP</span>
+              )}
             </div>
           ) : (
             <p className="text-sm text-pink-600 font-medium">{item.price} EGP</p>

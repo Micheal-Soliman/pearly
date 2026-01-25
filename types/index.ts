@@ -13,13 +13,16 @@ export interface Product {
   inStock: boolean;
   featured: boolean;
   bestSeller?: boolean;
+  selectedType?: 'big-brush' | 'squeez';
+  miniShade?: string;
 }
 
 export interface CartItem extends Product {
   quantity: number;
-  selectedType?: string;
+  selectedType?: 'big-brush' | 'squeez';
   bundleShades?: string[];
   bundleMiniShade?: string;
+  miniShade?: string;
 }
 
 export interface OrderDetails {

@@ -3,18 +3,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
+import { getLipglossVariantPricing } from '@/lib/pricing';
 
 type Props = {
   show: boolean;
   onClose: () => void;
   selectedType: 'big-brush' | 'squeez';
   setSelectedType: Dispatch<SetStateAction<'big-brush' | 'squeez'>>;
-  priceSqueez: number;
-  priceBigBrush: number;
   onConfirm: () => void;
 };
 
-export default function LipglossOptionModal({ show, onClose, selectedType, setSelectedType, priceSqueez, priceBigBrush, onConfirm }: Props) {
+export default function LipglossOptionModal({ show, onClose, selectedType, setSelectedType, onConfirm }: Props) {
+  const squeezPricing = getLipglossVariantPricing('squeez');
+  const bigBrushPricing = getLipglossVariantPricing('big-brush');
+
   return (
     <AnimatePresence>
       {show && (
@@ -51,11 +53,11 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
                   <div className="flex justify-between">
                     <span className="font-medium text-gray-900">Squeeze Tube</span>
                     <span className="text-[#d6869d] font-medium">
-                      <span className="font-semibold">{priceSqueez} EGP</span>
-                      <span className="line-through ml-2 opacity-70">210 EGP</span>
+                      <span className="font-semibold">{squeezPricing.price} EGP</span>
+                      <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">Standard size, perfect for on-the-go</p>
+                  <p className="text-sm text-gray-500">Includes mini size with singles</p>
                 </div>
               </div>
 
@@ -70,8 +72,8 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
                   <div className="flex justify-between">
                     <span className="font-medium text-gray-900">Big Brush</span>
                     <span className="text-[#d6869d] font-medium">
-                      <span className="font-semibold">{priceBigBrush} EGP</span>
-                      <span className="line-through ml-2 opacity-70">300 EGP</span>
+                      <span className="font-semibold">{bigBrushPricing.price} EGP</span>
+                      <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">Larger size with precision applicator</p>
@@ -84,7 +86,7 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
               className="w-full bg-[#d6869d] hover:bg-[#c5758c] text-white font-medium py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center"
             >
               <ShoppingBag className="w-4 h-4 mr-2" />
-              Add to Cart - {selectedType === 'big-brush' ? priceBigBrush : priceSqueez} EGP
+              Add to Cart - {selectedType === 'big-brush' ? bigBrushPricing.price : squeezPricing.price} EGP
             </button>
           </motion.div>
         </motion.div>

@@ -9,6 +9,7 @@ export default function FABSearch() {
   const searchParams = useSearchParams();
 
   const isFiltersOpen = searchParams.get('openFilters') === '1';
+  const hideFab = pathname === '/cart' || pathname === '/checkout';
 
   const openFilters = () => {
     if (pathname.startsWith('/products')) {
@@ -20,7 +21,7 @@ export default function FABSearch() {
     }
   };
 
-  if (isFiltersOpen) return null;
+  if (isFiltersOpen || hideFab) return null;
 
   return (
     <div className="fixed bottom-20 md:bottom-18 right-4 z-[10000]">

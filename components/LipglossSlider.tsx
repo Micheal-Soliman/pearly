@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag } from 'lucide-react';
+import { getLipglossVariantPricing } from '@/lib/pricing';
 
 type Product = any;
 
@@ -17,6 +18,7 @@ type Props = {
 
 export default function LipglossSlider({ products, isFavorite, toggleFavorite, handleAddToCart }: Props) {
   const sliderRef = useRef<HTMLDivElement>(null);
+  const lipglossFromOriginalPrice = getLipglossVariantPricing('squeez').originalPrice;
 
   return (
     <section className="py-12 sm:py-16 bg-[#ffe9f0] relative overflow-hidden">
@@ -75,7 +77,7 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, h
                         )}
                         <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white text-[11px] sm:text-sm rounded-full shadow-lg z-10 flex items-center justify-between gap-3 px-3 py-1.5 sm:px-4 sm:py-2">
                           <span className="font-semibold">from {product.price} EGP</span>
-                          <span className="line-through opacity-80 text-[10px] sm:text-xs">210 EGP</span>
+                          <span className="line-through opacity-80 text-[10px] sm:text-xs">{lipglossFromOriginalPrice} EGP</span>
                         </div>
                       </div>
                       <div className="p-6 bg-[#d6869d]">

@@ -1,8 +1,14 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Mail } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function Footer() {
+  const pathname = usePathname();
+  const hideFloatingWhatsApp = pathname === '/cart' || pathname === '/checkout';
+
   return (
     <footer className="bg-[#ffe9f0] relative">
       {/* Decorative top border */}
@@ -133,15 +139,17 @@ export default function Footer() {
         </div>
       </div>
       {/* Floating WhatsApp Icon (site-wide) */}
-      <a
-        href="https://wa.me/201288144869"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-5 right-4 z-50 bg-[#d6869d] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-2xl active:scale-95 transition-all"
-        aria-label="Chat on WhatsApp"
-      >
-        <FaWhatsapp className="w-6 h-6" />
-      </a>
+      {!hideFloatingWhatsApp && (
+        <a
+          href="https://wa.me/201288144869"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-5 right-4 z-50 bg-[#d6869d] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-2xl active:scale-95 transition-all"
+          aria-label="Chat on WhatsApp"
+        >
+          <FaWhatsapp className="w-6 h-6" />
+        </a>
+      )}
     </footer>
   );
 }

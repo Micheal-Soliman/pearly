@@ -9,6 +9,8 @@ import { AnimatePresence } from 'framer-motion';
 import FavoritesEmptyState from '@/components/FavoritesEmptyState';
 import FavoriteCard from '@/components/FavoriteCard';
 import LipglossOptionModal from '@/components/LipglossOptionModal';
+import MiniShadesModal from '@/components/MiniShadesModal';
+import { products } from '@/data/products';
 
 type Product = {
   id: string;
@@ -27,6 +29,8 @@ export default function FavoritesPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
+  const [showMiniModal, setShowMiniModal] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -53,11 +57,19 @@ export default function FavoritesPage() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      const productToAdd = {
+      if (selectedType === 'squeez') {
+        setShowModal(false);
+        setSelectedMiniShade(null);
+        setShowMiniModal(true);
+        return;
+      }
+      const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
+      addToCart({
         ...selectedProduct,
+        id: uniqueId,
+        name: `${selectedProduct.name} (Big Brush)`,
         selectedType,
-      };
-      addToCart(productToAdd);
+      });
       setShowModal(false);
       setSelectedProduct(null);
     }
@@ -117,9 +129,36 @@ export default function FavoritesPage() {
         onClose={() => setShowModal(false)}
         selectedType={selectedType}
         setSelectedType={setSelectedType}
-        priceSqueez={selectedProduct ? selectedProduct.price : 180}
-        priceBigBrush={250}
         onConfirm={confirmAddToCart}
+      />
+
+      <MiniShadesModal
+        show={showMiniModal && !!selectedProduct}
+        onClose={() => {
+          setShowMiniModal(false);
+          setSelectedMiniShade(null);
+          setSelectedProduct(null);
+        }}
+        onDone={() => {
+          if (selectedProduct && selectedMiniShade) {
+            const miniShadeName = products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
+            const uniqueId = `${selectedProduct.id}-t-squeez-m-${selectedMiniShade}`;
+            addToCart({
+              ...selectedProduct,
+              id: uniqueId,
+              name: `${selectedProduct.name} (Squeez, Mini: ${miniShadeName})`,
+              selectedType: 'squeez',
+              miniShade: selectedMiniShade,
+            });
+          }
+          setShowMiniModal(false);
+          setSelectedMiniShade(null);
+          setSelectedProduct(null);
+        }}
+        lipglossShades={products.filter((p) => p.category === 'Lipgloss') as any}
+        selectedMiniShade={selectedMiniShade}
+        setSelectedMiniShade={setSelectedMiniShade}
+        shadeSwatches={{}}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import { Product } from '@/types';
+import { PRICE_BUMP, LIPGLOSS_VARIANTS } from '@/lib/pricing';
 
-export const products: Product[] = [
+const baseProducts: Product[] = [
   {
     id: '7',
     name: 'Double Gloss',
@@ -26,21 +27,6 @@ export const products: Product[] = [
     originalPrice: 900,
     image: '/Triple bundle.jpeg',
     images: ['/Triple bundle.jpeg'],
-    category: 'Bundles',
-    categoryAr: 'باندلز',
-    inStock: true,
-    featured: true,
-  },
-  {
-    id: '30',
-    name: 'Squeeze offer',
-    nameAr: 'squeeze offer',
-    description: '1 squeez Lipgloss of your choice 9 ml + 1 mini size',
-    descriptionAr: '1 ليب جلوس سكويز من اختيارك 9 مل + 1 ميني سايز',
-    price: 199,
-    originalPrice: 240,
-    image: '/Squeeze.jpeg',
-    images: ['/Squeeze.jpeg'],
     category: 'Bundles',
     categoryAr: 'باندلز',
     inStock: true,
@@ -364,6 +350,17 @@ export const products: Product[] = [
     featured: false,
   },
 ];
+
+export const products: Product[] = baseProducts.map((p) => ({
+  ...p,
+  price: (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS.squeez.price : p.price) + PRICE_BUMP,
+  originalPrice:
+    (p.category === 'Lipgloss'
+      ? LIPGLOSS_VARIANTS.squeez.originalPrice
+      : p.originalPrice) !== undefined
+      ? (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS.squeez.originalPrice : (p.originalPrice as number)) + PRICE_BUMP
+      : undefined,
+}));
 
 export const categories = [
   { name: 'All', nameAr: 'الكل' },

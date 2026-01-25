@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { products } from '@/data/products';
@@ -8,7 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useRouter } from 'next/navigation';
 import LipglossOptionModal from '@/components/LipglossOptionModal';
-import PromoOfferModal from '@/components/PromoOfferModal';
+import MiniShadesModal from '@/components/MiniShadesModal';
 import FeedbackLightbox from '@/components/FeedbackLightbox';
 import HomeHero from '@/components/HomeHero';
 import CustomerReviews from '@/components/CustomerReviews';
@@ -25,23 +25,12 @@ export default function Home() {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const router = useRouter();
-  const squeezeOffer = products.find((p) => p.id === '30');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
-  const [showPromoModal, setShowPromoModal] = useState(false);
-
-  useEffect(() => {
-    const key = 'pearly-promo-30-shown';
-    try {
-      const shown = sessionStorage.getItem(key);
-      if (!shown && squeezeOffer) {
-        setShowPromoModal(true);
-        sessionStorage.setItem(key, '1');
-      }
-    } catch { }
-  }, [squeezeOffer]);
+  const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
+  const [showMiniModal, setShowMiniModal] = useState(false);
 
   const handleAddToCart = (product: any) => {
     if (product.category === 'Lipgloss') {
@@ -57,11 +46,19 @@ export default function Home() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      const productToAdd = {
+      if (selectedType === 'squeez') {
+        setShowModal(false);
+        setSelectedMiniShade(null);
+        setShowMiniModal(true);
+        return;
+      }
+      const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
+      addToCart({
         ...selectedProduct,
+        id: uniqueId,
+        name: `${selectedProduct.name} (Big Brush)`,
         selectedType,
-      };
-      addToCart(productToAdd);
+      });
       setShowModal(false);
       setSelectedProduct(null);
     }
@@ -87,16 +84,6 @@ export default function Home() {
       {/* Categories Grid */}
       <CategoriesSection />
 
-      {/* Client Moments Gallery */}
-      <ClientMomentsGallery onSelect={(name) => setSelectedFeedback(name)} />
-
-      {/* Customer Reviews - Real Feedbacks */}
-      <CustomerReviews onSelect={(name) => setSelectedFeedback(name)} />
-
-
-      {/* Full Width Banner */}
-      <FullWidthBanner />
-
       {/* Product Grid - Bundles */}
       <BundlesSection
         products={products as any}
@@ -113,7 +100,8 @@ export default function Home() {
         handleAddToCart={handleAddToCart as any}
       />
 
-
+      {/* Full Width Banner */}
+      <FullWidthBanner />
 
       {/* Featured Flavours Section */}
       <FlavoursGrid />
@@ -124,7 +112,11 @@ export default function Home() {
       {/* Color Palette Section */}
       <ShadesPalette />
 
-      <PromoOfferModal show={showPromoModal} offer={squeezeOffer || null} onClose={() => setShowPromoModal(false)} />
+      {/* Client Moments Gallery */}
+      <ClientMomentsGallery onSelect={(name) => setSelectedFeedback(name)} />
+
+      {/* Customer Reviews - Real Feedbacks */}
+      <CustomerReviews onSelect={(name) => setSelectedFeedback(name)} />
 
       {/* Modal for Lipgloss Options */}
       <LipglossOptionModal
@@ -132,9 +124,36 @@ export default function Home() {
         onClose={() => setShowModal(false)}
         selectedType={selectedType}
         setSelectedType={setSelectedType}
-        priceSqueez={selectedProduct ? selectedProduct.price : 180}
-        priceBigBrush={250}
         onConfirm={confirmAddToCart}
+      />
+
+      <MiniShadesModal
+        show={showMiniModal && !!selectedProduct}
+        onClose={() => {
+          setShowMiniModal(false);
+          setSelectedMiniShade(null);
+          setSelectedProduct(null);
+        }}
+        onDone={() => {
+          if (selectedProduct && selectedMiniShade) {
+            const miniShadeName = products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
+            const uniqueId = `${selectedProduct.id}-t-squeez-m-${selectedMiniShade}`;
+            addToCart({
+              ...selectedProduct,
+              id: uniqueId,
+              name: `${selectedProduct.name} (Squeez, Mini: ${miniShadeName})`,
+              selectedType: 'squeez',
+              miniShade: selectedMiniShade,
+            });
+          }
+          setShowMiniModal(false);
+          setSelectedMiniShade(null);
+          setSelectedProduct(null);
+        }}
+        lipglossShades={products.filter((p) => p.category === 'Lipgloss') as any}
+        selectedMiniShade={selectedMiniShade}
+        setSelectedMiniShade={setSelectedMiniShade}
+        shadeSwatches={{}}
       />
 
       <div className="pt-12">

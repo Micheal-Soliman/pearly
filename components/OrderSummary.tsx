@@ -22,7 +22,7 @@ export default function OrderSummary({ subtotal }: Props) {
       </div>
       <div className="flex justify-between text-lg font-medium mb-8">
         <span className="text-gray-800">Total</span>
-        <span className="text-[#d6869d]">{subtotal.toFixed(2)} EGP</span>
+        <span id="cart-order-total" data-meta="order-total" className="text-[#d6869d]">{subtotal.toFixed(2)} EGP</span>
       </div>
       <Link
         href="/checkout"

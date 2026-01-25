@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product } from '@/types';
+import { getUnitPrice } from '@/lib/pricing';
 
 interface CartContextType {
   cart: CartItem[];
@@ -68,8 +69,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce(
     (sum, item) => {
-      const itemPrice = item.selectedType === 'big-brush' ? 250 : item.price;
-      return sum + itemPrice * item.quantity;
+      return sum + getUnitPrice(item) * item.quantity;
     },
     0
   );

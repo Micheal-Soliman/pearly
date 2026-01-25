@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { getUnitPrice } from '@/lib/pricing';
 
 type Props = {
   cart: any[];
@@ -82,7 +83,7 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
         items: cart.map((item) => ({
           name: item.name,
           quantity: item.quantity,
-          price: item.selectedType === 'big-brush' ? 250 : item.price,
+          price: getUnitPrice(item),
           type: item.selectedType || 'standard',
         })),
         subtotal: subtotal,

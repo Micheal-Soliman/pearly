@@ -13,8 +13,11 @@ import CategoryPills from '@/components/CategoryPills';
 import { products, categories } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
+import ShadesModal from '@/components/ShadesModal';
+import type { Product } from '@/types';
 import { X, ShoppingBag } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { getLipglossVariantPricing } from '@/lib/pricing';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -28,6 +31,18 @@ function ProductsContent() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [showLipglossShadesModal, setShowLipglossShadesModal] = useState(false);
+  const [lipglossSelectedShades, setLipglossSelectedShades] = useState<string[]>([]);
+  const [pendingLipglossType, setPendingLipglossType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [pendingLipglossShade, setPendingLipglossShade] = useState<any>(null);
+  const [pendingQuantity, setPendingQuantity] = useState<number>(1);
+  const [showBundleShadesModal, setShowBundleShadesModal] = useState(false);
+  const [bundleSelectedShades, setBundleSelectedShades] = useState<string[]>([]);
+  const [pendingBundleProduct, setPendingBundleProduct] = useState<any>(null);
+  const [pendingBundleRequiredCount, setPendingBundleRequiredCount] = useState<number>(0);
+  const [pendingBundleQuantity, setPendingBundleQuantity] = useState<number>(1);
+  const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
+  const [squeezSelectedMiniShades, setSqueezSelectedMiniShades] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'single' | 'double'>('single'); // Mobile view mode (default: single)
   const [isMobile, setIsMobile] = useState(false);
@@ -44,6 +59,9 @@ function ProductsContent() {
   const [featuredOnly, setFeaturedOnly] = useState<boolean>((searchParams.get('featured') || '') === '1');
   const shadeOptions = useMemo(() =>
     Array.from(new Set(products.filter(p => p.category === 'Lipgloss').map(p => p.name.replace('Lipgloss - ', '')))), []);
+
+  const squeezPricing = useMemo(() => getLipglossVariantPricing('squeez'), []);
+  const bigBrushPricing = useMemo(() => getLipglossVariantPricing('big-brush'), []);
   const [selectedShades, setSelectedShades] = useState<string[]>(
     (searchParams.get('shades') || '').split(',').filter(Boolean)
   );
@@ -84,7 +102,7 @@ function ProductsContent() {
     }
   }, [searchParams]);
 
-  const productsPerPage = isMobile ? 6 : 8;
+  const productsPerPage = isMobile ? 6 : 9;
 
   useEffect(() => {
     if (categoryFromUrl) {
@@ -100,6 +118,37 @@ function ProductsContent() {
       (p.description || '').toLowerCase().includes(q)
     );
   }
+
+  const lipglossProducts = useMemo(() => products.filter((p) => p.category === 'Lipgloss'), []);
+
+  const shadeSwatches: Record<string, string> = {
+    '10': '#F8BBD0',
+    '11': '#8B5E3C',
+    '12': '#C1693C',
+    '13': '#FFFFFF',
+    '14': '#C28AA5',
+    '15': '#FFB3AB',
+    '16': '#FF7FA8',
+    '17': '#E8C4A8',
+    '18': '#FFC0CB',
+    '19': '#C63A3A',
+    '20': '#FF6F7D',
+    '21': '#F3E5F5',
+    '22': '#A9745B',
+    '23': '#B56576',
+    '24': '#C2A283',
+    '25': '#9C6B45',
+    '26': '#7E2A76',
+    '27': '#D4AF37',
+    '28': '#FF9A8B',
+    '29': '#F1C27D',
+  };
+
+  const lipglossShadesForModal = useMemo(
+    () => lipglossProducts.map((p) => ({ id: p.id, name: p.name, swatchColor: shadeSwatches[p.id] })),
+    [lipglossProducts]
+  );
+
   filteredProducts = filteredProducts.filter(p => p.price >= minPrice && p.price <= maxPrice);
   if (inStockOnly) filteredProducts = filteredProducts.filter(p => p.inStock);
   if (bestSellerOnly) filteredProducts = filteredProducts.filter(p => p.bestSeller);
@@ -128,32 +177,66 @@ function ProductsContent() {
   }, [selectedCategory]);
 
   const handleAddToCart = (product: any) => {
+    const qty = Math.max(1, Number(product?.quantity || 1));
     if (product.category === 'Lipgloss') {
+      if (product.selectedType) {
+        setPendingLipglossType(product.selectedType);
+        setPendingQuantity(qty);
+        if (product.selectedType === 'squeez') {
+          setPendingLipglossShade(product);
+          setSqueezSelectedMiniShades([]);
+          setShowSqueezMiniModal(true);
+          return;
+        }
+        setLipglossSelectedShades([product.id]);
+        setShowLipglossShadesModal(true);
+        return;
+      }
       setSelectedProduct(product);
       setSelectedType('squeez');
       setShowModal(true);
     } else if (product.category === 'Bundles') {
+      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      if (required > 0) {
+        setPendingBundleProduct(product);
+        setPendingBundleRequiredCount(required);
+        setPendingBundleQuantity(qty);
+        setBundleSelectedShades([]);
+        setShowBundleShadesModal(true);
+        return;
+      }
       router.push(`/products/${product.id}?category=${encodeURIComponent(selectedCategory)}&page=${encodeURIComponent(String(currentPage))}`);
     } else {
-      addToCart(product);
+      for (let i = 0; i < qty; i++) {
+        addToCart(product);
+      }
+      router.push('/cart');
     }
   };
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
+      const qty = Math.max(1, Number(selectedProduct?.quantity || 1));
       const productToAdd = {
         ...selectedProduct,
         selectedType,
       };
-      addToCart(productToAdd);
+      setPendingLipglossType(selectedType);
+      setPendingQuantity(qty);
+      if (selectedType === 'squeez') {
+        setPendingLipglossShade(selectedProduct);
+        setSqueezSelectedMiniShades([]);
+        setShowSqueezMiniModal(true);
+      } else {
+        setLipglossSelectedShades([selectedProduct.id]);
+        setShowLipglossShadesModal(true);
+      }
       setShowModal(false);
       setSelectedProduct(null);
     }
   };
 
-  const toggleFavorite = (e: React.MouseEvent, product: any) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const toggleFavoriteProduct = (product: any) => {
     if (isFavorite(product.id)) {
       removeFromFavorites(product.id);
     } else {
@@ -286,20 +369,16 @@ function ProductsContent() {
 
           <div className={`grid gap-6 ${
             viewMode === 'single' 
-              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-              : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+              : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3'
           }`}>
             {currentProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
-                isFavorite={isFavorite(product.id)}
-                onToggleFavorite={(e) => toggleFavorite(e, product)}
-                onAddToCart={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleAddToCart(product);
-                }}
+                isFavorite={isFavorite}
+                onToggleFavorite={(p) => toggleFavoriteProduct(p)}
+                onAddToCart={(productToAdd) => handleAddToCart(productToAdd)}
                 hrefQuery={{ category: selectedCategory, page: String(currentPage) }}
               />
             ))}
@@ -311,6 +390,132 @@ function ProductsContent() {
               <p className="text-gray-500 font-light text-lg">No products found in this category</p>
             </div>
           )}
+
+      <ShadesModal
+        show={showLipglossShadesModal}
+        onClose={() => {
+          setShowLipglossShadesModal(false);
+          setLipglossSelectedShades([]);
+          setPendingQuantity(1);
+        }}
+        onDone={() => {
+          const shadeId = lipglossSelectedShades[0];
+          const shade = lipglossProducts.find((p) => p.id === shadeId);
+          if (shade) {
+            if (pendingLipglossType === 'squeez') {
+              setPendingLipglossShade(shade);
+              setSqueezSelectedMiniShades([]);
+              setShowSqueezMiniModal(true);
+            } else {
+              const uniqueId = `${shade.id}-t-${pendingLipglossType}`;
+              const item = { ...shade, id: uniqueId, name: `${shade.name} (Big Brush)`, selectedType: pendingLipglossType } as Product;
+              for (let i = 0; i < pendingQuantity; i++) {
+                addToCart(item);
+              }
+              router.push('/cart');
+            }
+          }
+          setShowLipglossShadesModal(false);
+          setLipglossSelectedShades([]);
+          setPendingQuantity(1);
+        }}
+        lipglossShades={lipglossShadesForModal}
+        selectedShades={lipglossSelectedShades}
+        setSelectedShades={setLipglossSelectedShades}
+        requiredCount={1}
+        shadeSwatches={shadeSwatches}
+      />
+
+      <ShadesModal
+        show={showBundleShadesModal}
+        onClose={() => {
+          setShowBundleShadesModal(false);
+          setBundleSelectedShades([]);
+          setPendingBundleProduct(null);
+          setPendingBundleRequiredCount(0);
+          setPendingBundleQuantity(1);
+        }}
+        onDone={() => {
+          if (!pendingBundleProduct) return;
+          const perBundleRequired = Math.max(0, pendingBundleRequiredCount);
+          const totalRequired = perBundleRequired * Math.max(1, pendingBundleQuantity);
+          if (totalRequired > 0 && bundleSelectedShades.length !== totalRequired) return;
+
+          for (let i = 0; i < Math.max(1, pendingBundleQuantity); i++) {
+            const group = perBundleRequired
+              ? bundleSelectedShades.slice(i * perBundleRequired, (i + 1) * perBundleRequired)
+              : bundleSelectedShades;
+
+            const counts: Record<string, number> = {};
+            group.forEach((sid) => {
+              counts[sid] = (counts[sid] || 0) + 1;
+            });
+            const shadeNames = Object.entries(counts).map(([sid, c]) => {
+              const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+              return c > 1 ? `${base} x${c}` : base;
+            });
+
+            const uniqueId = `${pendingBundleProduct.id}-b-${group.join('-')}`;
+            const itemToAdd = {
+              ...pendingBundleProduct,
+              id: uniqueId,
+              name: `${pendingBundleProduct.name} (${shadeNames.join(', ')})`,
+              bundleShades: group,
+            };
+
+            addToCart(itemToAdd as Product);
+          }
+
+          setShowBundleShadesModal(false);
+          setBundleSelectedShades([]);
+          setPendingBundleProduct(null);
+          setPendingBundleRequiredCount(0);
+          setPendingBundleQuantity(1);
+        }}
+        lipglossShades={lipglossShadesForModal}
+        selectedShades={bundleSelectedShades}
+        setSelectedShades={setBundleSelectedShades}
+        requiredCount={Math.max(0, pendingBundleRequiredCount) * Math.max(1, pendingBundleQuantity)}
+        shadeSwatches={shadeSwatches}
+      />
+
+      <ShadesModal
+        show={showSqueezMiniModal}
+        onClose={() => {
+          setShowSqueezMiniModal(false);
+          setSqueezSelectedMiniShades([]);
+          setPendingLipglossShade(null);
+          setPendingQuantity(1);
+        }}
+        title={`Select ${pendingQuantity} Mini Shade${pendingQuantity === 1 ? '' : 's'}`}
+        onDone={() => {
+          if (!pendingLipglossShade) return;
+          if (pendingQuantity > 0 && squeezSelectedMiniShades.length !== pendingQuantity) return;
+
+          squeezSelectedMiniShades.forEach((miniId) => {
+            const miniShadeName = lipglossProducts.find((p) => p.id === miniId)?.name?.replace('Lipgloss - ', '') || miniId;
+            const uniqueId = `${pendingLipglossShade.id}-t-squeez-m-${miniId}`;
+            const item = {
+              ...pendingLipglossShade,
+              id: uniqueId,
+              name: `${pendingLipglossShade.name} (Squeez, Mini: ${miniShadeName})`,
+              selectedType: 'squeez',
+              miniShade: miniId,
+            } as Product;
+            addToCart(item);
+          });
+
+          setShowSqueezMiniModal(false);
+          setSqueezSelectedMiniShades([]);
+          setPendingLipglossShade(null);
+          setPendingQuantity(1);
+        }}
+        lipglossShades={lipglossShadesForModal}
+        selectedShades={squeezSelectedMiniShades}
+        setSelectedShades={setSqueezSelectedMiniShades}
+        requiredCount={pendingQuantity}
+        shadeSwatches={shadeSwatches}
+      />
 
           {/* Pagination */}
           <Pagination
@@ -350,8 +555,8 @@ function ProductsContent() {
                 <div className="text-left">
                   <p className="font-medium">Squeez</p>
                   <p className="text-sm opacity-80">
-                    <span className="font-semibold">180 EGP</span>
-                    <span className="line-through ml-2 opacity-70">210 EGP</span>
+                    <span className="font-semibold">{squeezPricing.price} EGP</span>
+                    <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
                   </p>
                 </div>
               </button>
@@ -367,8 +572,8 @@ function ProductsContent() {
                 <div className="text-left">
                   <p className="font-medium">Big Brush</p>
                   <p className="text-sm opacity-80">
-                    <span className="font-semibold">250 EGP</span>
-                    <span className="line-through ml-2 opacity-70">300 EGP</span>
+                    <span className="font-semibold">{bigBrushPricing.price} EGP</span>
+                    <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
                   </p>
                 </div>
               </button>

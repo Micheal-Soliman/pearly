@@ -8,6 +8,8 @@ type Shade = { id: string; name: string; swatchColor?: string };
 type Props = {
   show: boolean;
   onClose: () => void;
+  onDone?: () => void;
+  title?: string;
   lipglossShades: Shade[];
   selectedShades: string[];
   setSelectedShades: Dispatch<SetStateAction<string[]>>;
@@ -15,14 +17,14 @@ type Props = {
   shadeSwatches: Record<string, string>;
 };
 
-export default function ShadesModal({ show, onClose, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches }: Props) {
+export default function ShadesModal({ show, onClose, onDone, title, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches }: Props) {
   if (!show) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-[#d6869d]">Select {requiredCount} Shades</h3>
+          <h3 className="text-lg font-medium text-[#d6869d]">{title || `Select ${requiredCount} Shades`}</h3>
           <button type="button" className="text-sm text-gray-500 hover:text-[#d6869d]" onClick={onClose}>Close</button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
@@ -35,6 +37,7 @@ export default function ShadesModal({ show, onClose, lipglossShades, selectedSha
                   type="button"
                   onClick={() => {
                     setSelectedShades((prev) => {
+                      if (requiredCount === 1) return [shade.id];
                       if (requiredCount && prev.length >= requiredCount) return prev;
                       return [...prev, shade.id];
                     });
@@ -75,7 +78,7 @@ export default function ShadesModal({ show, onClose, lipglossShades, selectedSha
         <div className="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={onDone || onClose}
             disabled={selectedShades.length !== requiredCount}
             className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md disabled:opacity-50"
           >
