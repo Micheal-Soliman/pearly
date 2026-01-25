@@ -20,14 +20,14 @@ export default function Footer() {
             <h3 className="font-amsterdam text-[#d6869d] text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-normal mb-6">
               Pearly
             </h3>
-            <p className="text-sm text-gray-600 font-light leading-relaxed">
-              ✨ Luxury beauty for your everyday life
+            <p className="text-m mt-8 text-gray-600 font-light leading-relaxed">
+              Luxury beauty for your everyday life
             </p>
           </div>
 
           {/* Shop */}
           <div>
-            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">🛍️ SHOP</h4>
+            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">SHOP</h4>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -66,7 +66,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">💼 COMPANY</h4>
+            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">COMPANY</h4>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -89,10 +89,10 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">💕 CONNECT</h4>
+            <h4 className="text-xs tracking-widest uppercase mb-4 text-pink-600 font-medium">CONNECT</h4>
             <div className="flex gap-4 mb-6">
               <a
-                href="https://www.instagram.com/the_pearly_shop/"
+                href="https://www.instagram.com/the_pearly_shop?igsh=MWZuNnZoNWJmdzhrOQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
@@ -100,19 +100,19 @@ export default function Footer() {
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/p/The-Pearly-Shop-61555966954784/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
               >
                 <Facebook className="w-4 h-4" />
               </a>
-              <a
+              {/* <a
                 href="mailto:info@pearly.com"
                 className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center hover:bg-[#d6869d] hover:text-white hover:border-[#d6869d] transition-all shadow-sm hover:shadow-lg"
               >
                 <Mail className="w-4 h-4" />
-              </a>
+              </a> */}
             </div>
             <div className="mt-2">
               <a
@@ -134,7 +134,7 @@ export default function Footer() {
 
         <div className="border-t border-pink-100 mt-12 pt-8">
           <p className="text-center text-xs text-gray-500 font-light tracking-wide">
-            © 2024 PEARLY. ALL RIGHTS RESERVED. Made with 💕
+            © 2025 PEARLY. ALL RIGHTS RESERVED. Made with MS Developments
           </p>
         </div>
       </div>
