@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -14,7 +13,7 @@ import ProductMediaGallery from '@/components/ProductMediaGallery';
 import ProductHeaderPrice from '@/components/ProductHeaderPrice';
 import QuantitySelector from '@/components/QuantitySelector';
 import ShadesModal from '@/components/ShadesModal';
-import MiniShadesModal from '@/components/MiniShadesModal';
+import ProductCard from '@/components/ProductCard';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 
 export default function ProductPage() {
@@ -23,14 +22,16 @@ export default function ProductPage() {
   const searchParams = useSearchParams();
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const categoryFromUrl = searchParams.get('category') || 'All';
+  const pageFromUrl = searchParams.get('page') || '1';
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
   const [selectedShades, setSelectedShades] = useState<string[]>([]);
   const [showShadesModal, setShowShadesModal] = useState(false);
-  const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
-  const [showMiniModal, setShowMiniModal] = useState(false);
+  const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
+  const [squeezSelectedMiniShades, setSqueezSelectedMiniShades] = useState<string[]>([]);
 
   const product = products.find((p) => p.id === params.id);
 
@@ -53,22 +54,36 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     let productToAdd: any = product;
     if (product.category === 'Lipgloss') {
-      if (selectedType === 'squeez' && !selectedMiniShade) {
-        setShowMiniModal(true);
+      if (selectedType === 'squeez' && squeezSelectedMiniShades.length !== quantity) {
+        setShowSqueezMiniModal(true);
         return;
       }
 
-      const miniShadeName = selectedMiniShade
-        ? (products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade)
-        : null;
+      if (selectedType === 'squeez') {
+        squeezSelectedMiniShades.forEach((miniId) => {
+          const miniShadeName =
+            products.find((p) => p.id === miniId)?.name?.replace('Lipgloss - ', '') || miniId;
+          const uniqueId = `${product.id}-t-squeez-m-${miniId}`;
+          const itemToAdd: any = {
+            ...product,
+            id: uniqueId,
+            name: `${product.name} (Squeez, Mini: ${miniShadeName})`,
+            selectedType: 'squeez',
+            miniShade: miniId,
+          };
+          addToCart(itemToAdd);
+        });
+        setAddedToCart(true);
+        setTimeout(() => setAddedToCart(false), 3000);
+        return;
+      }
 
-      const uniqueId = `${product.id}-t-${selectedType}${selectedType === 'squeez' && selectedMiniShade ? `-m-${selectedMiniShade}` : ''}`;
+      const uniqueId = `${product.id}-t-${selectedType}`;
       productToAdd = {
         ...product,
         id: uniqueId,
-        name: `${product.name} (${selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}${miniShadeName ? `, Mini: ${miniShadeName}` : ''})`,
+        name: `${product.name} (Big Brush)`,
         selectedType,
-        miniShade: selectedMiniShade || undefined,
       };
     } else if (product.category === 'Bundles') {
       const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
@@ -113,6 +128,45 @@ export default function ProductPage() {
     }
   };
 
+  const toggleFavoriteProduct = (p: any) => {
+    if (isFavorite(p.id)) {
+      removeFromFavorites(p.id);
+    } else {
+      addToFavorites(p);
+    }
+  };
+
+  const handleAddToCartFromCard = (p: any) => {
+    const qty = Math.max(1, Number(p?.quantity || 1));
+
+    if (p.category === 'Lipgloss') {
+      if (p.selectedType === 'big-brush') {
+        const uniqueId = `${p.id}-t-big-brush`;
+        const item = { ...p, id: uniqueId, name: `${p.name} (Big Brush)`, selectedType: 'big-brush' };
+        for (let i = 0; i < qty; i++) {
+          addToCart(item);
+        }
+        return;
+      }
+
+      router.push(
+        `/products/${p.id}?category=${encodeURIComponent(categoryFromUrl)}&page=${encodeURIComponent(pageFromUrl)}`
+      );
+      return;
+    }
+
+    if (p.category === 'Bundles') {
+      router.push(
+        `/products/${p.id}?category=${encodeURIComponent(categoryFromUrl)}&page=${encodeURIComponent(pageFromUrl)}&openShades=1`
+      );
+      return;
+    }
+
+    for (let i = 0; i < qty; i++) {
+      addToCart(p);
+    }
+  };
+
   const images = product.images || [product.image];
   const lipglossShades = products.filter((p) => p.category === 'Lipgloss');
   const shadeSwatches: Record<string, string> = {
@@ -139,8 +193,23 @@ export default function ProductPage() {
   };
   const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
   const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
-  const isSqueezMiniComplete = product.category !== 'Lipgloss' || selectedType !== 'squeez' || !!selectedMiniShade;
+  const isSqueezMiniComplete = product.category !== 'Lipgloss' || selectedType !== 'squeez' || squeezSelectedMiniShades.length === quantity;
   const canAddToCart = !addedToCart && isBundleSelectionComplete && isSqueezMiniComplete;
+
+  useEffect(() => {
+    if (product.category !== 'Lipgloss') return;
+    if (selectedType !== 'squeez') return;
+    setSqueezSelectedMiniShades((prev) => {
+      if (prev.length <= quantity) return prev;
+      return prev.slice(0, quantity);
+    });
+  }, [product.category, selectedType, quantity]);
+
+  useEffect(() => {
+    if (product.category !== 'Bundles') return;
+    if (searchParams.get('openShades') !== '1') return;
+    setShowShadesModal(true);
+  }, [product.category, searchParams]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -173,6 +242,57 @@ export default function ProductPage() {
                 originalPrice={product.originalPrice}
                 bestSeller={product.bestSeller}
               />
+
+              {product.category === 'Lipgloss' && (
+                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
+                  <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-4">Choose Your Option</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedType('squeez');
+                      }}
+                      className={`w-full p-4 border-2 transition-all rounded-2xl ${
+                        selectedType === 'squeez'
+                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
+                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
+                      }`}
+                    >
+                      <div className="text-left">
+                        <p className="font-medium">Squeez</p>
+                        <p className="text-sm opacity-80">
+                          <span className="font-semibold">{squeezPricing.price} EGP</span>
+                          <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
+                        </p>
+                        <p className="text-xs opacity-80 mt-1">Includes a mini</p>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedType('big-brush');
+                        setSqueezSelectedMiniShades([]);
+                        setShowSqueezMiniModal(false);
+                      }}
+                      className={`w-full p-4 border-2 transition-all rounded-2xl ${
+                        selectedType === 'big-brush'
+                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
+                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
+                      }`}
+                    >
+                      <div className="text-left">
+                        <p className="font-medium">Big Brush</p>
+                        <p className="text-sm opacity-80">
+                          <span className="font-semibold">{bigBrushPricing.price} EGP</span>
+                          <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
+                        </p>
+                        <p className="text-xs opacity-80 mt-1">No mini</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {product.category === 'Bundles' && (
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
@@ -212,27 +332,29 @@ export default function ProductPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Mini Shade</p>
-                      <p className="text-xs text-gray-600">{selectedMiniShade ? '1/1 selected' : '0/1 selected'}</p>
+                      <p className="text-xs text-gray-600">{squeezSelectedMiniShades.length}/{quantity} selected</p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => setShowMiniModal(true)}
+                      onClick={() => setShowSqueezMiniModal(true)}
                       className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md hover:shadow-lg"
                     >
-                      {selectedMiniShade ? 'Edit' : 'Select'}
+                      {squeezSelectedMiniShades.length === quantity ? 'Edit' : 'Select'}
                     </button>
                   </div>
-                  {selectedMiniShade && (
+                  {squeezSelectedMiniShades.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {(() => {
-                        const shade = products.find((p) => p.id === selectedMiniShade!);
-                        const label = shade?.name?.replace('Lipgloss - ', '') || selectedMiniShade!;
+                      {Object.entries(squeezSelectedMiniShades.reduce((acc: Record<string, number>, sid) => {
+                        acc[sid] = (acc[sid] || 0) + 1; return acc;
+                      }, {})).map(([sid, count]) => {
+                        const shade = products.find((p) => p.id === sid);
+                        const label = shade?.name?.replace('Lipgloss - ', '') || sid;
                         return (
-                          <span className="px-3 py-1 rounded-full text-xs bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
-                            Mini: {label}
+                          <span key={sid} className="px-3 py-1 rounded-full text-xs bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
+                            Mini: {label}{count > 1 ? ` x${count}` : ''}
                           </span>
                         );
-                      })()}
+                      })}
                     </div>
                   )}
                 </div>
@@ -264,7 +386,7 @@ export default function ProductPage() {
                     {product.category === 'Bundles' && !isBundleSelectionComplete
                       ? `Please select ${requiredBundleCount} shades first.`
                       : (product.category === 'Lipgloss' && selectedType === 'squeez' && !isSqueezMiniComplete)
-                        ? 'Please select a mini shade first.'
+                        ? `Please select ${quantity} mini shade${quantity === 1 ? '' : 's'} first.`
                         : ''}
                   </p>
                 )}
@@ -301,30 +423,19 @@ export default function ProductPage() {
             <h2 className="text-2xl sm:text-3xl font-light tracking-wide mb-12 text-center">
               <span className="text-[#d6869d]"> You May Also Like </span>
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products
                 .filter((p) => p.category === product.category && p.id !== product.id)
                 .slice(0, 4)
                 .map((relatedProduct) => (
-                  <Link key={relatedProduct.id} href={`/products/${relatedProduct.id}`}>
-                    <div className="group">
-                      <div className="relative h-[300px] sm:h-[400px] mb-4 overflow-hidden bg-[#ffe9f0] rounded-3xl border-2 border-[#ffe9f0] shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                        <Image
-                          src={relatedProduct.image}
-                          alt={relatedProduct.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
-                        />
-                        <div className="absolute inset-0 bg-[#d6869d]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                      </div>
-                      <h3 className="text-base font-medium tracking-wide mb-2 text-gray-800 group-hover:text-[#d6869d] transition-colors">
-                        {relatedProduct.name.toLowerCase()}
-                      </h3>
-                      <p className="text-sm text-[#d6869d] font-medium">
-                        {relatedProduct.price} EGP
-                      </p>
-                    </div>
-                  </Link>
+                  <ProductCard
+                    key={relatedProduct.id}
+                    product={relatedProduct}
+                    isFavorite={isFavorite}
+                    onToggleFavorite={(p) => toggleFavoriteProduct(p)}
+                    onAddToCart={(productToAdd) => handleAddToCartFromCard(productToAdd)}
+                    hrefQuery={{ category: categoryFromUrl, page: pageFromUrl }}
+                  />
                 ))}
             </div>
           </div>
@@ -342,15 +453,18 @@ export default function ProductPage() {
         shadeSwatches={shadeSwatches}
       />
 
-      <MiniShadesModal
-        show={showMiniModal && product.category === 'Lipgloss' && selectedType === 'squeez'}
-        onClose={() => setShowMiniModal(false)}
+      <ShadesModal
+        show={showSqueezMiniModal && product.category === 'Lipgloss' && selectedType === 'squeez'}
+        onClose={() => setShowSqueezMiniModal(false)}
         onDone={() => {
-          setShowMiniModal(false);
+          if (squeezSelectedMiniShades.length !== quantity) return;
+          setShowSqueezMiniModal(false);
         }}
+        title={`Select ${quantity} Mini Shade${quantity === 1 ? '' : 's'}`}
         lipglossShades={lipglossShades as any}
-        selectedMiniShade={selectedMiniShade}
-        setSelectedMiniShade={setSelectedMiniShade}
+        selectedShades={squeezSelectedMiniShades}
+        setSelectedShades={setSqueezSelectedMiniShades}
+        requiredCount={quantity}
         shadeSwatches={shadeSwatches}
       />
     </div>

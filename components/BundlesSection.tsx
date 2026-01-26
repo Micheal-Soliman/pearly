@@ -1,9 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
 
 type Product = any;
 
@@ -15,6 +13,9 @@ type Props = {
 };
 
 export default function BundlesSection({ products, isFavorite, toggleFavorite, handleAddToCart }: Props) {
+  const hrefQuery = { category: 'Bundles', page: '1' };
+  const noopEvent = { preventDefault: () => {}, stopPropagation: () => {} } as any;
+
   return (
     <section className="py-12 sm:py-16 bg-[#ffe9f0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,41 +46,13 @@ export default function BundlesSection({ products, isFavorite, toggleFavorite, h
                 viewport={{ once: true }}
                 className="group flex-none w-[80vw] sm:w-[45vw] md:w-auto snap-center"
               >
-                <Link href={`/products/${product.id}`}>
-                  <div className="relative h-[380px] md:h-[400px] lg:h-[500px] mb-5 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                    <div className="absolute top-3 right-3 text-pink-200 text-xl animate-sparkle z-10"></div>
-                    {product.originalPrice && (
-                      <div className="absolute top-4 right-4 bg-white text-[#d6869d] px-3 py-1 rounded-full text-xs font-semibold shadow z-10">Sale</div>
-                    )}
-                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                    <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-                      <button onClick={(e) => toggleFavorite(e, product)} className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] shadow-lg hover:scale-110">
-                        <Heart className={`w-5 h-5 transition-colors ${isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : 'text-gray-700'}`} />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#d6869d] hover:text-white shadow-lg hover:scale-110"
-                      >
-                        <ShoppingBag className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="absolute bottom-4 right-4 bg-[#d6869d] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg z-10 flex items-center gap-2">
-                      <span>{product.price} EGP</span>
-                      {product.originalPrice && <span className="line-through opacity-80">{product.originalPrice} EGP</span>}
-                    </div>
-                    <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none glow-pink"></div>
-                  </div>
-
-                  <div className="text-center mt-4">
-                    <h3 className="text-lg font-light tracking-wide mb-2 text-gray-800 group-hover:text-[#d6869d] transition-colors">{product.name.toLowerCase()}</h3>
-                    <p className="text-xs tracking-widest uppercase text-[#d6869d] font-medium">Bundle Deal</p>
-                  </div>
-                </Link>
+                <ProductCard
+                  product={product}
+                  isFavorite={isFavorite}
+                  onToggleFavorite={(p) => toggleFavorite(noopEvent, p)}
+                  onAddToCart={(p) => handleAddToCart(p)}
+                  hrefQuery={hrefQuery}
+                />
               </motion.div>
             ))}
         </div>

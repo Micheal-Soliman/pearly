@@ -31,9 +31,6 @@ function ProductsContent() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
-  const [showLipglossShadesModal, setShowLipglossShadesModal] = useState(false);
-  const [lipglossSelectedShades, setLipglossSelectedShades] = useState<string[]>([]);
-  const [pendingLipglossType, setPendingLipglossType] = useState<'big-brush' | 'squeez'>('squeez');
   const [pendingLipglossShade, setPendingLipglossShade] = useState<any>(null);
   const [pendingQuantity, setPendingQuantity] = useState<number>(1);
   const [showBundleShadesModal, setShowBundleShadesModal] = useState(false);
@@ -180,7 +177,6 @@ function ProductsContent() {
     const qty = Math.max(1, Number(product?.quantity || 1));
     if (product.category === 'Lipgloss') {
       if (product.selectedType) {
-        setPendingLipglossType(product.selectedType);
         setPendingQuantity(qty);
         if (product.selectedType === 'squeez') {
           setPendingLipglossShade(product);
@@ -188,8 +184,11 @@ function ProductsContent() {
           setShowSqueezMiniModal(true);
           return;
         }
-        setLipglossSelectedShades([product.id]);
-        setShowLipglossShadesModal(true);
+        const uniqueId = `${product.id}-t-${product.selectedType}`;
+        const item = { ...product, id: uniqueId, name: `${product.name} (Big Brush)`, selectedType: product.selectedType } as Product;
+        for (let i = 0; i < qty; i++) {
+          addToCart(item);
+        }
         return;
       }
       setSelectedProduct(product);
@@ -210,7 +209,6 @@ function ProductsContent() {
       for (let i = 0; i < qty; i++) {
         addToCart(product);
       }
-      router.push('/cart');
     }
   };
 
@@ -221,15 +219,17 @@ function ProductsContent() {
         ...selectedProduct,
         selectedType,
       };
-      setPendingLipglossType(selectedType);
       setPendingQuantity(qty);
       if (selectedType === 'squeez') {
         setPendingLipglossShade(selectedProduct);
         setSqueezSelectedMiniShades([]);
         setShowSqueezMiniModal(true);
       } else {
-        setLipglossSelectedShades([selectedProduct.id]);
-        setShowLipglossShadesModal(true);
+        const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
+        const item = { ...productToAdd, id: uniqueId, name: `${selectedProduct.name} (Big Brush)` } as Product;
+        for (let i = 0; i < qty; i++) {
+          addToCart(item);
+        }
       }
       setShowModal(false);
       setSelectedProduct(null);
@@ -390,41 +390,6 @@ function ProductsContent() {
               <p className="text-gray-500 font-light text-lg">No products found in this category</p>
             </div>
           )}
-
-      <ShadesModal
-        show={showLipglossShadesModal}
-        onClose={() => {
-          setShowLipglossShadesModal(false);
-          setLipglossSelectedShades([]);
-          setPendingQuantity(1);
-        }}
-        onDone={() => {
-          const shadeId = lipglossSelectedShades[0];
-          const shade = lipglossProducts.find((p) => p.id === shadeId);
-          if (shade) {
-            if (pendingLipglossType === 'squeez') {
-              setPendingLipglossShade(shade);
-              setSqueezSelectedMiniShades([]);
-              setShowSqueezMiniModal(true);
-            } else {
-              const uniqueId = `${shade.id}-t-${pendingLipglossType}`;
-              const item = { ...shade, id: uniqueId, name: `${shade.name} (Big Brush)`, selectedType: pendingLipglossType } as Product;
-              for (let i = 0; i < pendingQuantity; i++) {
-                addToCart(item);
-              }
-              router.push('/cart');
-            }
-          }
-          setShowLipglossShadesModal(false);
-          setLipglossSelectedShades([]);
-          setPendingQuantity(1);
-        }}
-        lipglossShades={lipglossShadesForModal}
-        selectedShades={lipglossSelectedShades}
-        setSelectedShades={setLipglossSelectedShades}
-        requiredCount={1}
-        shadeSwatches={shadeSwatches}
-      />
 
       <ShadesModal
         show={showBundleShadesModal}
