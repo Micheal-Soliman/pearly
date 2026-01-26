@@ -1,6 +1,7 @@
 'use client';
 
 import { Minus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
 type Shade = { id: string; name: string; swatchColor?: string };
@@ -15,9 +16,18 @@ type Props = {
   setSelectedShades: Dispatch<SetStateAction<string[]>>;
   requiredCount: number;
   shadeSwatches: Record<string, string>;
+  stepLabels?: string[];
 };
 
-export default function ShadesModal({ show, onClose, onDone, title, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches }: Props) {
+export default function ShadesModal({ show, onClose, onDone, title, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches, stepLabels }: Props) {
+  const hasSteps = Array.isArray(stepLabels) && stepLabels.length === requiredCount && requiredCount > 0;
+  const derivedActiveStepIndex = Math.min(Math.max(0, selectedShades.length), Math.max(0, requiredCount - 1));
+  const [activeStepIndex, setActiveStepIndex] = useState(derivedActiveStepIndex);
+
+  useEffect(() => {
+    setActiveStepIndex(derivedActiveStepIndex);
+  }, [derivedActiveStepIndex]);
+
   if (!show) return null;
 
   return (
@@ -27,6 +37,39 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
           <h3 className="text-lg font-medium text-[#d6869d]">{title || `Select ${requiredCount} Shades`}</h3>
           <button type="button" className="text-sm text-gray-500 hover:text-[#d6869d]" onClick={onClose}>Close</button>
         </div>
+
+        {hasSteps && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs text-gray-600 font-medium">
+                Selecting: <span className="text-[#d6869d]">{stepLabels?.[activeStepIndex]}</span>
+              </p>
+              <p className="text-xs text-gray-600 font-medium">{selectedShades.length}/{requiredCount}</p>
+            </div>
+
+            <div className="mt-3 space-y-2">
+              {stepLabels!.map((label, idx) => {
+                const sid = selectedShades[idx];
+                const shade = sid ? lipglossShades.find((s) => s.id === sid) : undefined;
+                const shadeName = sid ? (shade?.name?.replace('Lipgloss - ', '') || sid) : undefined;
+                const isActive = idx === activeStepIndex;
+                return (
+                  <div
+                    key={idx}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setActiveStepIndex(idx)}
+                    className={`flex items-center justify-between gap-4 px-4 py-2 rounded-2xl border cursor-pointer ${isActive ? 'border-[#d6869d] bg-[#ffe9f0]' : 'border-[#ffe9f0] bg-white'}`}
+                  >
+                    <span className={`text-xs font-medium ${isActive ? 'text-[#d6869d]' : 'text-gray-600'}`}>{label}</span>
+                    <span className={`text-xs font-medium ${shadeName ? 'text-gray-800' : 'text-gray-500'}`}>{shadeName || 'Not selected'}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
           {lipglossShades.map((shade) => {
             const count = selectedShades.filter((sid) => sid === shade.id).length;
@@ -37,10 +80,31 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
                   type="button"
                   onClick={() => {
                     setSelectedShades((prev) => {
-                      if (requiredCount === 1) return [shade.id];
-                      if (requiredCount && prev.length >= requiredCount) return prev;
-                      return [...prev, shade.id];
+                      if (!hasSteps) {
+                        if (requiredCount === 1) return [shade.id];
+                        if (requiredCount && prev.length >= requiredCount) return prev;
+                        return [...prev, shade.id];
+                      }
+
+                      const idx = Math.min(Math.max(0, activeStepIndex), Math.max(0, requiredCount - 1));
+                      const next = [...prev];
+
+                      if (next.length < requiredCount) {
+                        if (idx < next.length) {
+                          next[idx] = shade.id;
+                        } else {
+                          next.push(shade.id);
+                        }
+                        return next;
+                      }
+
+                      next[idx] = shade.id;
+                      return next;
                     });
+
+                    if (hasSteps) {
+                      setActiveStepIndex((idx) => Math.min(Math.max(0, requiredCount - 1), idx + 1));
+                    }
                   }}
                   className="block w-full"
                 >
@@ -52,7 +116,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
                   </div>
                   <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
                 </button>
-                {count > 0 && (
+                {!hasSteps && count > 0 && (
                   <button
                     type="button"
                     onClick={(e) => {

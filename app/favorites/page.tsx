@@ -28,7 +28,7 @@ export default function FavoritesPage() {
   const { addToCart } = useCart();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
   const [showMiniModal, setShowMiniModal] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -40,7 +40,7 @@ export default function FavoritesPage() {
   const handleAddToCart = (product: any) => {
     if (product.category === 'Lipgloss') {
       setSelectedProduct(product);
-      setSelectedType('squeez');
+      setSelectedType('big-brush');
       setShowModal(true);
     } else {
       addToCart(product);

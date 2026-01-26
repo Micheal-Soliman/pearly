@@ -15,6 +15,7 @@ export interface Product {
   bestSeller?: boolean;
   selectedType?: 'big-brush' | 'squeez';
   miniShade?: string;
+  bundleSteps?: { label: string; labelAr?: string }[];
 }
 
 export interface CartItem extends Product {

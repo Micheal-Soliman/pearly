@@ -27,7 +27,7 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedShades, setSelectedShades] = useState<string[]>([]);
   const [showShadesModal, setShowShadesModal] = useState(false);
   const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
@@ -86,18 +86,29 @@ export default function ProductPage() {
         selectedType,
       };
     } else if (product.category === 'Bundles') {
-      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      const required = requiredBundleCount;
       if (required > 0 && selectedShades.length !== required) {
         setShowShadesModal(true);
         return;
       }
-      // Group duplicate shades for clearer naming, e.g., "Blossom x2"
-      const counts: Record<string, number> = {};
-      selectedShades.forEach((sid) => { counts[sid] = (counts[sid] || 0) + 1; });
-      const shadeNames = Object.entries(counts).map(([sid, c]) => {
-        const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
-        return c > 1 ? `${base} x${c}` : base;
-      });
+      const shadeNames = (() => {
+        if (bundleSteps.length === selectedShades.length && bundleSteps.length > 0) {
+          return selectedShades.map((sid, idx) => {
+            const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+            return `${stepLabelForIndex(idx)}: ${base}`;
+          });
+        }
+
+        // Fallback: group duplicate shades for clearer naming, e.g., "Blossom x2"
+        const counts: Record<string, number> = {};
+        selectedShades.forEach((sid) => {
+          counts[sid] = (counts[sid] || 0) + 1;
+        });
+        return Object.entries(counts).map(([sid, c]) => {
+          const base = products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+          return c > 1 ? `${base} x${c}` : base;
+        });
+      })();
       const uniqueId = `${product.id}-b-${selectedShades.join('-')}`;
       productToAdd = {
         ...product,
@@ -191,7 +202,19 @@ export default function ProductPage() {
     '28': '#A1122A',
     '29': '#6B4F3B',
   };
-  const requiredBundleCount = product.category === 'Bundles' ? (product.id === '7' ? 2 : product.id === '8' ? 3 : 0) : 0;
+  const bundleSteps = product.category === 'Bundles' ? (product.bundleSteps || []) : [];
+  const requiredBundleCount = bundleSteps.length;
+  const stepLabelForIndex = (idx: number) => {
+    const raw = bundleSteps[idx]?.label || 'Shade';
+    const totalSame = bundleSteps.filter((s) => (s.label || 'Shade') === raw).length;
+    if (totalSame <= 1) return raw;
+    const nth = bundleSteps.slice(0, idx + 1).filter((s) => (s.label || 'Shade') === raw).length;
+    return `${raw} ${nth}`;
+  };
+  const bundleStepLabels = requiredBundleCount > 0 ? bundleSteps.map((_, idx) => stepLabelForIndex(idx)) : undefined;
+  const bundleModalTitle = product.category !== 'Bundles' || requiredBundleCount === 0
+    ? undefined
+    : `Select ${stepLabelForIndex(Math.min(requiredBundleCount - 1, selectedShades.length))} Shade`;
   const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
   const isSqueezMiniComplete = product.category !== 'Lipgloss' || selectedType !== 'squeez' || squeezSelectedMiniShades.length === quantity;
   const canAddToCart = !addedToCart && isBundleSelectionComplete && isSqueezMiniComplete;
@@ -298,7 +321,7 @@ export default function ProductPage() {
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Shades</p>
+                      <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Bundle Options</p>
                       <p className="text-xs text-gray-600">{selectedShades.length}/{requiredBundleCount} selected</p>
                     </div>
                     <button
@@ -309,7 +332,23 @@ export default function ProductPage() {
                       {selectedShades.length === requiredBundleCount ? 'Edit' : 'Select'}
                     </button>
                   </div>
-                  {selectedShades.length > 0 && (
+                  {bundleSteps.length > 0 ? (
+                    <div className="mt-4 space-y-2">
+                      {bundleSteps.map((_, idx) => {
+                        const sid = selectedShades[idx];
+                        const shade = sid ? products.find((p) => p.id === sid) : undefined;
+                        const shadeLabel = sid ? (shade?.name?.replace('Lipgloss - ', '') || sid) : undefined;
+                        return (
+                          <div key={idx} className="flex items-center justify-between gap-4 px-4 py-3 rounded-2xl bg-[#ffe9f0] border border-[#ffd3df]">
+                            <span className="text-xs font-medium text-[#d6869d]">{stepLabelForIndex(idx)}</span>
+                            <span className={`text-xs font-medium ${shadeLabel ? 'text-gray-800' : 'text-gray-500'}`}>
+                              {shadeLabel || 'Not selected'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : selectedShades.length > 0 ? (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {Object.entries(selectedShades.reduce((acc: Record<string, number>, sid) => {
                         acc[sid] = (acc[sid] || 0) + 1; return acc;
@@ -323,7 +362,7 @@ export default function ProductPage() {
                         );
                       })}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               )}
 
@@ -451,6 +490,8 @@ export default function ProductPage() {
         setSelectedShades={setSelectedShades}
         requiredCount={requiredBundleCount}
         shadeSwatches={shadeSwatches}
+        title={bundleModalTitle}
+        stepLabels={bundleStepLabels}
       />
 
       <ShadesModal

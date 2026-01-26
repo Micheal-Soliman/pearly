@@ -16,8 +16,17 @@ type Props = {
 
 export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart, hrefQuery }: Props) {
   const isLipgloss = product.category === 'Lipgloss';
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const isBundle = product.category === 'Bundles';
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [quantity, setQuantity] = useState(1);
+  const bundleSteps = isBundle && Array.isArray(product.bundleSteps) ? product.bundleSteps : [];
+  const stepLabelForIndex = (idx: number) => {
+    const raw = bundleSteps[idx]?.label || 'Shade';
+    const totalSame = bundleSteps.filter((s: any) => (s.label || 'Shade') === raw).length;
+    if (totalSame <= 1) return raw;
+    const nth = bundleSteps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
+    return `${raw} ${nth}`;
+  };
 
   const pricing = useMemo(() => {
     return isLipgloss ? getLipglossVariantPricing(selectedType) : null;
@@ -83,6 +92,19 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
                 </span>
               )}
             </div>
+
+            {isBundle && bundleSteps.length > 0 && (
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                {bundleSteps.map((_: any, idx: number) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 rounded-full text-[11px] tracking-widest uppercase bg-white text-[#d6869d] border border-[#ffd3df]"
+                  >
+                    {stepLabelForIndex(idx)}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

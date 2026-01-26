@@ -26,7 +26,7 @@ export default function Home() {
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('squeez');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
   const [showMiniModal, setShowMiniModal] = useState(false);
@@ -73,6 +73,7 @@ export default function Home() {
 
   const handleAddToCart = (product: any) => {
     const qty = Math.max(1, Number(product?.quantity || 1));
+
     if (product.category === 'Lipgloss') {
       if (product.selectedType) {
         setPendingQuantity(qty);
@@ -90,10 +91,11 @@ export default function Home() {
         return;
       }
       setSelectedProduct(product);
-      setSelectedType('squeez');
+      setSelectedType('big-brush');
       setShowModal(true);
     } else if (product.category === 'Bundles') {
-      const required = product.id === '7' ? 2 : product.id === '8' ? 3 : 0;
+      const steps = Array.isArray(product.bundleSteps) ? product.bundleSteps : [];
+      const required = steps.length || (product.id === '7' ? 2 : product.id === '8' ? 2 : 0);
 
       if (required > 0) {
         setPendingBundleProduct(product);
@@ -287,10 +289,27 @@ export default function Home() {
             group.forEach((sid) => {
               counts[sid] = (counts[sid] || 0) + 1;
             });
-            const shadeNames = Object.entries(counts).map(([sid, c]) => {
-              const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
-              return c > 1 ? `${base} x${c}` : base;
-            });
+            const shadeNames = (() => {
+              const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
+              const stepLabelForIndex = (idx: number) => {
+                const raw = steps[idx]?.label || 'Shade';
+                const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
+                if (totalSame <= 1) return raw;
+                const nth = steps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
+                return `${raw} ${nth}`;
+              };
+
+              if (steps.length === group.length && steps.length > 0) {
+                return group.map((sid, idx) => {
+                  const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+                  return `${stepLabelForIndex(idx)}: ${base}`;
+                });
+              }
+              return Object.entries(counts).map(([sid, c]) => {
+                const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
+                return c > 1 ? `${base} x${c}` : base;
+              });
+            })();
 
             const uniqueId = `${pendingBundleProduct.id}-b-${group.join('-')}`;
             const itemToAdd = {
@@ -314,7 +333,46 @@ export default function Home() {
         setSelectedShades={setBundleSelectedShades}
         requiredCount={Math.max(0, pendingBundleRequiredCount) * Math.max(1, pendingBundleQuantity)}
         shadeSwatches={shadeSwatches}
-        title={`Select ${Math.max(0, pendingBundleRequiredCount) * Math.max(1, pendingBundleQuantity)} Shade${Math.max(0, pendingBundleRequiredCount) * Math.max(1, pendingBundleQuantity) === 1 ? '' : 's'}`}
+        title={(() => {
+          const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
+          const perBundleRequired = Math.max(0, pendingBundleRequiredCount);
+          const totalRequired = perBundleRequired * Math.max(1, pendingBundleQuantity);
+          if (!pendingBundleProduct || totalRequired <= 0 || perBundleRequired <= 0) return undefined;
+
+          const stepIndex = bundleSelectedShades.length % perBundleRequired;
+          const raw = steps[stepIndex]?.label || 'Shade';
+          const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
+          const nth = totalSame > 1 ? steps.slice(0, stepIndex + 1).filter((s: any) => (s.label || 'Shade') === raw).length : 0;
+          const label = totalSame > 1 ? `${raw} ${nth}` : raw;
+
+          const bundleNumber = Math.min(Math.max(1, pendingBundleQuantity), Math.floor(bundleSelectedShades.length / perBundleRequired) + 1);
+          return pendingBundleQuantity > 1
+            ? `Select ${label} Shade (Bundle ${bundleNumber}/${Math.max(1, pendingBundleQuantity)})`
+            : `Select ${label} Shade`;
+        })()}
+        stepLabels={(() => {
+          const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
+          const perBundleRequired = Math.max(0, pendingBundleRequiredCount);
+          const qty = Math.max(1, pendingBundleQuantity);
+          if (!pendingBundleProduct || perBundleRequired <= 0 || steps.length !== perBundleRequired) return undefined;
+
+          const stepLabelForIndex = (idx: number) => {
+            const raw = steps[idx]?.label || 'Shade';
+            const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
+            if (totalSame <= 1) return raw;
+            const nth = steps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
+            return `${raw} ${nth}`;
+          };
+
+          const labels: string[] = [];
+          for (let b = 1; b <= qty; b++) {
+            for (let i = 0; i < perBundleRequired; i++) {
+              const step = stepLabelForIndex(i);
+              labels.push(qty > 1 ? `Bundle ${b}: ${step}` : step);
+            }
+          }
+          return labels;
+        })()}
       />
 
       <div className="pt-12">
