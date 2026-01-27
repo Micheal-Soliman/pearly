@@ -20,17 +20,18 @@ import LipglossSlider from '@/components/LipglossSlider';
 import FlavoursGrid from '@/components/FlavoursGrid';
 import BundleSavings from '@/components/BundleSavings';
 import ShadesPalette from '../components/ShadesPalette';
+import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 
 export default function Home() {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
   const [showMiniModal, setShowMiniModal] = useState(false);
-
   const [pendingLipglossShade, setPendingLipglossShade] = useState<any>(null);
   const [pendingQuantity, setPendingQuantity] = useState<number>(1);
   const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
@@ -77,14 +78,15 @@ export default function Home() {
     if (product.category === 'Lipgloss') {
       if (product.selectedType) {
         setPendingQuantity(qty);
-        if (product.selectedType === 'squeez') {
+        if (product.selectedType === 'squeez-mini') {
           setPendingLipglossShade(product);
           setSqueezSelectedMiniShades([]);
           setShowSqueezMiniModal(true);
           return;
         }
         const uniqueId = `${product.id}-t-${product.selectedType}`;
-        const item = { ...product, id: uniqueId, name: `${product.name} (Big Brush)`, selectedType: product.selectedType };
+        const typeLabel = product.selectedType === 'squeez-mini' ? 'Squeez + Mini' : product.selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
+        const item = { ...product, id: uniqueId, name: `${product.name} (${typeLabel})`, selectedType: product.selectedType };
         for (let i = 0; i < qty; i++) {
           addToCart(item);
         }
@@ -94,8 +96,8 @@ export default function Home() {
       setSelectedType('big-brush');
       setShowModal(true);
     } else if (product.category === 'Bundles') {
-      const steps = Array.isArray(product.bundleSteps) ? product.bundleSteps : [];
-      const required = steps.length || (product.id === '7' ? 2 : product.id === '8' ? 2 : 0);
+      const steps = getBundleSteps(product);
+      const required = steps.length;
 
       if (required > 0) {
         setPendingBundleProduct(product);
@@ -117,17 +119,18 @@ export default function Home() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      if (selectedType === 'squeez') {
+      if (selectedType === 'squeez-mini') {
         setShowModal(false);
         setSelectedMiniShade(null);
         setShowMiniModal(true);
         return;
       }
       const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
+      const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
       addToCart({
         ...selectedProduct,
         id: uniqueId,
-        name: `${selectedProduct.name} (Big Brush)`,
+        name: `${selectedProduct.name} (${typeLabel})`,
         selectedType,
       });
       setShowModal(false);
@@ -157,18 +160,18 @@ export default function Home() {
 
       {/* Product Grid - Bundles */}
       <BundlesSection
-        products={products as any}
-        isFavorite={isFavorite as any}
-        toggleFavorite={toggleFavorite as any}
-        handleAddToCart={handleAddToCart as any}
+        products={products}
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        handleAddToCart={handleAddToCart}
       />
 
       {/* Featured Products Slider */}
       <LipglossSlider
-        products={products as any}
-        isFavorite={isFavorite as any}
-        toggleFavorite={toggleFavorite as any}
-        handleAddToCart={handleAddToCart as any}
+        products={products}
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        handleAddToCart={handleAddToCart}
       />
 
       {/* Full Width Banner */}
@@ -208,12 +211,12 @@ export default function Home() {
         onDone={() => {
           if (selectedProduct && selectedMiniShade) {
             const miniShadeName = products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
-            const uniqueId = `${selectedProduct.id}-t-squeez-m-${selectedMiniShade}`;
+            const uniqueId = `${selectedProduct.id}-t-squeez-mini-m-${selectedMiniShade}`;
             addToCart({
               ...selectedProduct,
               id: uniqueId,
               name: `${selectedProduct.name} (Squeez, Mini: ${miniShadeName})`,
-              selectedType: 'squeez',
+              selectedType: 'squeez-mini',
               miniShade: selectedMiniShade,
             });
           }
@@ -221,7 +224,7 @@ export default function Home() {
           setSelectedMiniShade(null);
           setSelectedProduct(null);
         }}
-        lipglossShades={products.filter((p) => p.category === 'Lipgloss') as any}
+        lipglossShades={products.filter((p) => p.category === 'Lipgloss')}
         selectedMiniShade={selectedMiniShade}
         setSelectedMiniShade={setSelectedMiniShade}
         shadeSwatches={{}}
@@ -242,12 +245,12 @@ export default function Home() {
 
           squeezSelectedMiniShades.forEach((miniId) => {
             const miniShadeName = lipglossProducts.find((p) => p.id === miniId)?.name?.replace('Lipgloss - ', '') || miniId;
-            const uniqueId = `${pendingLipglossShade.id}-t-squeez-m-${miniId}`;
+            const uniqueId = `${pendingLipglossShade.id}-t-squeez-mini-m-${miniId}`;
             const item = {
               ...pendingLipglossShade,
               id: uniqueId,
               name: `${pendingLipglossShade.name} (Squeez, Mini: ${miniShadeName})`,
-              selectedType: 'squeez',
+              selectedType: 'squeez-mini',
               miniShade: miniId,
             };
             addToCart(item);
@@ -258,7 +261,7 @@ export default function Home() {
           setPendingLipglossShade(null);
           setPendingQuantity(1);
         }}
-        lipglossShades={lipglossShadesForModal as any}
+        lipglossShades={lipglossShadesForModal}
         selectedShades={squeezSelectedMiniShades}
         setSelectedShades={setSqueezSelectedMiniShades}
         requiredCount={pendingQuantity}
@@ -285,31 +288,8 @@ export default function Home() {
               ? bundleSelectedShades.slice(i * perBundleRequired, (i + 1) * perBundleRequired)
               : bundleSelectedShades;
 
-            const counts: Record<string, number> = {};
-            group.forEach((sid) => {
-              counts[sid] = (counts[sid] || 0) + 1;
-            });
-            const shadeNames = (() => {
-              const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
-              const stepLabelForIndex = (idx: number) => {
-                const raw = steps[idx]?.label || 'Shade';
-                const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
-                if (totalSame <= 1) return raw;
-                const nth = steps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
-                return `${raw} ${nth}`;
-              };
-
-              if (steps.length === group.length && steps.length > 0) {
-                return group.map((sid, idx) => {
-                  const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
-                  return `${stepLabelForIndex(idx)}: ${base}`;
-                });
-              }
-              return Object.entries(counts).map(([sid, c]) => {
-                const base = lipglossProducts.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid;
-                return c > 1 ? `${base} x${c}` : base;
-              });
-            })();
+            const steps = getBundleSteps(pendingBundleProduct);
+            const shadeNames = formatBundleSelectionNames(steps, group, lipglossProducts);
 
             const uniqueId = `${pendingBundleProduct.id}-b-${group.join('-')}`;
             const itemToAdd = {
@@ -328,22 +308,20 @@ export default function Home() {
           setPendingBundleRequiredCount(0);
           setPendingBundleQuantity(1);
         }}
-        lipglossShades={lipglossShadesForModal as any}
+        lipglossShades={lipglossShadesForModal}
         selectedShades={bundleSelectedShades}
         setSelectedShades={setBundleSelectedShades}
         requiredCount={Math.max(0, pendingBundleRequiredCount) * Math.max(1, pendingBundleQuantity)}
         shadeSwatches={shadeSwatches}
         title={(() => {
-          const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
+          const steps = getBundleSteps(pendingBundleProduct);
+
           const perBundleRequired = Math.max(0, pendingBundleRequiredCount);
           const totalRequired = perBundleRequired * Math.max(1, pendingBundleQuantity);
           if (!pendingBundleProduct || totalRequired <= 0 || perBundleRequired <= 0) return undefined;
 
           const stepIndex = bundleSelectedShades.length % perBundleRequired;
-          const raw = steps[stepIndex]?.label || 'Shade';
-          const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
-          const nth = totalSame > 1 ? steps.slice(0, stepIndex + 1).filter((s: any) => (s.label || 'Shade') === raw).length : 0;
-          const label = totalSame > 1 ? `${raw} ${nth}` : raw;
+          const label = getStepLabelForIndex(steps, stepIndex);
 
           const bundleNumber = Math.min(Math.max(1, pendingBundleQuantity), Math.floor(bundleSelectedShades.length / perBundleRequired) + 1);
           return pendingBundleQuantity > 1
@@ -351,27 +329,12 @@ export default function Home() {
             : `Select ${label} Shade`;
         })()}
         stepLabels={(() => {
-          const steps = Array.isArray(pendingBundleProduct?.bundleSteps) ? pendingBundleProduct.bundleSteps : [];
+          const steps = getBundleSteps(pendingBundleProduct);
           const perBundleRequired = Math.max(0, pendingBundleRequiredCount);
           const qty = Math.max(1, pendingBundleQuantity);
           if (!pendingBundleProduct || perBundleRequired <= 0 || steps.length !== perBundleRequired) return undefined;
 
-          const stepLabelForIndex = (idx: number) => {
-            const raw = steps[idx]?.label || 'Shade';
-            const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
-            if (totalSame <= 1) return raw;
-            const nth = steps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
-            return `${raw} ${nth}`;
-          };
-
-          const labels: string[] = [];
-          for (let b = 1; b <= qty; b++) {
-            for (let i = 0; i < perBundleRequired; i++) {
-              const step = stepLabelForIndex(i);
-              labels.push(qty > 1 ? `Bundle ${b}: ${step}` : step);
-            }
-          }
-          return labels;
+          return buildBundleStepLabels(steps, { quantity: qty });
         })()}
       />
 

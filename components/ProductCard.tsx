@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { getLipglossVariantPricing } from '@/lib/pricing';
+import { getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 
 type Props = {
   product: any;
@@ -17,16 +18,9 @@ type Props = {
 export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart, hrefQuery }: Props) {
   const isLipgloss = product.category === 'Lipgloss';
   const isBundle = product.category === 'Bundles';
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
   const [quantity, setQuantity] = useState(1);
-  const bundleSteps = isBundle && Array.isArray(product.bundleSteps) ? product.bundleSteps : [];
-  const stepLabelForIndex = (idx: number) => {
-    const raw = bundleSteps[idx]?.label || 'Shade';
-    const totalSame = bundleSteps.filter((s: any) => (s.label || 'Shade') === raw).length;
-    if (totalSame <= 1) return raw;
-    const nth = bundleSteps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
-    return `${raw} ${nth}`;
-  };
+  const bundleSteps = isBundle ? getBundleSteps(product) : [];
 
   const pricing = useMemo(() => {
     return isLipgloss ? getLipglossVariantPricing(selectedType) : null;
@@ -100,7 +94,7 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
                     key={idx}
                     className="px-3 py-1 rounded-full text-[11px] tracking-widest uppercase bg-white text-[#d6869d] border border-[#ffd3df]"
                   >
-                    {stepLabelForIndex(idx)}
+                    {getStepLabelForIndex(bundleSteps, idx)}
                   </span>
                 ))}
               </div>
@@ -120,6 +114,17 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
               }`}
             >
               Squeez
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedType('squeez-mini')}
+              className={`px-3 py-1 text-[11px] tracking-widest uppercase border rounded-full transition-colors ${
+                selectedType === 'squeez-mini'
+                  ? 'bg-[#d6869d] border-[#d6869d] text-white'
+                  : 'bg-white border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0]'
+              }`}
+            >
+              Squeez + Mini
             </button>
             <button
               type="button"

@@ -8,13 +8,14 @@ import { getLipglossVariantPricing } from '@/lib/pricing';
 type Props = {
   show: boolean;
   onClose: () => void;
-  selectedType: 'big-brush' | 'squeez';
-  setSelectedType: Dispatch<SetStateAction<'big-brush' | 'squeez'>>;
+  selectedType: 'big-brush' | 'squeez' | 'squeez-mini';
+  setSelectedType: Dispatch<SetStateAction<'big-brush' | 'squeez' | 'squeez-mini'>>;
   onConfirm: () => void;
 };
 
 export default function LipglossOptionModal({ show, onClose, selectedType, setSelectedType, onConfirm }: Props) {
   const squeezPricing = getLipglossVariantPricing('squeez');
+  const squeezMiniPricing = getLipglossVariantPricing('squeez-mini');
   const bigBrushPricing = getLipglossVariantPricing('big-brush');
 
   return (
@@ -51,13 +52,32 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between">
-                    <span className="font-medium text-gray-900">Squeeze Tube</span>
+                    <span className="font-medium text-gray-900">Squeez (No Mini)</span>
                     <span className="text-[#d6869d] font-medium">
                       <span className="font-semibold">{squeezPricing.price} EGP</span>
                       <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">Includes mini size with singles</p>
+                  <p className="text-sm text-gray-500">No mini included</p>
+                </div>
+              </div>
+
+              <div
+                className="flex items-center p-4 border rounded-xl hover:border-[#d6869d] transition-colors cursor-pointer"
+                onClick={() => setSelectedType('squeez-mini')}
+              >
+                <div className="w-4 h-4 rounded-full border-2 border-[#d6869d] flex-shrink-0 flex items-center justify-center mr-3">
+                  {selectedType === 'squeez-mini' && <div className="w-2 h-2 bg-[#d6869d] rounded-full"></div>}
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-gray-900">Squeez (With Mini)</span>
+                    <span className="text-[#d6869d] font-medium">
+                      <span className="font-semibold">{squeezMiniPricing.price} EGP</span>
+                      <span className="line-through ml-2 opacity-70">{squeezMiniPricing.originalPrice} EGP</span>
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500">Includes a mini shade</p>
                 </div>
               </div>
 
@@ -86,7 +106,7 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
               className="w-full bg-[#d6869d] hover:bg-[#c5758c] text-white font-medium py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center"
             >
               <ShoppingBag className="w-4 h-4 mr-2" />
-              Add to Cart - {selectedType === 'big-brush' ? bigBrushPricing.price : squeezPricing.price} EGP
+              Add to Cart - {selectedType === 'big-brush' ? bigBrushPricing.price : selectedType === 'squeez-mini' ? squeezMiniPricing.price : squeezPricing.price} EGP
             </button>
           </motion.div>
         </motion.div>

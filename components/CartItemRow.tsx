@@ -4,13 +4,14 @@ import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 import { products } from '@/data/products';
+import { getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 type CartItem = {
   id: string;
   name: string;
   image: string;
   category: string;
-  selectedType?: 'big-brush' | 'squeez';
+  selectedType?: 'big-brush' | 'squeez' | 'squeez-mini';
   quantity: number;
   price: number;
   bundleShades?: string[];
@@ -31,13 +32,6 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
   const bundleSteps = isBundle ? (item.bundleSteps || []) : [];
   const bundleShades = Array.isArray(item.bundleShades) ? item.bundleShades : [];
   const baseName = item.category === 'Bundles' ? item.name.split(' (')[0] : item.name;
-  const stepLabelForIndex = (idx: number) => {
-    const raw = bundleSteps[idx]?.label || 'Shade';
-    const totalSame = bundleSteps.filter((s: any) => (s.label || 'Shade') === raw).length;
-    if (totalSame <= 1) return raw;
-    const nth = bundleSteps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
-    return `${raw} ${nth}`;
-  };
 
   return (
     <div className="relative flex flex-col sm:flex-row items-start sm:items-stretch gap-4 sm:gap-6 p-4 sm:p-6 bg-white rounded-3xl shadow-lg border-2 border-[#ffe9f0] hover:shadow-xl transition-all duration-300">
@@ -52,17 +46,17 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
               <h3 className="text-base font-medium tracking-wide text-gray-800">{baseName}</h3>
               {item.selectedType && (
                 <p className="text-sm text-[#d6869d] font-medium mt-1">
-                  {item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}
+                  {item.selectedType === 'squeez-mini' ? 'Squeez + Mini' : item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}
                 </p>
               )}
               {isBundle && (
                 <div className="mt-2 space-y-1">
                   {bundleSteps.map((_, idx) => {
                     const sid = bundleShades[idx];
-                    const shadeName = sid ? (products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid) : undefined;
+                    const shadeName = sid ? getShadeDisplayName(products, sid) : undefined;
                     return (
                       <div key={idx} className="flex items-center justify-between gap-3">
-                        <span className="text-xs text-[#d6869d] font-medium">{stepLabelForIndex(idx)}</span>
+                        <span className="text-xs text-[#d6869d] font-medium">{getStepLabelForIndex(bundleSteps, idx)}</span>
                         <span className={`text-xs font-medium ${shadeName ? 'text-gray-800' : 'text-gray-500'}`}>
                           {shadeName || 'Not selected'}
                         </span>

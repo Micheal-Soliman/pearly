@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { getUnitPrice } from '@/lib/pricing';
 import { products } from '@/data/products';
+import { getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 type CartItem = {
   id: string;
@@ -11,7 +12,7 @@ type CartItem = {
   category: string;
   quantity: number;
   price: number;
-  selectedType?: 'big-brush' | 'squeez';
+  selectedType?: 'big-brush' | 'squeez' | 'squeez-mini';
   bundleShades?: string[];
   bundleSteps?: { label: string; labelAr?: string }[];
 };
@@ -40,27 +41,20 @@ export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: P
                 {item.category === 'Bundles' ? item.name.split(' (')[0] : item.name}
               </h3>
               {item.selectedType && (
-                <p className="text-xs text-[#d6869d] font-medium">{item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}</p>
+                <p className="text-xs text-[#d6869d] font-medium">{item.selectedType === 'squeez-mini' ? 'Squeez + Mini' : item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}</p>
               )}
               {item.category === 'Bundles' && Array.isArray(item.bundleSteps) && item.bundleSteps.length > 0 && (
                 <div className="mt-2 space-y-1">
                   {(() => {
                     const steps = item.bundleSteps || [];
                     const bundleShades = Array.isArray(item.bundleShades) ? item.bundleShades : [];
-                    const stepLabelForIndex = (idx: number) => {
-                      const raw = steps[idx]?.label || 'Shade';
-                      const totalSame = steps.filter((s: any) => (s.label || 'Shade') === raw).length;
-                      if (totalSame <= 1) return raw;
-                      const nth = steps.slice(0, idx + 1).filter((s: any) => (s.label || 'Shade') === raw).length;
-                      return `${raw} ${nth}`;
-                    };
 
                     return steps.map((_, idx) => {
                       const sid = bundleShades[idx];
-                      const shadeName = sid ? (products.find((p) => p.id === sid)?.name?.replace('Lipgloss - ', '') || sid) : undefined;
+                      const shadeName = sid ? getShadeDisplayName(products, sid) : undefined;
                       return (
                         <div key={idx} className="flex items-center justify-between gap-3">
-                          <span className="text-xs text-[#d6869d] font-medium">{stepLabelForIndex(idx)}</span>
+                          <span className="text-xs text-[#d6869d] font-medium">{getStepLabelForIndex(steps, idx)}</span>
                           <span className={`text-xs font-medium ${shadeName ? 'text-gray-800' : 'text-gray-500'}`}>
                             {shadeName || 'Not selected'}
                           </span>

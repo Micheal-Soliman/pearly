@@ -28,7 +28,7 @@ export default function FavoritesPage() {
   const { addToCart } = useCart();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
   const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
   const [showMiniModal, setShowMiniModal] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -57,17 +57,18 @@ export default function FavoritesPage() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      if (selectedType === 'squeez') {
+      if (selectedType === 'squeez-mini') {
         setShowModal(false);
         setSelectedMiniShade(null);
         setShowMiniModal(true);
         return;
       }
       const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
+      const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
       addToCart({
         ...selectedProduct,
         id: uniqueId,
-        name: `${selectedProduct.name} (Big Brush)`,
+        name: `${selectedProduct.name} (${typeLabel})`,
         selectedType,
       });
       setShowModal(false);
@@ -142,12 +143,12 @@ export default function FavoritesPage() {
         onDone={() => {
           if (selectedProduct && selectedMiniShade) {
             const miniShadeName = products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
-            const uniqueId = `${selectedProduct.id}-t-squeez-m-${selectedMiniShade}`;
+            const uniqueId = `${selectedProduct.id}-t-squeez-mini-m-${selectedMiniShade}`;
             addToCart({
               ...selectedProduct,
               id: uniqueId,
               name: `${selectedProduct.name} (Squeez, Mini: ${miniShadeName})`,
-              selectedType: 'squeez',
+              selectedType: 'squeez-mini',
               miniShade: selectedMiniShade,
             });
           }
