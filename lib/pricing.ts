@@ -4,7 +4,6 @@ export const PRICE_BUMP = 0;
 
 export const LIPGLOSS_VARIANTS = {
   squeez: { price: 220, originalPrice: 260 },
-  'squeez-mini': { price: 250, originalPrice: 290 },
   'big-brush': { price: 299, originalPrice: 350 },
 } as const;
 
@@ -12,8 +11,8 @@ export type LipglossVariantType = keyof typeof LIPGLOSS_VARIANTS;
 
 export function getLipglossVariantType(selectedType?: string): LipglossVariantType {
   if (selectedType === 'big-brush') return 'big-brush';
-  if (selectedType === 'squeez-mini') return 'squeez-mini';
   if (selectedType === 'squeez') return 'squeez';
+  if (selectedType === 'squeez-mini') return 'squeez';
   return 'big-brush';
 }
 
@@ -27,7 +26,7 @@ export function getLipglossVariantPricing(selectedType?: string) {
   };
 }
 
-export function getUnitPrice(item: Pick<CartItem, 'category' | 'price' | 'selectedType'>): number {
+export function getUnitPrice(item: Pick<CartItem, 'category' | 'price'> & { selectedType?: string }): number {
   if (item.category === 'Lipgloss') {
     return getLipglossVariantPricing(item.selectedType).price;
   }

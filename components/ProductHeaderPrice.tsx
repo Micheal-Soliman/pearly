@@ -7,7 +7,7 @@ type Props = {
   name: string;
   currentPrice: number;
   isLipgloss: boolean;
-  selectedType: 'big-brush' | 'squeez' | 'squeez-mini';
+  selectedType: 'big-brush' | 'squeez';
   originalPrice?: number;
   bestSeller?: boolean;
 };

@@ -18,7 +18,7 @@ type Props = {
 export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart, hrefQuery }: Props) {
   const isLipgloss = product.category === 'Lipgloss';
   const isBundle = product.category === 'Bundles';
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [quantity, setQuantity] = useState(1);
   const bundleSteps = isBundle ? getBundleSteps(product) : [];
 
@@ -114,17 +114,6 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
               }`}
             >
               Squeez
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedType('squeez-mini')}
-              className={`px-3 py-1 text-[11px] tracking-widest uppercase border rounded-full transition-colors ${
-                selectedType === 'squeez-mini'
-                  ? 'bg-[#d6869d] border-[#d6869d] text-white'
-                  : 'bg-white border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0]'
-              }`}
-            >
-              Squeez + Mini
             </button>
             <button
               type="button"

@@ -28,16 +28,13 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedShades, setSelectedShades] = useState<string[]>([]);
   const [showShadesModal, setShowShadesModal] = useState(false);
-  const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
-  const [squeezSelectedMiniShades, setSqueezSelectedMiniShades] = useState<string[]>([]);
 
   const product = products.find((p) => p.id === params.id);
 
   const squeezPricing = getLipglossVariantPricing('squeez');
-  const squeezMiniPricing = getLipglossVariantPricing('squeez-mini');
   const bigBrushPricing = getLipglossVariantPricing('big-brush');
 
   if (!product) {
@@ -56,30 +53,6 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     let productToAdd: any = product;
     if (product.category === 'Lipgloss') {
-      if (selectedType === 'squeez-mini' && squeezSelectedMiniShades.length !== quantity) {
-        setShowSqueezMiniModal(true);
-        return;
-      }
-
-      if (selectedType === 'squeez-mini') {
-        squeezSelectedMiniShades.forEach((miniId) => {
-          const miniShadeName =
-            products.find((p) => p.id === miniId)?.name?.replace('Lipgloss - ', '') || miniId;
-          const uniqueId = `${product.id}-t-squeez-mini-m-${miniId}`;
-          const itemToAdd: any = {
-            ...product,
-            id: uniqueId,
-            name: `${product.name} (Squeez, Mini: ${miniShadeName})`,
-            selectedType: 'squeez-mini',
-            miniShade: miniId,
-          };
-          addToCart(itemToAdd);
-        });
-        setAddedToCart(true);
-        setTimeout(() => setAddedToCart(false), 3000);
-        return;
-      }
-
       const uniqueId = `${product.id}-t-${selectedType}`;
       const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
       productToAdd = {
@@ -200,17 +173,7 @@ export default function ProductPage() {
     ? undefined
     : `Select ${getStepLabelForIndex(bundleSteps, Math.min(requiredBundleCount - 1, selectedShades.length))} Shade`;
   const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
-  const isSqueezMiniComplete = product.category !== 'Lipgloss' || selectedType !== 'squeez-mini' || squeezSelectedMiniShades.length === quantity;
-  const canAddToCart = !addedToCart && isBundleSelectionComplete && isSqueezMiniComplete;
-
-  useEffect(() => {
-    if (product.category !== 'Lipgloss') return;
-    if (selectedType !== 'squeez-mini') return;
-    setSqueezSelectedMiniShades((prev) => {
-      if (prev.length <= quantity) return prev;
-      return prev.slice(0, quantity);
-    });
-  }, [product.category, selectedType, quantity]);
+  const canAddToCart = !addedToCart && isBundleSelectionComplete;
 
   useEffect(() => {
     if (product.category !== 'Bundles') return;
@@ -253,13 +216,11 @@ export default function ProductPage() {
               {product.category === 'Lipgloss' && (
                 <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
                   <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-4">Choose Your Option</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => {
                         setSelectedType('squeez');
-                        setSqueezSelectedMiniShades([]);
-                        setShowSqueezMiniModal(false);
                       }}
                       className={`w-full p-4 border-2 transition-all rounded-2xl ${
                         selectedType === 'squeez'
@@ -280,30 +241,7 @@ export default function ProductPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setSelectedType('squeez-mini');
-                      }}
-                      className={`w-full p-4 border-2 transition-all rounded-2xl ${
-                        selectedType === 'squeez-mini'
-                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
-                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                      }`}
-                    >
-                      <div className="text-left">
-                        <p className="font-medium">Squeez + Mini</p>
-                        <p className="text-sm opacity-80">
-                          <span className="font-semibold">{squeezMiniPricing.price} EGP</span>
-                          <span className="line-through ml-2 opacity-70">{squeezMiniPricing.originalPrice} EGP</span>
-                        </p>
-                        <p className="text-xs opacity-80 mt-1">Includes a mini</p>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
                         setSelectedType('big-brush');
-                        setSqueezSelectedMiniShades([]);
-                        setShowSqueezMiniModal(false);
                       }}
                       className={`w-full p-4 border-2 transition-all rounded-2xl ${
                         selectedType === 'big-brush'
@@ -373,39 +311,6 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {product.category === 'Lipgloss' && selectedType === 'squeez-mini' && (
-                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-1">Choose Mini Shade</p>
-                      <p className="text-xs text-gray-600">{squeezSelectedMiniShades.length}/{quantity} selected</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowSqueezMiniModal(true)}
-                      className="px-5 py-2 rounded-full bg-[#d6869d] text-white text-xs tracking-[0.2em] font-medium shadow-md hover:shadow-lg"
-                    >
-                      {squeezSelectedMiniShades.length === quantity ? 'Edit' : 'Select'}
-                    </button>
-                  </div>
-                  {squeezSelectedMiniShades.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {Object.entries(squeezSelectedMiniShades.reduce((acc: Record<string, number>, sid) => {
-                        acc[sid] = (acc[sid] || 0) + 1; return acc;
-                      }, {})).map(([sid, count]) => {
-                        const shade = products.find((p) => p.id === sid);
-                        const label = shade?.name?.replace('Lipgloss - ', '') || sid;
-                        return (
-                          <span key={sid} className="px-3 py-1 rounded-full text-xs bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
-                            Mini: {label}{count > 1 ? ` x${count}` : ''}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
               <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
 
               <div className="space-y-4">
@@ -431,9 +336,7 @@ export default function ProductPage() {
                   <p className="text-xs text-gray-600 text-center">
                     {product.category === 'Bundles' && !isBundleSelectionComplete
                       ? `Please select ${requiredBundleCount} shades first.`
-                      : (product.category === 'Lipgloss' && selectedType === 'squeez-mini' && !isSqueezMiniComplete)
-                        ? `Please select ${quantity} mini shade${quantity === 1 ? '' : 's'} first.`
-                        : ''}
+                      : ''}
                   </p>
                 )}
 
@@ -490,7 +393,7 @@ export default function ProductPage() {
 
       <Footer />
       <ShadesModal
-        show={showShadesModal && product.category === 'Bundles'}
+        show={showShadesModal}
         onClose={() => setShowShadesModal(false)}
         lipglossShades={lipglossShadesForModal}
         selectedShades={selectedShades}
@@ -499,21 +402,6 @@ export default function ProductPage() {
         shadeSwatches={shadeSwatches}
         title={bundleModalTitle}
         stepLabels={bundleStepLabels}
-      />
-
-      <ShadesModal
-        show={showSqueezMiniModal && product.category === 'Lipgloss' && selectedType === 'squeez-mini'}
-        onClose={() => setShowSqueezMiniModal(false)}
-        onDone={() => {
-          if (squeezSelectedMiniShades.length !== quantity) return;
-          setShowSqueezMiniModal(false);
-        }}
-        title={`Select ${quantity} Mini Shade${quantity === 1 ? '' : 's'}`}
-        lipglossShades={lipglossShadesForModal}
-        selectedShades={squeezSelectedMiniShades}
-        setSelectedShades={setSqueezSelectedMiniShades}
-        requiredCount={quantity}
-        shadeSwatches={shadeSwatches}
       />
     </div>
   );

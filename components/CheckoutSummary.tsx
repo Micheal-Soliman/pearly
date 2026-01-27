@@ -12,7 +12,7 @@ type CartItem = {
   category: string;
   quantity: number;
   price: number;
-  selectedType?: 'big-brush' | 'squeez' | 'squeez-mini';
+  selectedType?: string;
   bundleShades?: string[];
   bundleSteps?: { label: string; labelAr?: string }[];
 };
@@ -41,7 +41,7 @@ export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: P
                 {item.category === 'Bundles' ? item.name.split(' (')[0] : item.name}
               </h3>
               {item.selectedType && (
-                <p className="text-xs text-[#d6869d] font-medium">{item.selectedType === 'squeez-mini' ? 'Squeez + Mini' : item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}</p>
+                <p className="text-xs text-[#d6869d] font-medium">{item.selectedType === 'squeez' || item.selectedType === 'squeez-mini' ? 'Squeez' : 'Big Brush'}</p>
               )}
               {item.category === 'Bundles' && Array.isArray(item.bundleSteps) && item.bundleSteps.length > 0 && (
                 <div className="mt-2 space-y-1">

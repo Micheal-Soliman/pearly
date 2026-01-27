@@ -11,7 +11,7 @@ type CartItem = {
   name: string;
   image: string;
   category: string;
-  selectedType?: 'big-brush' | 'squeez' | 'squeez-mini';
+  selectedType?: string;
   quantity: number;
   price: number;
   bundleShades?: string[];
@@ -46,7 +46,7 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
               <h3 className="text-base font-medium tracking-wide text-gray-800">{baseName}</h3>
               {item.selectedType && (
                 <p className="text-sm text-[#d6869d] font-medium mt-1">
-                  {item.selectedType === 'squeez-mini' ? 'Squeez + Mini' : item.selectedType === 'squeez' ? 'Squeez' : 'Big Brush'}
+                  {item.selectedType === 'squeez' || item.selectedType === 'squeez-mini' ? 'Squeez' : 'Big Brush'}
                 </p>
               )}
               {isBundle && (

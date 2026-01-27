@@ -7,12 +7,12 @@ import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import LipglossOptionModal from '@/components/LipglossOptionModal';
-import MiniShadesModal from '@/components/MiniShadesModal';
 import ShadesModal from '@/components/ShadesModal';
 import FeedbackLightbox from '@/components/FeedbackLightbox';
 import HomeHero from '@/components/HomeHero';
 import CustomerReviews from '@/components/CustomerReviews';
 import ClientMomentsGallery from '@/components/ClientMomentsGallery';
+
 import CategoriesSection from '@/components/CategoriesSection';
 import FullWidthBanner from '@/components/FullWidthBanner';
 import BundlesSection from '@/components/BundlesSection';
@@ -28,19 +28,14 @@ export default function Home() {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez' | 'squeez-mini'>('big-brush');
+  const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
-  const [selectedMiniShade, setSelectedMiniShade] = useState<string | null>(null);
-  const [showMiniModal, setShowMiniModal] = useState(false);
-  const [pendingLipglossShade, setPendingLipglossShade] = useState<any>(null);
-  const [pendingQuantity, setPendingQuantity] = useState<number>(1);
-  const [showSqueezMiniModal, setShowSqueezMiniModal] = useState(false);
-  const [squeezSelectedMiniShades, setSqueezSelectedMiniShades] = useState<string[]>([]);
 
   const [showBundleShadesModal, setShowBundleShadesModal] = useState(false);
   const [bundleSelectedShades, setBundleSelectedShades] = useState<string[]>([]);
   const [pendingBundleProduct, setPendingBundleProduct] = useState<any>(null);
   const [pendingBundleRequiredCount, setPendingBundleRequiredCount] = useState<number>(0);
+
   const [pendingBundleQuantity, setPendingBundleQuantity] = useState<number>(1);
 
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss');
@@ -66,26 +61,15 @@ export default function Home() {
     '28': '#FF9A8B',
     '29': '#F1C27D',
   };
-  const lipglossShadesForModal = lipglossProducts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    swatchColor: shadeSwatches[p.id],
-  }));
+  const lipglossShadesForModal = lipglossProducts.map((p) => ({ id: p.id, name: p.name, swatchColor: shadeSwatches[p.id] }));
 
   const handleAddToCart = (product: any) => {
     const qty = Math.max(1, Number(product?.quantity || 1));
 
     if (product.category === 'Lipgloss') {
       if (product.selectedType) {
-        setPendingQuantity(qty);
-        if (product.selectedType === 'squeez-mini') {
-          setPendingLipglossShade(product);
-          setSqueezSelectedMiniShades([]);
-          setShowSqueezMiniModal(true);
-          return;
-        }
         const uniqueId = `${product.id}-t-${product.selectedType}`;
-        const typeLabel = product.selectedType === 'squeez-mini' ? 'Squeez + Mini' : product.selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
+        const typeLabel = product.selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
         const item = { ...product, id: uniqueId, name: `${product.name} (${typeLabel})`, selectedType: product.selectedType };
         for (let i = 0; i < qty; i++) {
           addToCart(item);
@@ -119,12 +103,6 @@ export default function Home() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      if (selectedType === 'squeez-mini') {
-        setShowModal(false);
-        setSelectedMiniShade(null);
-        setShowMiniModal(true);
-        return;
-      }
       const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
       const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
       addToCart({
@@ -199,73 +177,6 @@ export default function Home() {
         selectedType={selectedType}
         setSelectedType={setSelectedType}
         onConfirm={confirmAddToCart}
-      />
-
-      <MiniShadesModal
-        show={showMiniModal && !!selectedProduct}
-        onClose={() => {
-          setShowMiniModal(false);
-          setSelectedMiniShade(null);
-          setSelectedProduct(null);
-        }}
-        onDone={() => {
-          if (selectedProduct && selectedMiniShade) {
-            const miniShadeName = products.find((p) => p.id === selectedMiniShade)?.name?.replace('Lipgloss - ', '') || selectedMiniShade;
-            const uniqueId = `${selectedProduct.id}-t-squeez-mini-m-${selectedMiniShade}`;
-            addToCart({
-              ...selectedProduct,
-              id: uniqueId,
-              name: `${selectedProduct.name} (Squeez, Mini: ${miniShadeName})`,
-              selectedType: 'squeez-mini',
-              miniShade: selectedMiniShade,
-            });
-          }
-          setShowMiniModal(false);
-          setSelectedMiniShade(null);
-          setSelectedProduct(null);
-        }}
-        lipglossShades={products.filter((p) => p.category === 'Lipgloss')}
-        selectedMiniShade={selectedMiniShade}
-        setSelectedMiniShade={setSelectedMiniShade}
-        shadeSwatches={{}}
-      />
-
-      <ShadesModal
-        show={showSqueezMiniModal}
-        onClose={() => {
-          setShowSqueezMiniModal(false);
-          setSqueezSelectedMiniShades([]);
-          setPendingLipglossShade(null);
-          setPendingQuantity(1);
-        }}
-        title={`Select ${pendingQuantity} Mini Shade${pendingQuantity === 1 ? '' : 's'}`}
-        onDone={() => {
-          if (!pendingLipglossShade) return;
-          if (pendingQuantity > 0 && squeezSelectedMiniShades.length !== pendingQuantity) return;
-
-          squeezSelectedMiniShades.forEach((miniId) => {
-            const miniShadeName = lipglossProducts.find((p) => p.id === miniId)?.name?.replace('Lipgloss - ', '') || miniId;
-            const uniqueId = `${pendingLipglossShade.id}-t-squeez-mini-m-${miniId}`;
-            const item = {
-              ...pendingLipglossShade,
-              id: uniqueId,
-              name: `${pendingLipglossShade.name} (Squeez, Mini: ${miniShadeName})`,
-              selectedType: 'squeez-mini',
-              miniShade: miniId,
-            };
-            addToCart(item);
-          });
-
-          setShowSqueezMiniModal(false);
-          setSqueezSelectedMiniShades([]);
-          setPendingLipglossShade(null);
-          setPendingQuantity(1);
-        }}
-        lipglossShades={lipglossShadesForModal}
-        selectedShades={squeezSelectedMiniShades}
-        setSelectedShades={setSqueezSelectedMiniShades}
-        requiredCount={pendingQuantity}
-        shadeSwatches={shadeSwatches}
       />
 
       <ShadesModal
