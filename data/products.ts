@@ -9,7 +9,7 @@ const baseProducts: Product[] = [
     description: '1 Squeez + 1 Big Brush lipgloss of your choice',
     descriptionAr: '١ سكويز + ١ بيج براش من اختيارك',
     price: 449,
-    originalPrice: 519,
+    originalPrice: 550,
     image: '/b1.jpeg',
     images: ['/b1.jpeg'],
     category: 'Bundles',
