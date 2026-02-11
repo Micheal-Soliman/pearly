@@ -15,7 +15,7 @@ type CartItem = {
   quantity: number;
   price: number;
   bundleShades?: string[];
-  bundleSteps?: { label: string; labelAr?: string }[];
+  bundleSteps?: { label: string }[];
 };
 
 type Props = {

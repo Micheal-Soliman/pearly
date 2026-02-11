@@ -1,20 +1,17 @@
 export interface Product {
   id: string;
   name: string;
-  nameAr: string;
   description: string;
-  descriptionAr: string;
   price: number;
   originalPrice?: number;
   image: string;
   images: string[];
   category: string;
-  categoryAr: string;
   inStock: boolean;
   featured: boolean;
   bestSeller?: boolean;
   selectedType?: 'big-brush' | 'squeez';
-  bundleSteps?: { label: string; labelAr?: string }[];
+  bundleSteps?: { label: string }[];
 }
 
 export interface CartItem extends Product {

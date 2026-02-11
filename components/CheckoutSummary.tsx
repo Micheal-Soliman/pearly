@@ -14,7 +14,7 @@ type CartItem = {
   price: number;
   selectedType?: string;
   bundleShades?: string[];
-  bundleSteps?: { label: string; labelAr?: string }[];
+  bundleSteps?: { label: string }[];
 };
 
 type Props = {
