@@ -39,6 +39,7 @@ export default function Home() {
   const [pendingBundleQuantity, setPendingBundleQuantity] = useState<number>(1);
 
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
+  const baseLipglossProduct = products.find((p) => p.category === 'Lipgloss' && p.isShade !== true);
   const shadeSwatches: Record<string, string> = {
     '10': '#F8BBD0',
     '11': '#8B5E3C',
@@ -67,8 +68,9 @@ export default function Home() {
     const qty = Math.max(1, Number(product?.quantity || 1));
 
     if (product.category === 'Lipgloss') {
-      const st = product.selectedType || 'big-brush';
-      window.location.href = `/products/${product.id}?category=${encodeURIComponent('Lipgloss')}&page=1&openShades=1&qty=${encodeURIComponent(String(qty))}&type=${encodeURIComponent(String(st))}`;
+      setSelectedProduct(product);
+      setSelectedType(product.selectedType || 'big-brush');
+      setShowModal(true);
       return;
     } else if (product.category === 'Bundles') {
       const steps = getBundleSteps(product);
@@ -94,15 +96,30 @@ export default function Home() {
 
   const confirmAddToCart = () => {
     if (selectedProduct) {
-      const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
       const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
       if (selectedProduct.category === 'Lipgloss') {
         const qty = Math.max(1, Number(selectedProduct?.quantity || 1));
-        window.location.href = `/products/${selectedProduct.id}?category=${encodeURIComponent('Lipgloss')}&page=1&openShades=1&qty=${encodeURIComponent(String(qty))}&type=${encodeURIComponent(String(selectedType))}`;
+        const shadeId = String(selectedProduct.id);
+        const shadeName = (selectedProduct.name || shadeId).replace('Lipgloss - ', '');
+        const base = baseLipglossProduct || selectedProduct;
+        const uniqueId = `${base.id}-t-${selectedType}-s-${shadeId}`;
+
+        for (let i = 0; i < qty; i++) {
+          addToCart({
+            ...base,
+            id: uniqueId,
+            name: `${base.name} (${typeLabel}, Shade: ${shadeName})`,
+            selectedType,
+            shadeId,
+          });
+        }
+
         setShowModal(false);
         setSelectedProduct(null);
         return;
       }
+
+      const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
       addToCart({
         ...selectedProduct,
         id: uniqueId,
@@ -147,7 +164,11 @@ export default function Home() {
         products={products}
         isFavorite={isFavorite}
         toggleFavorite={toggleFavorite}
-        handleAddToCart={handleAddToCart}
+        onSelectShade={(shade) => {
+          setSelectedProduct(shade);
+          setSelectedType('big-brush');
+          setShowModal(true);
+        }}
       />
 
       {/* Full Width Banner */}

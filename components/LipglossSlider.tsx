@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import ProductCard from '@/components/ProductCard';
+import { Heart, ShoppingBag } from 'lucide-react';
 
 type Product = any;
 
@@ -10,13 +11,11 @@ type Props = {
   products: Product[];
   isFavorite: (id: string) => boolean;
   toggleFavorite: (e: React.MouseEvent, product: Product) => void;
-  handleAddToCart: (product: Product) => void;
+  onSelectShade: (shadeProduct: Product) => void;
 };
 
-export default function LipglossSlider({ products, isFavorite, toggleFavorite, handleAddToCart }: Props) {
+export default function LipglossSlider({ products, isFavorite, toggleFavorite, onSelectShade }: Props) {
   const sliderRef = useRef<HTMLDivElement>(null);
-  const hrefQuery = { category: 'Lipgloss', page: '1' };
-  const noopEvent = { preventDefault: () => {}, stopPropagation: () => {} } as any;
 
   return (
     <section className="py-12 sm:py-16 bg-[#ffe9f0] relative overflow-hidden">
@@ -39,7 +38,7 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, h
         <div className="relative">
           <div ref={sliderRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide scroll-smooth -mx-4 px-4">
             {products
-              .filter((p) => p.category === 'Lipgloss' && p.isShade !== true)
+              .filter((p) => p.category === 'Lipgloss' && p.isShade === true)
               .sort((a, b) => {
                 if (a.bestSeller && !b.bestSeller) return -1;
                 if (!a.bestSeller && b.bestSeller) return 1;
@@ -48,13 +47,66 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, h
               .slice(0, 8)
               .map((product: Product) => (
                 <div key={product.id} className="flex-none w-[280px] sm:w-[320px] snap-start">
-                  <ProductCard
-                    product={product}
-                    isFavorite={isFavorite}
-                    onToggleFavorite={(p) => toggleFavorite(noopEvent, p)}
-                    onAddToCart={(p) => handleAddToCart(p)}
-                    hrefQuery={hrefQuery}
-                  />
+                  <div className="group relative h-full">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onSelectShade(product)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') onSelectShade(product);
+                      }}
+                      className="block w-full text-left cursor-pointer"
+                    >
+                      <div className="relative h-[340px] sm:h-[420px] mb-4 overflow-hidden rounded-3xl bg-[#ffe9f0] border border-[#ffd3df] shadow-md group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-1">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-cover group-hover:scale-[1.06] transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleFavorite(e, product);
+                          }}
+                          className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-white z-10 shadow-lg border border-[#ffe9f0]"
+                        >
+                          <Heart
+                            className={`w-5 h-5 transition-colors ${
+                              isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : 'text-gray-700'
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      <div className="space-y-3 text-start">
+                        <h3 className="text-lg sm:text-xl font-medium tracking-wide text-gray-900 group-hover:text-[#d6869d] transition-colors line-clamp-1">
+                          {product.name.replace('Lipgloss - ', '')}
+                        </h3>
+                        <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
+
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-base text-[#d6869d] font-semibold">
+                            {product.price} EGP
+                            {product.originalPrice ? (
+                              <span className="line-through text-gray-400 font-medium ml-2">{product.originalPrice} EGP</span>
+                            ) : null}
+                          </p>
+                        </div>
+
+                        <div className="w-full">
+                          <span className="inline-flex items-center gap-2 bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.25em] uppercase font-medium rounded-full shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all">
+                            <ShoppingBag className="w-4 h-4" />
+                            Add To Cart
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
           </div>
