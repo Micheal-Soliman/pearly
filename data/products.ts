@@ -3,6 +3,20 @@ import { PRICE_BUMP, LIPGLOSS_VARIANTS } from '@/lib/pricing';
 
 const baseProducts: Product[] = [
   {
+    id: 'lipgloss',
+    name: 'Lipgloss',
+    description: 'A highly moisturizing lip gloss with a lightweight texture and a non-sticky, long-lasting formula.',
+    price: 199,
+    originalPrice: 240,
+    image: '/lipgloss-chestnut-1.jpg',
+    images: ['/lipgloss-chestnut-1.jpg', '/lipgloss-chestnut-2.jpg', '/lipgloss-chestnut-3.jpg', '/lipgloss-chestnut-4.MP4'],
+    category: 'Lipgloss',
+    inStock: true,
+    featured: true,
+    bestSeller: true,
+    isShade: false,
+  },
+  {
     id: '7',
     name: 'Squeez + Big Brush',
     description: '1 Squeez + 1 Big Brush lipgloss of your choice',
@@ -56,6 +70,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '11',
@@ -69,6 +84,7 @@ const baseProducts: Product[] = [
     inStock: true,
     featured: true,
     bestSeller: true,
+    isShade: true,
   },
   {
     id: '12',
@@ -81,6 +97,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '13',
@@ -93,6 +110,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '14',
@@ -105,6 +123,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '15',
@@ -117,6 +136,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: true,
+    isShade: true,
   },
   {
     id: '16',
@@ -129,6 +149,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '17',
@@ -142,6 +163,7 @@ const baseProducts: Product[] = [
     inStock: true,
     featured: true,
     bestSeller: true,
+    isShade: true,
   },
   {
     id: '18',
@@ -154,6 +176,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '19',
@@ -167,6 +190,7 @@ const baseProducts: Product[] = [
     inStock: true,
     featured: true,
     bestSeller: true,
+    isShade: true,
   },
   {
     id: '20',
@@ -179,6 +203,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '21',
@@ -191,6 +216,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '22',
@@ -203,6 +229,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '23',
@@ -215,6 +242,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '24',
@@ -227,6 +255,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '25',
@@ -239,6 +268,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '26',
@@ -251,6 +281,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '27',
@@ -263,6 +294,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '28',
@@ -275,6 +307,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
   {
     id: '29',
@@ -287,6 +320,7 @@ const baseProducts: Product[] = [
     category: 'Lipgloss',
     inStock: true,
     featured: false,
+    isShade: true,
   },
 ];
 

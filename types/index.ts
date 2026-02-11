@@ -11,6 +11,8 @@ export interface Product {
   featured: boolean;
   bestSeller?: boolean;
   selectedType?: 'big-brush' | 'squeez';
+  isShade?: boolean;
+  shadeId?: string;
   bundleSteps?: { label: string }[];
 }
 

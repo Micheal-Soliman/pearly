@@ -38,7 +38,7 @@ export default function Home() {
 
   const [pendingBundleQuantity, setPendingBundleQuantity] = useState<number>(1);
 
-  const lipglossProducts = products.filter((p) => p.category === 'Lipgloss');
+  const lipglossProducts = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
   const shadeSwatches: Record<string, string> = {
     '10': '#F8BBD0',
     '11': '#8B5E3C',
@@ -67,18 +67,9 @@ export default function Home() {
     const qty = Math.max(1, Number(product?.quantity || 1));
 
     if (product.category === 'Lipgloss') {
-      if (product.selectedType) {
-        const uniqueId = `${product.id}-t-${product.selectedType}`;
-        const typeLabel = product.selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
-        const item = { ...product, id: uniqueId, name: `${product.name} (${typeLabel})`, selectedType: product.selectedType };
-        for (let i = 0; i < qty; i++) {
-          addToCart(item);
-        }
-        return;
-      }
-      setSelectedProduct(product);
-      setSelectedType('big-brush');
-      setShowModal(true);
+      const st = product.selectedType || 'big-brush';
+      window.location.href = `/products/${product.id}?category=${encodeURIComponent('Lipgloss')}&page=1&openShades=1&qty=${encodeURIComponent(String(qty))}&type=${encodeURIComponent(String(st))}`;
+      return;
     } else if (product.category === 'Bundles') {
       const steps = getBundleSteps(product);
       const required = steps.length;
@@ -105,6 +96,13 @@ export default function Home() {
     if (selectedProduct) {
       const uniqueId = `${selectedProduct.id}-t-${selectedType}`;
       const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
+      if (selectedProduct.category === 'Lipgloss') {
+        const qty = Math.max(1, Number(selectedProduct?.quantity || 1));
+        window.location.href = `/products/${selectedProduct.id}?category=${encodeURIComponent('Lipgloss')}&page=1&openShades=1&qty=${encodeURIComponent(String(qty))}&type=${encodeURIComponent(String(selectedType))}`;
+        setShowModal(false);
+        setSelectedProduct(null);
+        return;
+      }
       addToCart({
         ...selectedProduct,
         id: uniqueId,

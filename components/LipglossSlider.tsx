@@ -39,7 +39,7 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, h
         <div className="relative">
           <div ref={sliderRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide scroll-smooth -mx-4 px-4">
             {products
-              .filter((p) => p.category === 'Lipgloss')
+              .filter((p) => p.category === 'Lipgloss' && p.isShade !== true)
               .sort((a, b) => {
                 if (a.bestSeller && !b.bestSeller) return -1;
                 if (!a.bestSeller && b.bestSeller) return 1;

@@ -16,6 +16,7 @@ type Props = {
 };
 
 export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart, hrefQuery }: Props) {
+  if (product?.isShade) return null;
   const isLipgloss = product.category === 'Lipgloss';
   const isBundle = product.category === 'Bundles';
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
@@ -27,19 +28,17 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
   }, [isLipgloss, selectedType]);
 
   return (
-    <div className="group relative">
-      <Link href={{ pathname: `/products/${product.id}`, query: hrefQuery }}>
-        <div className="relative h-[350px] sm:h-[450px] mb-4 overflow-hidden rounded-3xl bg-[#ffe9f0] border-2 border-[#ffe9f0] shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-          <div className="absolute top-2 right-2 text-pink-200 text-xl animate-sparkle z-10"></div>
-
+    <div className="group relative h-full">
+      <Link href={{ pathname: `/products/${product.id}`, query: hrefQuery }} className="block">
+        <div className="relative h-[340px] sm:h-[420px] mb-4 overflow-hidden rounded-3xl bg-[#ffe9f0] border border-[#ffd3df] shadow-md group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-1">
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-3xl"
+            className="object-cover group-hover:scale-[1.06] transition-transform duration-700"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#d6869d]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
           <button
             onClick={(e) => {
@@ -47,22 +46,28 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
               e.stopPropagation();
               onToggleFavorite(product);
             }}
-            className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#ffe9f0] z-10 shadow-lg"
+            className="absolute top-4 left-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:bg-white z-10 shadow-lg border border-[#ffe9f0]"
           >
             <Heart className={`w-5 h-5 transition-colors ${isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : 'text-gray-700'}`} />
           </button>
 
-          {product.bestSeller && (
-            <div className="absolute top-4 right-4 bg-[#d6869d] text-white px-3 py-1 text-xs font-medium tracking-widest uppercase shadow-lg rounded-full z-10">Best</div>
-          )}
+          <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+            {product.bestSeller && (
+              <span className="bg-[#d6869d] text-white px-3 py-1 text-[10px] font-medium tracking-[0.25em] uppercase shadow-lg rounded-full">Best</span>
+            )}
+            {product.originalPrice ? (
+              <span className="bg-white/90 backdrop-blur-sm text-[#d6869d] px-3 py-1 text-[10px] font-medium tracking-[0.25em] uppercase shadow-lg rounded-full border border-[#ffe9f0]">Sale</span>
+            ) : null}
+          </div>
         </div>
       </Link>
 
-      <div className="space-y-3 text-start">
-        <Link href={`/products/${product.id}`}>
-          <h3 className="text-lg sm:text-xl font-medium tracking-wide text-gray-900 hover:text-[#d6869d] transition-colors">
+      <div className="space-y-4 text-start">
+        <Link href={{ pathname: `/products/${product.id}`, query: hrefQuery }} className="block">
+          <h3 className="text-lg sm:text-xl font-medium tracking-wide text-gray-900 group-hover:text-[#d6869d] transition-colors line-clamp-1">
             {product.name}
           </h3>
+          <p className="mt-1 text-sm text-gray-500 line-clamp-2">{product.description}</p>
         </Link>
 
         <div className="flex items-start justify-between gap-3">
@@ -80,9 +85,9 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
               <span className="px-3 py-1 rounded-full text-[11px] tracking-widest uppercase bg-[#ffe9f0] text-[#d6869d] border border-[#ffd3df]">
                 {product.category}
               </span>
-              {product.bestSeller && (
-                <span className="px-3 py-1 rounded-full text-[11px] tracking-widest uppercase bg-[#d6869d] text-white border border-[#d6869d]">
-                  Best
+              {isLipgloss && (
+                <span className="px-3 py-1 rounded-full text-[11px] tracking-widest uppercase bg-white text-[#d6869d] border border-[#ffd3df]">
+                  Choose shade
                 </span>
               )}
             </div>
@@ -156,10 +161,10 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
             const base = isLipgloss ? { ...product, selectedType } : product;
             onAddToCart({ ...base, quantity });
           }}
-          className="w-full bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.25em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl hover:opacity-90"
+          className="w-full bg-[#d6869d] text-white px-6 py-3 text-xs tracking-[0.25em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:opacity-95"
         >
           <ShoppingBag className="w-4 h-4" />
-          ADD TO CART
+          {isLipgloss ? 'CHOOSE SHADE' : 'ADD TO CART'}
         </button>
       </div>
     </div>

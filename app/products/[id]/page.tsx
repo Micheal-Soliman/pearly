@@ -8,10 +8,9 @@ import Footer from '@/components/Footer';
 import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
-import { ShoppingBag, Heart, Check } from 'lucide-react';
+import { ShoppingBag, Heart, Check, Star, Truck, Users, Package } from 'lucide-react';
 import ProductMediaGallery from '@/components/ProductMediaGallery';
 import ProductHeaderPrice from '@/components/ProductHeaderPrice';
-import QuantitySelector from '@/components/QuantitySelector';
 import ShadesModal from '@/components/ShadesModal';
 import ProductCard from '@/components/ProductCard';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
@@ -31,11 +30,16 @@ export default function ProductPage() {
   const [selectedType, setSelectedType] = useState<'big-brush' | 'squeez'>('big-brush');
   const [selectedShades, setSelectedShades] = useState<string[]>([]);
   const [showShadesModal, setShowShadesModal] = useState(false);
+  const [showLipglossShadesModal, setShowLipglossShadesModal] = useState(false);
+  const [selectedLipglossShades, setSelectedLipglossShades] = useState<string[]>([]);
 
   const product = products.find((p) => p.id === params.id);
 
   const squeezPricing = getLipglossVariantPricing('squeez');
   const bigBrushPricing = getLipglossVariantPricing('big-brush');
+
+  const rating = (product as any)?.rating ?? 5;
+  const reviewCount = (product as any)?.reviewCount ?? 148;
 
   if (!product) {
     return (
@@ -50,17 +54,39 @@ export default function ProductPage() {
     );
   }
 
+  useEffect(() => {
+    if (product.category !== 'Lipgloss') return;
+    if (!product.isShade) return;
+    const cat = searchParams.get('category') || 'Lipgloss';
+    const page = searchParams.get('page') || '1';
+    router.replace(`/products/lipgloss?category=${encodeURIComponent(cat)}&page=${encodeURIComponent(page)}`);
+  }, [product.category, product.isShade, router, searchParams]);
+
   const handleAddToCart = () => {
     let productToAdd: any = product;
     if (product.category === 'Lipgloss') {
-      const uniqueId = `${product.id}-t-${selectedType}`;
+      if (selectedLipglossShades.length !== quantity) {
+        setShowLipglossShadesModal(true);
+        return;
+      }
+
       const typeLabel = selectedType === 'squeez' ? 'Squeez' : 'Big Brush';
-      productToAdd = {
-        ...product,
-        id: uniqueId,
-        name: `${product.name} (${typeLabel})`,
-        selectedType,
-      };
+      selectedLipglossShades.forEach((shadeId) => {
+        const shadeName = products.find((p) => p.id === shadeId)?.name?.replace('Lipgloss - ', '') || shadeId;
+        const uniqueId = `${product.id}-t-${selectedType}-s-${shadeId}`;
+        const itemToAdd: any = {
+          ...product,
+          id: uniqueId,
+          name: `${product.name} (${typeLabel}, Shade: ${shadeName})`,
+          selectedType,
+          shadeId,
+        };
+        addToCart(itemToAdd);
+      });
+
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 3000);
+      return;
     } else if (product.category === 'Bundles') {
       const required = getBundleSteps(product).length;
       if (required > 0 && selectedShades.length !== required) {
@@ -138,7 +164,7 @@ export default function ProductPage() {
   };
 
   const images = product.images || [product.image];
-  const lipglossShades = products.filter((p) => p.category === 'Lipgloss');
+  const lipglossShades = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
   const shadeSwatches: Record<string, string> = {
     '10': '#F8BBD0',
     '11': '#8B5E3C',
@@ -173,12 +199,49 @@ export default function ProductPage() {
     ? undefined
     : `Select ${getStepLabelForIndex(bundleSteps, Math.min(requiredBundleCount - 1, selectedShades.length))} Shade`;
   const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
-  const canAddToCart = !addedToCart && isBundleSelectionComplete;
+  const isLipglossSelectionComplete = product.category !== 'Lipgloss' || selectedLipglossShades.length === quantity;
+  const canAddToCart = !addedToCart && isBundleSelectionComplete && isLipglossSelectionComplete;
+
+  const relatedProducts = (() => {
+    const base = products.filter((p) => !(p.category === 'Lipgloss' && p.isShade) && p.id !== product.id);
+    if (product.category === 'Lipgloss') {
+      const featured = base.filter((p) => p.featured || p.bestSeller);
+      return (featured.length ? featured : base).slice(0, 4);
+    }
+    return base.filter((p) => p.category === product.category).slice(0, 4);
+  })();
+
+  const handleLipglossSwatchClick = (shadeId: string) => {
+    if (product.category !== 'Lipgloss') return;
+
+    setSelectedLipglossShades((prev) => {
+      const next = [...prev];
+      const existingIndex = next.indexOf(shadeId);
+      if (existingIndex !== -1) {
+        next.splice(existingIndex, 1);
+        return next;
+      }
+
+      if (next.length >= quantity) return next;
+      next.push(shadeId);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (product.category !== 'Bundles') return;
     if (searchParams.get('openShades') !== '1') return;
     setShowShadesModal(true);
+  }, [product.category, searchParams]);
+
+  useEffect(() => {
+    if (product.category !== 'Lipgloss') return;
+    if (searchParams.get('openShades') !== '1') return;
+    const q = parseInt(searchParams.get('qty') || '1', 10);
+    const t = searchParams.get('type');
+    if (!Number.isNaN(q) && q > 0) setQuantity(q);
+    if (t === 'squeez' || t === 'big-brush') setSelectedType(t);
+    setShowLipglossShadesModal(true);
   }, [product.category, searchParams]);
 
   return (
@@ -200,64 +263,131 @@ export default function ProductPage() {
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <ProductMediaGallery images={images} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+            <div>
+              <ProductMediaGallery images={images} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+              {images.length > 1 ? (
+                <div className="mt-6 flex items-center justify-center gap-2">
+                  {images.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setSelectedImage(idx)}
+                      className={`h-2 rounded-full transition-all ${idx === selectedImage ? 'w-10 bg-[#d6869d]' : 'w-2 bg-gray-300 hover:bg-gray-400'}`}
+                      aria-label={`Go to image ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
 
             <div className="space-y-8">
-              <ProductHeaderPrice
-                category={product.category}
-                name={product.name}
-                currentPrice={getCurrentPrice()}
-                isLipgloss={product.category === 'Lipgloss'}
-                selectedType={selectedType}
-                originalPrice={product.originalPrice}
-                bestSeller={product.bestSeller}
-              />
+              {product.category === 'Lipgloss' ? (
+                <div className="space-y-2">
+                  <h1 className="text-2xl sm:text-3xl font-light tracking-wide text-gray-900">
+                    {product.name}{' '}
+                    <span className="text-gray-600">({selectedType === 'squeez' ? 'squeeze tube' : 'big brush'})</span>
+                  </h1>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${i < Math.round(rating) ? 'fill-[#d6869d] text-[#d6869d]' : 'text-gray-300'}`}
+                        />
+                      ))}
+                    </div>
+                    <span>({reviewCount} customer reviews)</span>
+                  </div>
+
+                  <div className="pt-2 text-2xl font-light tracking-wide text-gray-900">
+                    {Number(getCurrentPrice()).toFixed(2)} EGP
+                  </div>
+                </div>
+              ) : (
+                <ProductHeaderPrice
+                  category={product.category}
+                  name={product.name}
+                  currentPrice={getCurrentPrice()}
+                  isLipgloss={product.category === 'Lipgloss'}
+                  selectedType={selectedType}
+                  originalPrice={product.originalPrice}
+                  bestSeller={product.bestSeller}
+                />
+              )}
 
               {product.category === 'Lipgloss' && (
-                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
-                  <p className="text-sm tracking-wide text-[#d6869d] font-medium mb-4">Choose Your Option</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedType('squeez');
-                      }}
-                      className={`w-full p-4 border-2 transition-all rounded-2xl ${
-                        selectedType === 'squeez'
-                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
-                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                      }`}
-                    >
-                      <div className="text-left">
-                        <p className="font-medium">Squeez</p>
-                        <p className="text-sm opacity-80">
-                          <span className="font-semibold">{squeezPricing.price} EGP</span>
-                          <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
-                        </p>
-                        <p className="text-xs opacity-80 mt-1">No mini</p>
-                      </div>
-                    </button>
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-xs tracking-[0.25em] uppercase text-gray-500 mb-3">TYPE</p>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedType('squeez')}
+                        className={`px-4 py-2 rounded-full border text-xs tracking-[0.2em] uppercase transition-colors ${
+                          selectedType === 'squeez'
+                            ? 'bg-[#d6869d] border-[#d6869d] text-white'
+                            : 'bg-white border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0]'
+                        }`}
+                      >
+                        Squeez
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedType('big-brush')}
+                        className={`px-4 py-2 rounded-full border text-xs tracking-[0.2em] uppercase transition-colors ${
+                          selectedType === 'big-brush'
+                            ? 'bg-[#d6869d] border-[#d6869d] text-white'
+                            : 'bg-white border-[#ffe9f0] text-[#d6869d] hover:bg-[#ffe9f0]'
+                        }`}
+                      >
+                        Big Brush
+                      </button>
+                    </div>
+                  </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedType('big-brush');
-                      }}
-                      className={`w-full p-4 border-2 transition-all rounded-2xl ${
-                        selectedType === 'big-brush'
-                          ? 'border-[#d6869d] bg-[#d6869d] text-white shadow-lg'
-                          : 'border-[#ffe9f0] hover:border-[#d6869d] hover:bg-[#ffe9f0]'
-                      }`}
-                    >
-                      <div className="text-left">
-                        <p className="font-medium">Big Brush</p>
-                        <p className="text-sm opacity-80">
-                          <span className="font-semibold">{bigBrushPricing.price} EGP</span>
-                          <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
-                        </p>
-                        <p className="text-xs opacity-80 mt-1">No mini</p>
+                  <div>
+                    <div className="flex items-end justify-between gap-4 mb-4">
+                      <div>
+                        <p className="text-xs tracking-[0.25em] uppercase text-gray-500">COLOR</p>
+                        <p className="mt-1 text-xs text-gray-600">{selectedLipglossShades.length}/{quantity} selected</p>
                       </div>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLipglossShades([])}
+                        className="text-xs tracking-[0.2em] uppercase text-[#d6869d] hover:opacity-80"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-6 sm:grid-cols-7 gap-3">
+                      {lipglossShadesForModal.map((s) => {
+                        const count = selectedLipglossShades.filter((x) => x === String(s.id)).length;
+                        const isSelected = count > 0;
+                        return (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleLipglossSwatchClick(String(s.id))}
+                            className={`relative h-11 w-11 sm:h-10 sm:w-10 rounded-full border transition-all ${
+                              isSelected ? 'border-[#d6869d] ring-2 ring-[#d6869d]/30' : 'border-gray-300 hover:border-gray-400'
+                            }`}
+                            style={{ backgroundColor: s.swatchColor || '#fff' }}
+                            aria-label={s.name}
+                          >
+                            {count > 1 ? (
+                              <span className="absolute -top-2 -right-2 h-5 min-w-5 px-1 rounded-full bg-[#d6869d] text-white text-[10px] leading-5 text-center">
+                                {count}
+                              </span>
+                            ) : null}
+                            {isSelected ? (
+                              <span className="absolute inset-0 rounded-full bg-white/30" />
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -311,13 +441,31 @@ export default function ProductPage() {
                 </div>
               )}
 
-              <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+              <div className="flex items-center gap-4">
+                <div className="flex items-center border-2 border-[#ffe9f0] rounded-2xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="w-12 h-12 flex items-center justify-center text-[#d6869d] hover:bg-[#ffe9f0] transition-colors"
+                  >
+                    −
+                  </button>
+                  <div className="w-12 h-12 flex items-center justify-center font-medium text-[#d6869d]">
+                    {quantity}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="w-12 h-12 flex items-center justify-center text-[#d6869d] hover:bg-[#ffe9f0] transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
 
-              <div className="space-y-4">
                 <button
                   onClick={handleAddToCart}
                   disabled={!canAddToCart}
-                  className="w-full bg-[#d6869d] text-white px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:opacity-90"
+                  className="flex-1 bg-[#d6869d] text-white px-8 h-12 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:opacity-90"
                 >
                   {addedToCart ? (
                     <>
@@ -331,52 +479,66 @@ export default function ProductPage() {
                     </>
                   )}
                 </button>
+              </div>
 
                 {!canAddToCart && !addedToCart && (
                   <p className="text-xs text-gray-600 text-center">
                     {product.category === 'Bundles' && !isBundleSelectionComplete
                       ? `Please select ${requiredBundleCount} shades first.`
+                      : (product.category === 'Lipgloss' && !isLipglossSelectionComplete)
+                        ? `Please select ${quantity} shade${quantity === 1 ? '' : 's'} first.`
                       : ''}
                   </p>
                 )}
 
-                <button
-                  onClick={toggleFavorite}
-                  className="w-full border-2 border-[#d6869d] text-[#d6869d] px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl"
-                >
-                  <Heart
-                    className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : ''
-                      }`}
-                  />
-                  {isFavorite(product.id) ? 'REMOVE FROM FAVORITES' : 'ADD TO FAVORITES'}
-                </button>
-              </div>
+              <button
+                onClick={toggleFavorite}
+                className="w-full border-2 border-[#d6869d] text-[#d6869d] px-8 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-[#ffe9f0] transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl"
+              >
+                <Heart className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-[#d6869d] text-[#d6869d]' : ''}`} />
+                {isFavorite(product.id) ? 'REMOVE FROM FAVORITES' : 'ADD TO FAVORITES'}
+              </button>
 
-              <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#d6869d] font-medium">Category</span>
-                  <span className="font-medium text-gray-800">{product.category}</span>
+              {product.category === 'Lipgloss' ? (
+                <div className="pt-2 space-y-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-3">
+                    <Users className="w-4 h-4 text-[#d6869d]" />
+                    <span>Join over +50k happy customers</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Truck className="w-4 h-4 text-[#d6869d]" />
+                    <span>2-7 delivery days</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Package className="w-4 h-4 text-[#d6869d]" />
+                    <span>Free shipping over 999 EGP</span>
+                  </div>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#d6869d] font-medium">Availability</span>
-                  <span className={`font-medium ${product.inStock ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                    {product.inStock ? 'In Stock' : 'Out of Stock'}
-                  </span>
+              ) : (
+                <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg space-y-4">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#d6869d] font-medium">Category</span>
+                    <span className="font-medium text-gray-800">{product.category}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#d6869d] font-medium">Availability</span>
+                    <span className={`font-medium ${product.inStock ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
-          <div className="mt-32">
-            <h2 className="text-2xl sm:text-3xl font-light tracking-wide mb-12 text-center">
-              <span className="text-[#d6869d]"> You May Also Like </span>
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products
-                .filter((p) => p.category === product.category && p.id !== product.id)
-                .slice(0, 4)
-                .map((relatedProduct) => (
+          {relatedProducts.length > 0 ? (
+            <div className="mt-32">
+              <h2 className="text-2xl sm:text-3xl font-light tracking-wide mb-12 text-center">
+                <span className="text-[#d6869d]"> You May Also Like </span>
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {relatedProducts.map((relatedProduct) => (
                   <ProductCard
                     key={relatedProduct.id}
                     product={relatedProduct}
@@ -386,8 +548,9 @@ export default function ProductPage() {
                     hrefQuery={{ category: categoryFromUrl, page: pageFromUrl }}
                   />
                 ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
 
@@ -402,6 +565,21 @@ export default function ProductPage() {
         shadeSwatches={shadeSwatches}
         title={bundleModalTitle}
         stepLabels={bundleStepLabels}
+      />
+
+      <ShadesModal
+        show={showLipglossShadesModal && product.category === 'Lipgloss'}
+        onClose={() => setShowLipglossShadesModal(false)}
+        onDone={() => {
+          if (selectedLipglossShades.length !== quantity) return;
+          setShowLipglossShadesModal(false);
+        }}
+        title={`Select ${quantity} Shade${quantity === 1 ? '' : 's'}`}
+        lipglossShades={lipglossShadesForModal}
+        selectedShades={selectedLipglossShades}
+        setSelectedShades={setSelectedLipglossShades}
+        requiredCount={quantity}
+        shadeSwatches={shadeSwatches}
       />
     </div>
   );
