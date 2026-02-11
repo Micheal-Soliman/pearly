@@ -27,7 +27,7 @@ export default function FlavoursGrid() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
           {flavours.map((flavour, idx) => (
-            <Link key={idx} href={`/products/${flavour.productId}`} className="group text-center">
+            <Link key={idx} href={`/products/lipgloss?shade=${encodeURIComponent(flavour.productId)}`} className="group text-center">
               <div className="relative w-full aspect-square mb-4 bg-white rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-black transition-colors">
                 <Image src={flavour.image} alt={flavour.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>

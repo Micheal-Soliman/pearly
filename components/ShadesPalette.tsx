@@ -25,7 +25,7 @@ export default function ShadesPalette() {
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
           {shades.map((shade, idx) => (
-            <Link key={idx} href={`/products/${shade.productId}`} className="text-center group">
+            <Link key={idx} href={`/products/lipgloss?shade=${encodeURIComponent(shade.productId)}`} className="text-center group">
               <div className={`w-16 h-16 mx-auto mb-3 rounded-full ${shade.color} group-hover:scale-110 transition-transform shadow-lg`}></div>
               <p className="text-xs font-light tracking-wide">{shade.name}</p>
             </Link>

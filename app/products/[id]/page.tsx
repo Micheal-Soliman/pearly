@@ -244,6 +244,16 @@ export default function ProductPage() {
     setShowLipglossShadesModal(true);
   }, [product.category, searchParams]);
 
+  useEffect(() => {
+    if (product.category !== 'Lipgloss') return;
+    if (product.isShade) return;
+    const shade = searchParams.get('shade');
+    if (!shade) return;
+
+    setQuantity(1);
+    setSelectedLipglossShades([shade]);
+  }, [product.category, product.isShade, searchParams]);
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -371,7 +381,9 @@ export default function ProductPage() {
                             type="button"
                             onClick={() => handleLipglossSwatchClick(String(s.id))}
                             className={`relative h-11 w-11 sm:h-10 sm:w-10 rounded-full border transition-all ${
-                              isSelected ? 'border-[#d6869d] ring-2 ring-[#d6869d]/30' : 'border-gray-300 hover:border-gray-400'
+                              isSelected
+                                ? 'border-[#d6869d] ring-4 ring-[#d6869d]/35 shadow-md'
+                                : 'border-gray-300 hover:border-gray-400'
                             }`}
                             style={{ backgroundColor: s.swatchColor || '#fff' }}
                             aria-label={s.name}
@@ -382,7 +394,14 @@ export default function ProductPage() {
                               </span>
                             ) : null}
                             {isSelected ? (
-                              <span className="absolute inset-0 rounded-full bg-white/30" />
+                              <>
+                                <span className="absolute inset-0 rounded-full bg-black/10" />
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                  <span className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center shadow">
+                                    <Check className="w-4 h-4 text-[#d6869d]" />
+                                  </span>
+                                </span>
+                              </>
                             ) : null}
                           </button>
                         );
