@@ -15,6 +15,7 @@ import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import ShadesModal from '@/components/ShadesModal';
 import type { Product } from '@/types';
+import { motion } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { getLipglossVariantPricing } from '@/lib/pricing';
@@ -144,7 +145,7 @@ function ProductsContent() {
   };
 
   const lipglossShadesForModal = useMemo(
-    () => lipglossProducts.map((p) => ({ id: p.id, name: p.name, swatchColor: shadeSwatches[p.id] })),
+    () => lipglossProducts.map((p) => ({ id: p.id, name: p.name, swatchColor: shadeSwatches[p.id], image: p.shadeImages?.[0] || p.image })),
     [lipglossProducts]
   );
 
@@ -315,16 +316,50 @@ function ProductsContent() {
 
       
 
-      <section className="py-12 border-b border-[#ffe9f0] bg-[#ffe9f0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-lg sm:text-xl font-light tracking-widest uppercase mb-2">
-              <span className="text-[#d6869d]"> Filter By Category</span>
+      <section className="py-12 sm:py-16 bg-gradient-to-b from-[#ffe9f0] to-white relative overflow-hidden">
+        {/* Elegant borders */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#d6869d]/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#d6869d]/30 to-transparent"></div>
+        
+        {/* Decorative dots */}
+        <div className="absolute top-20 left-[10%] w-2 h-2 rounded-full bg-[#d6869d]/20"></div>
+        <div className="absolute top-28 right-[15%] w-1.5 h-1.5 rounded-full bg-[#d6869d]/25"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            className="text-center mb-10 md:mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.span 
+              className="inline-block text-[#d6869d] text-[10px] tracking-[0.4em] uppercase font-medium mb-3"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <span className="inline-block mx-2">✦</span>
+              Browse
+              <span className="inline-block mx-2">✦</span>
+            </motion.span>
+            
+            <h2 className="text-2xl sm:text-3xl font-light tracking-widest uppercase text-gray-900">
+              <span className="text-[#d6869d]">Filter By Category</span>
             </h2>
-            <p className="text-sm text-gray-600 font-light">
+            
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <span className="h-px w-16 bg-gradient-to-r from-transparent to-[#d6869d]/40"></span>
+              <span className="text-[#d6869d] text-sm">✦</span>
+              <span className="h-px w-16 bg-gradient-to-l from-transparent to-[#d6869d]/40"></span>
+            </div>
+            
+            <p className="text-sm text-gray-600 font-light mt-4 tracking-wide">
               Choose a category to find your perfect products
             </p>
-          </div>
+          </motion.div>
+          
           <CategoryPills
             categories={categories}
             selectedCategory={selectedCategory}
@@ -337,8 +372,12 @@ function ProductsContent() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-white relative overflow-hidden">
+        {/* Elegant borders */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#d6869d]/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#d6869d]/30 to-transparent"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* View Mode Toggle - Mobile Only */}
           <ViewModeToggle count={filteredProducts.length} viewMode={viewMode} setViewMode={setViewMode} />
 
@@ -366,22 +405,22 @@ function ProductsContent() {
             updateQuery={updateQuery}
           />
 
-          <div className={`grid gap-6 ${
+          <div className={`grid gap-6 auto-rows-fr ${
             viewMode === 'single' 
               ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
               : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3'
           }`}>
             {currentProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isFavorite={isFavorite}
-                onToggleFavorite={(p) => toggleFavoriteProduct(p)}
-                onAddToCart={(productToAdd) => handleAddToCart(productToAdd)}
-                hrefQuery={{ category: selectedCategory, page: String(currentPage) }}
-              />
+              <div key={product.id} className="h-full flex flex-col">
+                <ProductCard
+                  product={product}
+                  isFavorite={isFavorite}
+                  onToggleFavorite={(p) => toggleFavoriteProduct(p)}
+                  onAddToCart={(productToAdd) => handleAddToCart(productToAdd)}
+                  hrefQuery={{ category: selectedCategory, page: String(currentPage) }}
+                />
+              </div>
             ))}
-
           </div>
 
           {filteredProducts.length === 0 && (

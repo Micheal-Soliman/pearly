@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 
 type Props = {
   images: string[];
@@ -10,12 +10,32 @@ type Props = {
 };
 
 export default function ProductMediaGallery({ images, selectedImage, setSelectedImage }: Props) {
+  // Reset selected image if out of bounds
+  useEffect(() => {
+    if (selectedImage >= images.length && images.length > 0) {
+      setSelectedImage(0);
+    }
+  }, [selectedImage, images.length, setSelectedImage]);
+
+  const currentImage = images[selectedImage];
+  if (!currentImage) {
+    return (
+      <div className="space-y-4">
+        <div className="relative h-[500px] lg:h-[700px] bg-[#ffe9f0] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffe9f0] flex items-center justify-center">
+          <span className="text-gray-400">No image available</span>
+        </div>
+      </div>
+    );
+  }
+
+  const isVideo = currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4');
+
   return (
     <div className="space-y-4">
       <div className="relative h-[500px] lg:h-[700px] bg-[#ffe9f0] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#ffe9f0]">
-        {images[selectedImage].toLowerCase().endsWith('.mov') || images[selectedImage].toLowerCase().endsWith('.mp4') ? (
+        {isVideo ? (
           <video
-            src={images[selectedImage]}
+            src={currentImage}
             controls
             autoPlay
             loop
@@ -23,7 +43,7 @@ export default function ProductMediaGallery({ images, selectedImage, setSelected
             className="w-full h-full object-contain"
           />
         ) : (
-          <Image src={images[selectedImage]} alt={String(selectedImage)} fill className="object-cover" />
+          <Image src={currentImage} alt={String(selectedImage)} fill className="object-cover" />
         )}
       </div>
 
@@ -37,7 +57,11 @@ export default function ProductMediaGallery({ images, selectedImage, setSelected
                 selectedImage === idx ? 'ring-4 ring-[#d6869d] shadow-lg scale-105' : 'ring-2 ring-[#ffe9f0] hover:ring-[#d6869d]'
               }`}
             >
-              {img.toLowerCase().endsWith('.mov') || img.toLowerCase().endsWith('.mp4') ? (
+              {!img ? (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400 text-xs">No image</span>
+                </div>
+              ) : img.toLowerCase().endsWith('.mov') || img.toLowerCase().endsWith('.mp4') ? (
                 <div className="w-full h-full bg-gray-900 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="w-8 h-8 mx-auto mb-1 rounded-full bg-black flex items-center justify-center">

@@ -13,6 +13,7 @@ export interface Product {
   selectedType?: 'big-brush' | 'squeez';
   isShade?: boolean;
   shadeId?: string;
+  shadeImages?: string[];
   bundleSteps?: { label: string }[];
 }
 

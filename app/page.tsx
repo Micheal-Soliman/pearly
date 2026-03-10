@@ -12,7 +12,6 @@ import FeedbackLightbox from '@/components/FeedbackLightbox';
 import HomeHero from '@/components/HomeHero';
 import CustomerReviews from '@/components/CustomerReviews';
 import ClientMomentsGallery from '@/components/ClientMomentsGallery';
-
 import CategoriesSection from '@/components/CategoriesSection';
 import FullWidthBanner from '@/components/FullWidthBanner';
 import BundlesSection from '@/components/BundlesSection';
@@ -171,10 +170,6 @@ export default function Home() {
         }}
       />
 
-      {/* Full Width Banner */}
-      <FullWidthBanner />
-
-      {/* Featured Flavours Section */}
       <FlavoursGrid />
 
       {/* Bundle Savings Section */}
