@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Minus, Plus, X } from 'lucide-react';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 import { products } from '@/data/products';
@@ -16,6 +17,7 @@ type CartItem = {
   price: number;
   bundleShades?: string[];
   bundleSteps?: { label: string }[];
+  shadeId?: string;
 };
 
 type Props = {
@@ -33,17 +35,36 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
   const bundleShades = Array.isArray(item.bundleShades) ? item.bundleShades : [];
   const baseName = item.category === 'Bundles' ? item.name.split(' (')[0] : item.name;
 
+  // Build URL with selected options for editing
+  const buildEditUrl = () => {
+    const params = new URLSearchParams();
+    if (item.selectedType) params.set('type', item.selectedType);
+    if (item.shadeId) params.set('shade', item.shadeId);
+    if (item.bundleShades && item.bundleShades.length > 0) {
+      item.bundleShades.forEach((shade, idx) => {
+        params.set(`shade${idx}`, shade);
+      });
+    }
+    const queryString = params.toString();
+    return `/products/${item.id}${queryString ? `?${queryString}` : ''}`;
+  };
+
+  const editUrl = buildEditUrl();
+
   return (
     <div className="relative flex flex-col sm:flex-row items-start sm:items-stretch gap-4 sm:gap-6 p-4 sm:p-6 bg-white rounded-3xl shadow-lg border-2 border-[#ffe9f0] hover:shadow-xl transition-all duration-300">
-      <div className="relative w-full h-40 sm:w-32 sm:h-32 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden">
-        <Image src={item.image} alt={item.name} fill className="object-cover" />
-      </div>
+      <Link href={editUrl} className="relative w-full h-40 sm:w-32 sm:h-32 flex-shrink-0 bg-[#ffe9f0] rounded-2xl overflow-hidden cursor-pointer group">
+        <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+      </Link>
 
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <div className="relative flex items-start mb-2">
             <div>
-              <h3 className="text-base font-medium tracking-wide text-gray-800">{baseName}</h3>
+              <Link href={editUrl} className="text-base font-medium tracking-wide text-gray-800 hover:text-[#d6869d] transition-colors cursor-pointer">
+                {baseName}
+              </Link>
               {item.selectedType && (
                 <p className="text-sm text-[#d6869d] font-medium mt-1">
                   {item.selectedType === 'squeez' || item.selectedType === 'squeez-mini' ? 'Squeez' : 'Big Brush'}

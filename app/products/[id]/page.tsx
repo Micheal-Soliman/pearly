@@ -625,9 +625,9 @@ export default function ProductPage() {
               {/* Trust Badges - More Elegant */}
               <div className="grid grid-cols-3 gap-3 pt-2">
                 {[
-                  { icon: Truck, label: 'Fast Delivery', sub: '2-7 Days' },
+                  { icon: Truck, label: 'Fast Delivery', sub: '3-10 Days' },
                   { icon: Shield, label: 'Secure Payment', sub: '100% Safe' },
-                  { icon: Users, label: 'Happy Customers', sub: '50K+ Orders' },
+                  { icon: Users, label: 'Happy Customers', sub: '+5000' },
                 ].map((badge, idx) => (
                   <div key={idx} className="flex flex-col items-center text-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#d6869d]/10 to-[#e89ab0]/10 flex items-center justify-center">

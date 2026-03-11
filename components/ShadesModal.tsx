@@ -65,7 +65,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
   return (
 
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed top-20 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
 
       <div className="bg-white max-w-lg w-full p-6 rounded-3xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
 
