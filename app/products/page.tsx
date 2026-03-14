@@ -283,7 +283,7 @@ function ProductsContent() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <BannerHero image="/Hero Upp.jpg" title="SHOP" />
+      <BannerHero image="/big brush.jpeg" title="SHOP" />
 
       <FiltersModal
         show={showFilterModal}

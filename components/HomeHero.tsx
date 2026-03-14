@@ -9,10 +9,10 @@ export default function HomeHero() {
   return (
     <section className="relative w-full h-[calc(100vh-80px)] mt-20 overflow-hidden">
       <Image
-        src="/All Products Upp.jpg"
+        src="/4.1 (1).jpg.jpeg"
         alt="Pearly"
         fill
-        className="object-cover object-[45%_center]"
+        className="object-cover object-[45%_80%]"
         priority
       />
       {/* Enhanced gradient overlay for luxury feel */}

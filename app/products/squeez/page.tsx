@@ -12,157 +12,6 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { ShoppingBag, Heart, Check, Star, Truck, Users, Package, ArrowLeft, ChevronRight, Shield, Sparkles, ZoomIn, Minus, Plus } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 
-interface ShadeInfo {
-  id: string;
-  name: string;
-  swatchColor: string;
-  image: string;
-  // 5 images in order: swatch-white, lips-far, lips-close, box, bag
-  shadeImages: {
-    swatch: string;
-    lipsFar: string;
-    lipsClose: string;
-    box: string;
-    bag: string;
-  };
-}
-
-const SHADE_IMAGES: Record<string, ShadeInfo['shadeImages']> = {
-  '10': { // Blossom - Bubble Gum
-    swatch: '/Product shades/blossom/IMG_1564.png',
-    lipsFar: '/Product shades/blossom/1.jpg',
-    lipsClose: '/Product shades/blossom/2.jpg',
-    box: '/Product shades/blossom/big brush/2 (Big Brush).jpg',
-    bag: '/Product shades/blossom/squeeze/3 (Squeez).jpg',
-  },
-  '11': { // Chestnut - Coffee
-    swatch: '/Product shades/chestnut/IMG_1563.png',
-    lipsFar: '/Product shades/chestnut/1.jpg',
-    lipsClose: '/Product shades/chestnut/2.jpg',
-    box: '/Product shades/chestnut/big brush/2( big brush).jpg',
-    bag: '/Product shades/chestnut/squeeze/3 (Squeez).jpg',
-  },
-  '12': { // Cinnamon - Vanilla
-    swatch: '/Product shades/cinnamon/IMG_2032.png',
-    lipsFar: '/Product shades/cinnamon/1.jpg',
-    lipsClose: '/Product shades/cinnamon/2.jpg',
-    box: '/Product shades/cinnamon/big brush/2 ( big brush).jpg',
-    bag: '/Product shades/cinnamon/squeeze/3 (Squeez).jpg',
-  },
-  '13': { // Clear - Coconut
-    swatch: '/Product shades/clear/IMG_2082.png',
-    lipsFar: '/Product shades/clear/1.jpg',
-    lipsClose: '/Product shades/clear/2.jpg',
-    box: '/Product shades/clear/big brush/2 (Big Brush ).jpg',
-    bag: '/Product shades/clear/squeeze/3 ( Squeez).jpg',
-  },
-  '14': { // Cozy Dream - Mixed Berries
-    swatch: '/Product shades/cozy dreams/IMG_1436.png',
-    lipsFar: '/Product shades/cozy dreams/1.jpg',
-    lipsClose: '/Product shades/cozy dreams/2.jpg',
-    box: '/Product shades/cozy dreams/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/cozy dreams/squeeze/3 ( Squeez).jpg',
-  },
-  '15': { // Daisy
-    swatch: '/Product shades/daisy/IMG_1470.png',
-    lipsFar: '/Product shades/daisy/1.jpg',
-    lipsClose: '/Product shades/daisy/2.jpg',
-    box: '/Product shades/daisy/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/daisy/squeeze/3 (Squeez).jpg',
-  },
-  '16': { // Georgia
-    swatch: '/Product shades/georgia/IMG_1297 (1).png',
-    lipsFar: '/Product shades/georgia/1.jpg',
-    lipsClose: '/Product shades/georgia/2.jpg',
-    box: '/Product shades/georgia/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/georgia/squeeze/3 (Squeez).jpg',
-  },
-  '17': { // Gold Honey - Vanilla
-    swatch: '/Product shades/gold honey/IMG_1417 (1).png',
-    lipsFar: '/Product shades/gold honey/1.jpg',
-    lipsClose: '/Product shades/gold honey/2.jpg',
-    box: '/Product shades/gold honey/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/gold honey/squeeze/3 (Squeez).jpg',
-  },
-  '18': { // Heaven - Bubble Gum
-    swatch: '/Product shades/heaven/IMG_1463.png',
-    lipsFar: '/Product shades/heaven/1.jpg',
-    lipsClose: '/Product shades/heaven/2.jpg',
-    box: '/Product shades/heaven/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/heaven/squeeze/3.jpg',
-  },
-  '19': { // Libre
-    swatch: '/Product shades/libre/IMG_1420 (1).png',
-    lipsFar: '/Product shades/libre/1.jpg',
-    lipsClose: '/Product shades/libre/2.jpg',
-    box: '/Product shades/libre/big brush/libre new.jpg',
-    bag: '/Product shades/libre/squeeze/3 (Squeez).jpg',
-  },
-  '20': { // Lover - Strawberry
-    swatch: '/Product shades/lover/IMG_1451.png',
-    lipsFar: '/Product shades/lover/1.jpg',
-    lipsClose: '/Product shades/lover/2.jpg',
-    box: '/Product shades/lover/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/lover/squeeze/3 (Squeez).jpg',
-  },
-  '21': { // Pearl - Bubble Gum
-    swatch: '/Product shades/pearl/IMG_0436 (1).png',
-    lipsFar: '/Product shades/pearl/1.jpg',
-    lipsClose: '/Product shades/pearl/2.jpg',
-    box: '/Product shades/pearl/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/pearl/squeeze/3 (Squeez).jpg',
-  },
-  '22': { // Pecan - Coffee
-    swatch: '/Product shades/pecan/IMG_1446.png',
-    lipsFar: '/Product shades/pecan/1.jpg',
-    lipsClose: '/Product shades/pecan/2.jpg',
-    box: '/Product shades/pecan/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/pecan/squeeze/3 (Squeez).jpg',
-  },
-  '23': { // Rosewood - Strawberry
-    swatch: '/Product shades/rosewood/IMG_1448.png',
-    lipsFar: '/Product shades/rosewood/1.jpg',
-    lipsClose: '/Product shades/rosewood/2.jpg',
-    box: '/Product shades/rosewood/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/rosewood/squeeze/3 (Squeez).jpg',
-  },
-  '25': { // Shimmery Chestnut - Coffee
-    swatch: '/Product shades/shimmery chestnut/IMG_1455.png',
-    lipsFar: '/Product shades/shimmery chestnut/1.jpg',
-    lipsClose: '/Product shades/shimmery chestnut/2.jpg',
-    box: '/Product shades/shimmery chestnut/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/shimmery chestnut/squeeze/3 (Squeez).jpg',
-  },
-  '26': { // Sparkle Jam
-    swatch: '/Product shades/sparkle jam/IMG_1438.png',
-    lipsFar: '/Product shades/sparkle jam/1.jpg',
-    lipsClose: '/Product shades/sparkle jam/2.jpg',
-    box: '/Product shades/sparkle jam/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/sparkle jam/squeeze/3 (Squeez).jpg',
-  },
-  '27': { // The Girl - Strawberry
-    swatch: '/Product shades/the girl/IMG_1569.png',
-    lipsFar: '/Product shades/the girl/1.jpg',
-    lipsClose: '/Product shades/the girl/2.jpg',
-    box: '/Product shades/the girl/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/the girl/squeeze/3 (Squeez).jpg',
-  },
-  '28': { // Velvet Cherry - Watermelon
-    swatch: '/Product shades/velvet cherry/IMG_1560.png',
-    lipsFar: '/Product shades/velvet cherry/1.jpg',
-    lipsClose: '/Product shades/velvet cherry/2.jpg',
-    box: '/Product shades/velvet cherry/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/velvet cherry/squeeze/3 (Squeez).jpg',
-  },
-  '29': { // Wood - Coffee
-    swatch: '/Product shades/wood/IMG_1442.png',
-    lipsFar: '/Product shades/wood/1.jpg',
-    lipsClose: '/Product shades/wood/2.jpg',
-    box: '/Product shades/wood/big brush/2 ( Big Brush).jpg',
-    bag: '/Product shades/wood/squeeze/3 (Squeez).jpg',
-  },
-};
-
 const shadeSwatches: Record<string, string> = {
   '10': '#F8BBD0', '11': '#8B5E3C', '12': '#C1693C', '13': '#FFFFFF', '14': '#C28AA5',
   '15': '#FFB3AB', '16': '#FF7FA8', '17': '#E8C4A8', '18': '#FFC0CB', '19': '#C63A3A',
@@ -189,26 +38,26 @@ export default function SqueezePage() {
   const product = products.find((p) => p.id === 'squeez');
   const lipglossShades = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
 
-  const shadesList: ShadeInfo[] = lipglossShades.map((p) => ({
-    id: p.id,
-    name: p.name,
-    swatchColor: shadeSwatches[p.id],
-    image: p.image,
-    shadeImages: SHADE_IMAGES[p.id] || {
-      swatch: p.image,
-      lipsFar: p.images?.[0] || p.image,
-      lipsClose: p.images?.[1] || p.image,
-      box: p.images?.[2] || p.image,
-      bag: p.images?.[3] || p.image,
-    },
-  }));
+  const shadesList = lipglossShades.map((p) => {
+    return {
+      id: p.id,
+      name: p.name,
+      swatchColor: shadeSwatches[p.id],
+      image: p.image,
+      shadeImages: {
+        swatch: p.shadeImages?.[0] || p.image,
+        lipsFar: p.images?.[0] || p.image,
+        box: p.images?.[1] || '/3.jpg',
+        bag: p.images?.[2] || '/4.jpg',
+      },
+    };
+  });
 
   const currentShade = selectedShade ? shadesList.find((s) => s.id === selectedShade) : null;
   const displayImages = currentShade
     ? [
         currentShade.shadeImages.swatch,
         currentShade.shadeImages.lipsFar,
-        currentShade.shadeImages.lipsClose,
         currentShade.shadeImages.box,
         currentShade.shadeImages.bag,
       ]
