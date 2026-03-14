@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ const shadeSwatches: Record<string, string> = {
   '25': '#9C6B45', '26': '#7E2A76', '27': '#FF6FAE', '28': '#A1122A', '29': '#6B4F3B',
 };
 
-export default function SqueezePage() {
+function SqueezePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { addToCart } = useCart();
@@ -185,7 +185,7 @@ export default function SqueezePage() {
                 </div>
               </div>
 
-              {/* Thumbnail Gallery - 5 Images */}
+              {/* Thumbnail Gallery - 4 Images */}
               {displayImages.length > 1 && (
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide px-1">
                   {displayImages.map((img, idx) => (
@@ -290,7 +290,7 @@ export default function SqueezePage() {
                 {/* Image Order Guide */}
                 <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-xl">
                   <p className="font-medium mb-1">Shade images shown in order:</p>
-                  <p>1. Swatch • 2. On lips (far) • 3. On lips (close) • 4. Box • 5. Bag</p>
+                  <p>1. Swatch • 2. On lips (far) • 3. Box • 4. Bag</p>
                 </div>
               </div>
 
@@ -498,5 +498,17 @@ export default function SqueezePage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function SqueezePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-[#faf8f6] to-[#f5f0ec] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d6869d]"></div>
+      </div>
+    }>
+      <SqueezePageContent />
+    </Suspense>
   );
 }
