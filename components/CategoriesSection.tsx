@@ -44,7 +44,7 @@ export default function CategoriesSection() {
           </p>
         </motion.div>
 
-        <div className="md:grid md:grid-cols-2 md:gap-12 flex md:flex-none overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="md:grid md:grid-cols-2 md:gap-8 flex md:flex-none overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           {/* Lipgloss Card - Enhanced */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -105,12 +105,12 @@ export default function CategoriesSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Link 
-              href="/products?category=Eyebrow" 
+              href="/products?category=Liquid+Blush" 
               className="group relative h-[450px] md:h-[580px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(214,134,157,0.3)] hover:shadow-[0_30px_80px_-15px_rgba(214,134,157,0.4)] transition-all duration-700 snap-center block"
             >
               <Image 
-                src="/eyebrow-wax-1.jpg" 
-                alt="Eyebrow Wax" 
+                src="/Liquid blush/1.png" 
+                alt="Liquid Blush" 
                 fill 
                 className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" 
               />
@@ -127,10 +127,10 @@ export default function CategoriesSection() {
                 <motion.span 
                   className="text-white/80 text-[10px] tracking-[0.35em] uppercase mb-4 opacity-0 group-hover:opacity-100 transition-all duration-700 transform translate-y-4 group-hover:translate-y-0"
                 >
-                  Collection
+                  New Collection
                 </motion.span>
-                <h3 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight tracking-[0.2em] mb-6 group-hover:scale-105 transition-transform duration-700">
-                  EYEBROW
+                <h3 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-[0.1em] mb-6 group-hover:scale-105 transition-transform duration-700">
+                  LIQUID BLUSH
                 </h3>
                 <div className="flex items-center gap-3 text-white/90 text-xs tracking-[0.25em] uppercase opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 transform translate-y-4 group-hover:translate-y-0">
                   <span className="border-b border-white/50 pb-1">Shop Now</span>

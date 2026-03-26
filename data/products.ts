@@ -333,6 +333,19 @@ const baseProducts: Product[] = [
       { label: 'Squeez Free' },
     ],
   },
+  {
+    id: 'liquid-blush-silk-pink',
+    name: 'Liquid Blush - Silk Pink',
+    description: 'Lightweight liquid blush that blends effortlessly with a smooth, highly pigmented finish.',
+    price: 250,
+    originalPrice: 300,
+    image: '/Liquid blush/1.png',
+    images: ['/Liquid blush/1.png', '/Liquid blush/2.jpg', '/Liquid blush/3.jpg', '/Liquid blush/4.jpg'],
+    shadeImages: ['/Liquid blush/1.png'],
+    category: 'Liquid Blush',
+    inStock: true,
+    featured: true,
+  },
 ];
 
 export const products: Product[] = baseProducts.map((p) => ({
@@ -351,4 +364,5 @@ export const categories = [
   { name: 'Bundles' },
   { name: 'Big Brush' },
   { name: 'Squeeze' },
+  { name: 'Liquid Blush' },
 ];

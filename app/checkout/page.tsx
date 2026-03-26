@@ -10,35 +10,36 @@ import CheckoutForm from '@/components/CheckoutForm';
 
 // Delivery fees by city
 const deliveryFees: { [key: string]: number } = {
-  'Cairo': 65,
-  'Giza': 65,
-  'Al Asher mn Ramadan': 75,
-  'Alexandria': 75,
-  'Qalyubia': 75,
-  'Ismailia': 80,
-  'Suez': 80,
-  'Port Said': 80,
-  'Beheira': 80,
-  'Dakahlia': 80,
-  'Menoufia': 80,
-  'Sharqia': 80,
-  'Kafr El-Sheikh': 80,
-  'Damietta': 80,
-  'Gharbia': 80,
-  'Tanta': 80,
-  'Mansoura': 80,
-  'Fayoum': 85,
-  'Beni Suef': 85,
-  'Sohag': 85,
-  'Minya': 85,
-  'Assiut': 85,
-  'Qena': 100,
-  'Luxor': 100,
-  'Aswan': 100,
-  'Matrouh': 110,
-  'New Valley': 120,
-  'North Coast': 120,
+  'Cairo': 70,
+  'Giza': 70,
+  'Al Asher mn Ramadan': 80,
+  'Alexandria': 85,
+  'Qalyubia': 85,
+  'Ismailia': 90,
+  'Suez': 90,
+  'Port Said': 90,
+  'Beheira': 90,
+  'Dakahlia': 90,
+  'Menoufia': 90,
+  'Sharqia': 90,
+  'Kafr El-Sheikh': 90,
+  'Damietta': 90,
+  'Gharbia': 90,
+  'Tanta': 90,
+  'Mansoura': 90,
+  'Fayoum': 95,
+  'Beni Suef': 95,
+  'Sohag': 95,
+  'Minya': 95,
+  'Assiut': 95,
+  'Qena': 105,
+  'Luxor': 105,
+  'Aswan': 105,
+  'Matrouh': 125,
+  'New Valley': 125,
+  'North Coast': 125,
   'Red Sea': 130,
+  'Sinai': 155,
 };
 
 export default function CheckoutPage() {
@@ -54,7 +55,7 @@ export default function CheckoutPage() {
     notes: '',
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState(65);
+  const [deliveryFee, setDeliveryFee] = useState(75);
 
   useEffect(() => {
     // Only redirect if cart is empty AND we're not processing an order
@@ -65,7 +66,7 @@ export default function CheckoutPage() {
 
   const handleCityChange = (city: string) => {
     setFormData({ ...formData, city });
-    setDeliveryFee(deliveryFees[city] || 65);
+    setDeliveryFee(deliveryFees[city] || 75);
   };
 
   if (cart.length === 0) {
