@@ -53,7 +53,7 @@ export default function CategoriesSection() {
             transition={{ duration: 0.8, delay: 0.1 }}
           >
             <Link 
-              href="/products?category=Lipgloss" 
+              href="/products?category=Big+Brush" 
               className="group relative h-[450px] md:h-[580px] flex-none w-[85vw] md:w-auto overflow-hidden rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(214,134,157,0.3)] hover:shadow-[0_30px_80px_-15px_rgba(214,134,157,0.4)] transition-all duration-700 snap-center block"
             >
               <Image 
