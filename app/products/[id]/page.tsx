@@ -374,7 +374,6 @@ export default function ProductPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm text-gray-500 font-medium">{reviewCount} verified reviews</span>
                 </div>
 
                 {/* Price - More Luxurious */}
@@ -557,32 +556,32 @@ export default function ProductPage() {
               <div className="space-y-5">
                 <div className="flex items-center gap-4">
                   {/* Quantity Selector - Elegant */}
-                  <div className="flex items-center bg-white rounded-2xl border border-gray-200 shadow-sm">
+                  <div className="flex items-center bg-white rounded-xl border border-gray-200 shadow-sm">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-14 h-14 flex items-center justify-center text-gray-500 hover:text-[#d6869d] hover:bg-[#d6869d]/5 transition-all rounded-l-2xl"
+                      className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-[#d6869d] hover:bg-[#d6869d]/5 transition-all rounded-l-xl"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="w-14 h-14 flex items-center justify-center font-semibold text-lg text-gray-900">
+                    <span className="w-11 h-11 flex items-center justify-center font-semibold text-base text-gray-900">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="w-14 h-14 flex items-center justify-center text-gray-500 hover:text-[#d6869d] hover:bg-[#d6869d]/5 transition-all rounded-r-2xl"
+                      className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-[#d6869d] hover:bg-[#d6869d]/5 transition-all rounded-r-xl"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
-                  {/* Add to Cart Button - Premium */}
+                  {/* Add to Cart Button - Premium Darker */}
                   <button
                     onClick={handleAddToCart}
                     disabled={!canAddToCart}
-                    className={`flex-1 h-14 rounded-2xl font-semibold text-sm tracking-wide uppercase transition-all duration-500 flex items-center justify-center gap-3 shadow-lg ${
+                    className={`flex-1 h-14 min-w-[160px] rounded-2xl font-semibold text-sm tracking-wide uppercase transition-all duration-500 flex items-center justify-center gap-3 shadow-lg whitespace-nowrap ${
                       addedToCart
                         ? 'bg-emerald-500 text-white shadow-emerald-200'
-                        : 'bg-gradient-to-r from-[#d6869d] to-[#c5758e] text-white hover:shadow-xl hover:-translate-y-0.5'
+                        : 'bg-[#b85c73] text-white hover:bg-[#a34b62] hover:shadow-xl hover:-translate-y-0.5'
                     } ${!canAddToCart && !addedToCart ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {addedToCart ? (
