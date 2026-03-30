@@ -112,9 +112,9 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, o
                     <div
                       role="button"
                       tabIndex={0}
-                      onClick={() => router.push(`/products/lipgloss?shade=${product.id}`)}
+                      onClick={() => router.push(`/products/big-brush?shade=${product.id}`)}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') router.push(`/products/lipgloss?shade=${product.id}`);
+                        if (e.key === 'Enter' || e.key === ' ') router.push(`/products/big-brush?shade=${product.id}`);
                       }}
                       className="block w-full text-left cursor-pointer"
                     >
@@ -224,7 +224,7 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, o
           transition={{ duration: 0.6 }}
         >
           <Link
-            href="/products?category=Lipgloss"
+            href="/products?category=Big+Brush"
             className="group relative inline-block bg-[#d6869d] text-white px-16 py-5 text-[10px] sm:text-xs tracking-[0.35em] uppercase font-medium transition-all duration-700 shadow-lg hover:shadow-[0_10px_40px_rgba(214,134,157,0.3)] hover:-translate-y-1 rounded-full overflow-hidden"
           >
             <span className="relative z-10">View All Lipgloss</span>

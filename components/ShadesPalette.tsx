@@ -76,7 +76,7 @@ export default function ShadesPalette() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.03 }}
             >
-              <Link href={`/products/lipgloss?shade=${encodeURIComponent(shade.productId)}`} className="text-center group block">
+              <Link href={`/products/big-brush?shade=${encodeURIComponent(shade.productId)}`} className="text-center group block">
                 <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-3 rounded-full overflow-hidden shadow-lg group-hover:shadow-2xl group-hover:scale-110 transition-all duration-500 ring-2 ring-transparent group-hover:ring-[#d6869d]/30">
                   <Image src={shade.image} alt={shade.name} width={96} height={96} className="object-cover w-full h-full" />
                 </div>
@@ -93,7 +93,7 @@ export default function ShadesPalette() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <Link href="/products?category=Lipgloss" className="group relative inline-block bg-[#d6869d] text-white px-14 py-4 text-[10px] sm:text-xs tracking-[0.35em] uppercase font-medium transition-all duration-700 shadow-lg hover:shadow-[0_10px_40px_rgba(214,134,157,0.3)] hover:-translate-y-0.5 rounded-full overflow-hidden">
+          <Link href="/products?category=Big+Brush" className="group relative inline-block bg-[#d6869d] text-white px-14 py-4 text-[10px] sm:text-xs tracking-[0.35em] uppercase font-medium transition-all duration-700 shadow-lg hover:shadow-[0_10px_40px_rgba(214,134,157,0.3)] hover:-translate-y-0.5 rounded-full overflow-hidden">
             <span className="relative z-10">VIEW ALL SHADES</span>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           </Link>

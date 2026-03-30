@@ -65,7 +65,7 @@ export default function FlavoursGrid() {
               className="flex flex-col items-center"
             >
               <Link 
-                href={`/products/lipgloss?shade=${encodeURIComponent(flavour.productId)}`} 
+                href={`/products/big-brush?shade=${encodeURIComponent(flavour.productId)}`} 
                 className="group text-center block w-full"
               >
                 <div className="relative w-full max-w-[100px] mx-auto aspect-square mb-3 rounded-full overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-500">

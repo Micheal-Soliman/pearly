@@ -3,7 +3,17 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingBag, Check } from 'lucide-react';
+import ShadesModal from '@/components/ShadesModal';
+import { products } from '@/data/products';
+import { getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
+
+const shadeSwatches: Record<string, string> = {
+  '10': '#F8BBD0', '11': '#8B5E3C', '12': '#C1693C', '13': '#FFFFFF', '14': '#C28AA5',
+  '15': '#FFB3AB', '16': '#FF7FA8', '17': '#E8C4A8', '18': '#FFC0CB', '19': '#C63A3A',
+  '20': '#FF6F7D', '21': '#F3E5F5', '22': '#A9745B', '23': '#B56576', '24': '#C2A283',
+  '25': '#9C6B45', '26': '#7E2A76', '27': '#FF6FAE', '28': '#A1122A', '29': '#6B4F3B',
+};
 
 type Product = any;
 
@@ -11,7 +21,7 @@ type Props = {
   products: Product[];
   isFavorite: (id: string) => boolean;
   toggleFavorite: (e: React.MouseEvent, product: Product) => void;
-  handleAddToCart: (product: Product) => void;
+  handleAddToCart: (product: Product, bundleShades?: string[]) => void;
 };
 
 export default function BundlesSection({ products, isFavorite, toggleFavorite, handleAddToCart }: Props) {
@@ -19,6 +29,19 @@ export default function BundlesSection({ products, isFavorite, toggleFavorite, h
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+
+  // Modal state
+  const [showShadesModal, setShowShadesModal] = useState(false);
+  const [selectedBundle, setSelectedBundle] = useState<Product | null>(null);
+  const [selectedShades, setSelectedShades] = useState<string[]>([]);
+
+  const lipglossShades = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
+  const lipglossShadesForModal = lipglossShades.map((p) => ({
+    id: p.id,
+    name: p.name,
+    swatchColor: shadeSwatches[p.id],
+    image: p.shadeImages?.[0] || p.image,
+  }));
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!sliderRef.current) return;
@@ -165,7 +188,15 @@ export default function BundlesSection({ products, isFavorite, toggleFavorite, h
                     
                     {/* Add to Cart Button - Always at bottom */}
                     <button
-                      onClick={() => handleAddToCart(product)}
+                      onClick={() => {
+                        if (product.bundleSteps && product.bundleSteps.length > 0) {
+                          setSelectedBundle(product);
+                          setSelectedShades([]);
+                          setShowShadesModal(true);
+                        } else {
+                          handleAddToCart(product);
+                        }
+                      }}
                       className="w-full mt-4 bg-[#d6869d] text-white px-6 py-3.5 text-xs tracking-[0.3em] uppercase font-medium transition-all duration-300 flex items-center justify-center gap-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#c97a8f]"
                     >
                       <ShoppingBag className="w-4 h-4" />
@@ -178,6 +209,32 @@ export default function BundlesSection({ products, isFavorite, toggleFavorite, h
           </div>
         </div>
       </div>
+
+      {/* Shades Modal for Bundles */}
+      {selectedBundle && (
+        <ShadesModal
+          show={showShadesModal}
+          onClose={() => {
+            setShowShadesModal(false);
+            setSelectedBundle(null);
+          }}
+          onDone={() => {
+            if (selectedShades.length === getBundleSteps(selectedBundle).length) {
+              handleAddToCart(selectedBundle, selectedShades);
+              setShowShadesModal(false);
+              setSelectedBundle(null);
+              setSelectedShades([]);
+            }
+          }}
+          title={`Select ${getStepLabelForIndex(getBundleSteps(selectedBundle), Math.min(getBundleSteps(selectedBundle).length - 1, selectedShades.length))} Shade`}
+          lipglossShades={lipglossShadesForModal}
+          selectedShades={selectedShades}
+          setSelectedShades={setSelectedShades}
+          requiredCount={getBundleSteps(selectedBundle).length}
+          shadeSwatches={shadeSwatches}
+          stepLabels={getBundleSteps(selectedBundle).map((_: any, idx: number) => getStepLabelForIndex(getBundleSteps(selectedBundle), idx))}
+        />
+      )}
     </section>
   );
 }

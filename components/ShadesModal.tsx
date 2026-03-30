@@ -143,7 +143,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
 
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[40vh] overflow-auto">
 
           {lipglossShades.map((shade) => {
 

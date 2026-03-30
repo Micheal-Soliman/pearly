@@ -35,6 +35,15 @@ function BigBrushPageContent() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'details' | 'shipping'>('description');
 
+  // Read shade from URL and pre-select it
+  useEffect(() => {
+    const shadeFromUrl = searchParams.get('shade');
+    if (shadeFromUrl) {
+      setSelectedShade(shadeFromUrl);
+      setSelectedImage(0);
+    }
+  }, [searchParams]);
+
   const product = products.find((p) => p.id === 'big-brush');
   const lipglossShades = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
 
