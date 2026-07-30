@@ -6,7 +6,7 @@ const baseProducts: Product[] = [
     id: 'big-brush',
     name: 'Big Brush Lipgloss',
     description: 'Our signature Big Brush applicator delivers the perfect amount of gloss for a smooth, even application. 8ml of luxurious, long-lasting lip gloss with a non-sticky formula.',
-    price: 299,
+    price: 250,
     originalPrice: 350,
     image: '/big.jpeg',
     images: ['/big.jpeg'],

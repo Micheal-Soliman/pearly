@@ -19,7 +19,6 @@ import LipglossSlider from '@/components/LipglossSlider';
 import FlavoursGrid from '@/components/FlavoursGrid';
 import BundleSavings from '@/components/BundleSavings';
 import ShadesPalette from '../components/ShadesPalette';
-import PromoOfferModal from '@/components/PromoOfferModal';
 import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 
 export default function Home() {
@@ -36,17 +35,6 @@ export default function Home() {
   const [pendingBundleProduct, setPendingBundleProduct] = useState<any>(null);
   const [pendingBundleRequiredCount, setPendingBundleRequiredCount] = useState<number>(0);
   const [pendingBundleQuantity, setPendingBundleQuantity] = useState<number>(1);
-
-  const [showPromo, setShowPromo] = useState(true);
-  const bundle32 = products.find((p) => p.id === '32');
-  const promoOffer = bundle32 ? {
-    id: bundle32.id,
-    name: 'BUY 2 GET 1 FREE',
-    image: bundle32.image,
-    description: 'Get 2 Big Brush + 1 Squeez Free. Save 220 EGP!',
-    price: bundle32.price,
-    originalPrice: bundle32.originalPrice,
-  } : null;
 
   const lipglossProducts = products.filter((p) => p.category === 'Lipgloss' && p.isShade);
   const baseLipglossProduct = products.find((p) => p.category === 'Lipgloss' && p.isShade !== true);
@@ -277,13 +265,6 @@ export default function Home() {
       <div className="pt-12">
         <Footer />
       </div>
-
-      {/* Promo Offer Modal */}
-      <PromoOfferModal 
-        show={showPromo} 
-        offer={promoOffer} 
-        onClose={() => setShowPromo(false)} 
-      />
 
       {/* Feedback Lightbox Modal */}
       <FeedbackLightbox selected={selectedFeedback} onClose={() => setSelectedFeedback(null)} />
