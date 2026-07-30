@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getLipglossVariantPricing } from '@/lib/pricing';
 
 type Product = any;
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function LipglossSlider({ products, isFavorite, toggleFavorite, onSelectShade }: Props) {
+  const bigBrushPricing = getLipglossVariantPricing('big-brush');
   const sliderRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [swipedCards, setSwipedCards] = useState<Set<string>>(new Set());
@@ -194,9 +196,9 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, o
 
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-base text-[#d6869d] font-semibold">
-                            {product.price} EGP
-                            {product.originalPrice ? (
-                              <span className="line-through text-gray-400 font-medium ml-2">{product.originalPrice} EGP</span>
+                            {bigBrushPricing.price} EGP
+                            {bigBrushPricing.originalPrice ? (
+                              <span className="line-through text-gray-400 font-medium ml-2">{bigBrushPricing.originalPrice} EGP</span>
                             ) : null}
                           </p>
                         </div>

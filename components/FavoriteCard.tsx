@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star } from 'lucide-react';
+import { getUnitPrice } from '@/lib/pricing';
 
 type Product = {
   id: string;
@@ -22,6 +23,8 @@ type Props = {
 };
 
 export default function FavoriteCard({ product, onRemove, onAddToCart }: Props) {
+  const currentPrice = getUnitPrice(product);
+
   return (
     <motion.div
       key={product.id}
@@ -53,7 +56,7 @@ export default function FavoriteCard({ product, onRemove, onAddToCart }: Props) 
         )}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
           <div className="flex items-center justify-between">
-            <span className="text-white font-medium">{product.price} EGP</span>
+            <span className="text-white font-medium">{currentPrice} EGP</span>
             <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
               <Star className="w-3.5 h-3.5 text-yellow-400 fill-current mr-1" />
               <span className="text-xs text-white font-medium">{product.rating || '4.8'}</span>

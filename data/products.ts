@@ -6,8 +6,8 @@ const baseProducts: Product[] = [
     id: 'big-brush',
     name: 'Big Brush Lipgloss',
     description: 'Our signature Big Brush applicator delivers the perfect amount of gloss for a smooth, even application. 8ml of luxurious, long-lasting lip gloss with a non-sticky formula.',
-    price: 250,
-    originalPrice: 350,
+    price: LIPGLOSS_VARIANTS['big-brush'].price,
+    originalPrice: LIPGLOSS_VARIANTS['big-brush'].originalPrice,
     image: '/big.jpeg',
     images: ['/big.jpeg'],
     shadeImages: [],
@@ -21,8 +21,8 @@ const baseProducts: Product[] = [
     id: 'squeez',
     name: 'Squeeze Tube Lipgloss',
     description: 'Our convenient Squeeze Tube packaging with 10ml of hydrating lip gloss. Perfect for on-the-go touch-ups with the same non-sticky, long-lasting formula.',
-    price: 220,
-    originalPrice: 260,
+    price: LIPGLOSS_VARIANTS.squeez.price,
+    originalPrice: LIPGLOSS_VARIANTS.squeez.originalPrice,
     image: '/squeeze.jpeg',
     images: ['/squeeze.jpeg'],
     shadeImages: [],
@@ -350,12 +350,12 @@ const baseProducts: Product[] = [
 
 export const products: Product[] = baseProducts.map((p) => ({
   ...p,
-  price: (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS.squeez.price : p.price) + PRICE_BUMP,
+  price: (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS['big-brush'].price : p.price) + PRICE_BUMP,
   originalPrice:
     (p.category === 'Lipgloss'
-      ? LIPGLOSS_VARIANTS.squeez.originalPrice
+      ? LIPGLOSS_VARIANTS['big-brush'].originalPrice
       : p.originalPrice) !== undefined
-      ? (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS.squeez.originalPrice : (p.originalPrice as number)) + PRICE_BUMP
+      ? (p.category === 'Lipgloss' ? LIPGLOSS_VARIANTS['big-brush'].originalPrice : (p.originalPrice as number)) + PRICE_BUMP
       : undefined,
 }));
 

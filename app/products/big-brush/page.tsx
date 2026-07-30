@@ -11,6 +11,7 @@ import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { ShoppingBag, Heart, Check, Star, Truck, Users, Package, ArrowLeft, ChevronRight, Shield, Sparkles, ZoomIn, Minus, Plus } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import { getLipglossVariantPricing } from '@/lib/pricing';
 
 const shadeSwatches: Record<string, string> = {
   '10': '#F8BBD0', '11': '#8B5E3C', '12': '#C1693C', '13': '#FFFFFF', '14': '#C28AA5',
@@ -72,8 +73,7 @@ function BigBrushPageContent() {
       ]
     : product?.images || ['/4.2.jpg'];
 
-  const currentPrice = 299;
-  const originalPrice = 350;
+  const { price: currentPrice, originalPrice } = getLipglossVariantPricing('big-brush');
   const hasDiscount = originalPrice > currentPrice;
   const rating = 5;
   const reviewCount = 148;
