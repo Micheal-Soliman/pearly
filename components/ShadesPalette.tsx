@@ -4,29 +4,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import { useProducts } from '@/context/ProductsContext';
 
 export default function ShadesPalette() {
-  const shades = [
-    { name: 'Blossom', image: '/Product shades/blossom/IMG_1564.png', productId: '10' },
-    { name: 'Chestnut', image: '/Product shades/chestnut/IMG_1563.png', productId: '11' },
-    { name: 'Cinnamon', image: '/Product shades/cinnamon/IMG_2032.png', productId: '12' },
-    { name: 'Clear', image: '/Product shades/clear/IMG_2082.png', productId: '13' },
-    { name: 'Cozy Dream', image: '/Product shades/cozy dreams/IMG_1436.png', productId: '14' },
-    { name: 'Daisy', image: '/Product shades/daisy/IMG_1470.png', productId: '15' },
-    { name: 'Georgia', image: '/Product shades/georgia/IMG_1297 (1).png', productId: '16' },
-    { name: 'Gold Honey', image: '/Product shades/gold honey/IMG_1417 (1).png', productId: '17' },
-    { name: 'Heaven', image: '/Product shades/heaven/IMG_1463.png', productId: '18' },
-    { name: 'Libre', image: '/Product shades/libre/IMG_1420 (1).png', productId: '19' },
-    { name: 'Lover', image: '/Product shades/lover/IMG_1451.png', productId: '20' },
-    { name: 'Pearl', image: '/Product shades/pearl/IMG_0436 (1).png', productId: '21' },
-    { name: 'Pecan', image: '/Product shades/pecan/IMG_1446.png', productId: '22' },
-    { name: 'Rosewood', image: '/Product shades/rosewood/IMG_1448.png', productId: '23' },
-    { name: 'Shimmery Chestnut', image: '/Product shades/shimmery chestnut/IMG_1455.png', productId: '25' },
-    { name: 'Sparkle Jam', image: '/Product shades/sparkle jam/IMG_1438.png', productId: '26' },
-    { name: 'The Girl', image: '/Product shades/the girl/IMG_1569.png', productId: '27' },
-    { name: 'Velvet Cherry', image: '/Product shades/velvet cherry/IMG_1560.png', productId: '28' },
-    { name: 'Wood', image: '/Product shades/wood/IMG_1442.png', productId: '29' },
-  ];
+  const { products } = useProducts();
+  const shades = products
+    .filter((product) => product.category === 'Lipgloss' && product.isShade)
+    .map((product) => ({
+      name: product.name.replace(/^Lipgloss\s*-\s*/i, ''),
+      image: product.shadeImages?.[0] || product.image,
+      productId: product.id,
+    }));
 
   return (
     <section className="py-10 sm:py-14 bg-gradient-to-b from-white to-[#ffe9f0] relative overflow-hidden">
@@ -51,7 +39,7 @@ export default function ShadesPalette() {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <span className="inline-block mx-3">✦</span>
-            19 Beautiful Shades
+            {shades.length} Beautiful Shades
             <span className="inline-block mx-3">✦</span>
           </motion.span>
           <h2 className="mt-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight tracking-[0.2em] uppercase">
@@ -70,7 +58,7 @@ export default function ShadesPalette() {
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
           {shades.map((shade, idx) => (
             <motion.div
-              key={idx}
+              key={shade.productId}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
