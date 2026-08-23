@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { ShoppingBag, Heart, Check, Star, Truck, Users, Package, ArrowLeft, ChevronRight, Shield, Sparkles, ZoomIn, Minus, Plus, Info } from 'lucide-react';
@@ -14,8 +14,15 @@ import ShadesModal from '@/components/ShadesModal';
 import ProductCard from '@/components/ProductCard';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
 import { formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
+import type { Product } from '@/types';
+
+const loadingProduct: Product = {
+  id: 'loading', name: '', description: '', price: 0, image: '/logo.png', images: [],
+  category: '', inStock: false, featured: false,
+};
 
 export default function ProductPage() {
+  const { products, loading: productsLoading } = useProducts();
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,32 +43,12 @@ export default function ProductPage() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'details' | 'shipping'>('description');
 
-  const product = products.find((p) => p.id === params.id);
+  const foundProduct = products.find((p) => p.id === params.id);
+  const product = foundProduct ?? loadingProduct;
   const squeezPricing = getLipglossVariantPricing('squeez');
   const bigBrushPricing = getLipglossVariantPricing('big-brush');
   const rating = (product as any)?.rating ?? 5;
   const reviewCount = (product as any)?.reviewCount ?? 148;
-
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#faf8f6] to-[#f5f0ec] flex items-center justify-center">
-        <div className="text-center space-y-6">
-          <div className="w-24 h-24 mx-auto rounded-full bg-[#d6869d]/10 flex items-center justify-center">
-            <Package className="w-12 h-12 text-[#d6869d]" />
-          </div>
-          <h1 className="text-4xl font-light tracking-wide text-gray-900">Product Not Found</h1>
-          <p className="text-gray-500">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#d6869d] text-white rounded-full text-sm tracking-widest uppercase hover:bg-[#c5758e] transition-all duration-300"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Shop
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   useEffect(() => {
     if (product.category !== 'Lipgloss') return;
@@ -246,6 +233,14 @@ export default function ProductPage() {
 
   const currentPrice = getCurrentPrice();
   const hasDiscount = product.originalPrice && product.originalPrice > currentPrice;
+
+  if (!foundProduct) {
+    return <div className="min-h-screen flex items-center justify-center bg-white"><div className="text-center space-y-5">
+      <div className="w-20 h-20 mx-auto rounded-full bg-[#d6869d]/10 flex items-center justify-center"><Package className="w-10 h-10 text-[#d6869d]" /></div>
+      <h1 className="text-3xl font-light">{productsLoading ? 'Loading product…' : 'Product not found'}</h1>
+      {!productsLoading && <Link href="/products" className="inline-flex items-center gap-2 px-7 py-3 bg-[#d6869d] text-white rounded-full"><ArrowLeft className="w-4 h-4"/>Back to Shop</Link>}
+    </div></div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#faf8f6] via-white to-[#fdf9f7]">

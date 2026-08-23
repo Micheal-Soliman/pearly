@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { ShoppingBag, Heart, Check, Star, Truck, Users, Package, ArrowLeft, ChevronRight, Shield, Sparkles, ZoomIn, Minus, Plus } from 'lucide-react';
@@ -21,6 +21,7 @@ const shadeSwatches: Record<string, string> = {
 };
 
 function BigBrushPageContent() {
+  const { products } = useProducts();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { addToCart } = useCart();

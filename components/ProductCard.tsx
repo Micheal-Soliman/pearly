@@ -8,7 +8,7 @@ import { Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { getLipglossVariantPricing } from '@/lib/pricing';
 import { getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 import ShadesModal from '@/components/ShadesModal';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 
 type Props = {
   product: any;
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart, hrefQuery }: Props) {
-  if (product?.isShade) return null;
+  const { products } = useProducts();
   const isLipgloss = product.category === 'Lipgloss';
   const isBundle = product.category === 'Bundles';
   const isBigBrush = product.category === 'Big Brush';
@@ -52,6 +52,8 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
   const pricing = useMemo(() => {
     return isLipgloss ? getLipglossVariantPricing(selectedType) : null;
   }, [isLipgloss, selectedType]);
+
+  if (product?.isShade) return null;
 
   return (
     <>

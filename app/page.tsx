@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import LipglossOptionModal from '@/components/LipglossOptionModal';
@@ -22,6 +22,7 @@ import ShadesPalette from '../components/ShadesPalette';
 import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 
 export default function Home() {
+  const { products } = useProducts();
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
 

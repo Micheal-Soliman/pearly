@@ -1,24 +1,18 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import localFont from "next/font/local";
-import { Dancing_Script } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import FABSearch from '@/components/FABSearch';
 import ToastProvider from '@/components/ToastProvider';
+import { ProductsProvider } from '@/context/ProductsContext';
 
 const alice = localFont({
   src: "./fonts/Alice-Regular.ttf",
   variable: "--font-alice",
   weight: "400",
-});
-
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
-  variable: "--font-dancing",
-  weight: ["400", "700"],
 });
 
 const amsterdam = localFont({
@@ -46,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${alice.variable} ${dancingScript.variable} ${amsterdam.variable}`}>
+    <html lang="en" className={`${alice.variable} ${amsterdam.variable}`}>
       <head>
         <Script id="meta-pixel" strategy="afterInteractive">
           {`!function(f,b,e,v,n,t,s)
@@ -78,15 +72,17 @@ fbq('track', 'PageView');`}
             alt=""
           />
         </noscript>
-        <CartProvider>
-          <FavoritesProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <FavoritesProvider>
             {children}
             <ToastProvider />
             <Suspense fallback={null}>
               <FABSearch />
             </Suspense>
-          </FavoritesProvider>
-        </CartProvider>
+            </FavoritesProvider>
+          </CartProvider>
+        </ProductsProvider>
       </body>
     </html>
   );

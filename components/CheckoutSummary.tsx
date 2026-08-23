@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { getUnitPrice } from '@/lib/pricing';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 type CartItem = {
@@ -25,6 +25,7 @@ type Props = {
 };
 
 export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: Props) {
+  const { products } = useProducts();
   return (
     <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-[#ffe9f0]">
       <h2 className="text-xl sm:text-2xl font-medium tracking-wide mb-8">

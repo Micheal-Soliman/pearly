@@ -9,7 +9,7 @@ export default function FABSearch() {
   const searchParams = useSearchParams();
 
   const isFiltersOpen = searchParams.get('openFilters') === '1';
-  const hideFab = pathname === '/cart' || pathname === '/checkout';
+  const hideFab = pathname === '/cart' || pathname === '/checkout' || pathname.startsWith('/admin');
 
   const openFilters = () => {
     if (pathname.startsWith('/products')) {

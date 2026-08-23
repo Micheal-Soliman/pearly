@@ -10,7 +10,7 @@ import Pagination from '@/components/Pagination';
 import ProductCard from '@/components/ProductCard';
 import BannerHero from '@/components/BannerHero';
 import CategoryPills from '@/components/CategoryPills';
-import { products, categories } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import ShadesModal from '@/components/ShadesModal';
@@ -22,6 +22,7 @@ import { getLipglossVariantPricing } from '@/lib/pricing';
 import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 function ProductsContent() {
+  const { products, categories } = useProducts();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -48,9 +49,9 @@ function ProductsContent() {
   const [isMobile, setIsMobile] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '');
-  const allPrices = useMemo(() => products.map(p => p.price), []);
-  const minP = useMemo(() => Math.min(...allPrices), [allPrices]);
-  const maxP = useMemo(() => Math.max(...allPrices), [allPrices]);
+  const allPrices = useMemo(() => products.map(p => p.price), [products]);
+  const minP = useMemo(() => allPrices.length ? Math.min(...allPrices) : 0, [allPrices]);
+  const maxP = useMemo(() => allPrices.length ? Math.max(...allPrices) : 0, [allPrices]);
   const [minPrice, setMinPrice] = useState<number>(parseInt(searchParams.get('min') || String(minP), 10));
   const [maxPrice, setMaxPrice] = useState<number>(parseInt(searchParams.get('max') || String(maxP), 10));
   const [inStockOnly, setInStockOnly] = useState<boolean>((searchParams.get('instock') || '') === '1');
@@ -58,7 +59,7 @@ function ProductsContent() {
   const [onSaleOnly, setOnSaleOnly] = useState<boolean>((searchParams.get('sale') || '') === '1');
   const [featuredOnly, setFeaturedOnly] = useState<boolean>((searchParams.get('featured') || '') === '1');
   const shadeOptions = useMemo(() =>
-    Array.from(new Set(products.filter(p => p.category === 'Lipgloss' && p.isShade).map(p => p.name.replace('Lipgloss - ', '')))), []);
+    Array.from(new Set(products.filter(p => p.category === 'Lipgloss' && p.isShade).map(p => p.name.replace('Lipgloss - ', '')))), [products]);
 
   const squeezPricing = useMemo(() => getLipglossVariantPricing('squeez'), []);
   const bigBrushPricing = useMemo(() => getLipglossVariantPricing('big-brush'), []);
@@ -119,7 +120,7 @@ function ProductsContent() {
     );
   }
 
-  const lipglossProducts = useMemo(() => products.filter((p) => p.category === 'Lipgloss' && p.isShade), []);
+  const lipglossProducts = useMemo(() => products.filter((p) => p.category === 'Lipgloss' && p.isShade), [products]);
 
   const shadeSwatches: Record<string, string> = {
     '10': '#F8BBD0',

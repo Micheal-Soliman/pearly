@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, X } from 'lucide-react';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import { getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 type CartItem = {
@@ -27,6 +27,7 @@ type Props = {
 };
 
 export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
+  const { products } = useProducts();
   const unitPrice = getUnitPrice(item);
   const total = (unitPrice * item.quantity).toFixed(2);
   const lipglossPricing = item.category === 'Lipgloss' ? getLipglossVariantPricing(item.selectedType) : null;

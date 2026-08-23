@@ -3,16 +3,25 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
+import type { Product } from '@/types';
 
 export default function BundleSavings() {
-  const bundles = products.filter((p) => p.category === 'Bundles');
+  const { products } = useProducts();
+  const featuredBundles = products
+    .filter((product) => product.category === 'Bundles' && product.inStock)
+    .sort((a, b) => {
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      const aSaving = (a.originalPrice || a.price) - a.price;
+      const bSaving = (b.originalPrice || b.price) - b.price;
+      return bSaving - aSaving;
+    })
+    .slice(0, 2);
+
+  const bundle32 = featuredBundles[0];
+  const bundle9 = featuredBundles[1];
   
-  // Existing bundles
-  const bundle9 = bundles.find((p) => p.id === '9'); // Squeez + Big Brush (13.5% off)
-  const bundle32 = bundles.find((p) => p.id === '32'); // 2 Big Brush + 1 Squeez Free (27% off)
-  
-  const getSaveAmount = (bundle: typeof bundle9) => {
+  const getSaveAmount = (bundle?: Product) => {
     if (!bundle?.originalPrice || !bundle?.price) return 0;
     return bundle.originalPrice - bundle.price;
   };
