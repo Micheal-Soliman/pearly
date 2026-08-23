@@ -13,6 +13,7 @@ export type ProductRow = {
   original_price: number | null;
   image: string;
   images: string[];
+  shade_images: string[];
   category: string;
   in_stock: boolean;
   featured: boolean;
@@ -31,6 +32,7 @@ export function rowToProduct(row: ProductRow): Product {
     originalPrice: row.original_price ?? undefined,
     image: row.image,
     images: row.images || (row.image ? [row.image] : []),
+    shadeImages: row.shade_images || [],
     category: row.category,
     inStock: row.in_stock,
     featured: row.featured,
@@ -49,6 +51,7 @@ export function productToRow(product: Product): ProductRow {
     original_price: product.originalPrice ? Number(product.originalPrice) : null,
     image: product.image,
     images: product.images?.length ? product.images : product.image ? [product.image] : [],
+    shade_images: product.shadeImages || [],
     category: product.category,
     in_stock: product.inStock,
     featured: product.featured,

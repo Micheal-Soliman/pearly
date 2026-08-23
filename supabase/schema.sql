@@ -6,6 +6,7 @@ create table if not exists public.products (
   original_price numeric(10,2) check (original_price is null or original_price >= 0),
   image text not null default '',
   images jsonb not null default '[]'::jsonb,
+  shade_images jsonb not null default '[]'::jsonb,
   category text not null,
   in_stock boolean not null default true,
   featured boolean not null default false,
@@ -15,6 +16,10 @@ create table if not exists public.products (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Safe to run again when the table was created with an older schema.
+alter table public.products
+  add column if not exists shade_images jsonb not null default '[]'::jsonb;
 
 create index if not exists products_category_idx on public.products (category);
 create index if not exists products_featured_idx on public.products (featured) where featured = true;
