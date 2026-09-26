@@ -29,7 +29,7 @@ interface OrderData {
   subtotal?: number;
   deliveryFee?: number;
   total: number;
-  [key: string]: any;
+  customerEmailSent?: boolean;
 }
 
 function OrderSuccessContent() {
@@ -39,10 +39,13 @@ function OrderSuccessContent() {
   const COMPANY_EMAIL = process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'thepearly.shop49@gmail.com';
 
   useEffect(() => {
-    const data = searchParams.get('data');
-    if (data) {
+    const orderNumber = searchParams.get('order');
+    const savedOrder = sessionStorage.getItem('pearly-last-order');
+
+    if (orderNumber && savedOrder) {
       try {
-        const decoded = JSON.parse(decodeURIComponent(data));
+        const decoded = JSON.parse(savedOrder) as OrderData;
+        if (decoded.orderNumber !== orderNumber) throw new Error('Order reference mismatch');
         setOrderData(decoded);
       } catch (error) {
         console.error('Failed to parse order data:', error);
@@ -85,7 +88,9 @@ function OrderSuccessContent() {
             </h1>
             <div className="w-24 h-1 bg-[#d6869d]/30 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
-              Thank you for your order! We've sent a confirmation to {orderData.email && orderData.email !== 'N/A' ? orderData.email : 'your email'}. 
+              {orderData.customerEmailSent
+                ? `Thank you for your order! We've sent a confirmation to ${orderData.email}.`
+                : 'Thank you for your order! Our team has received it and will contact you shortly.'}{' '}
               Your order will be on its way soon.
             </p>
           </motion.div>
@@ -244,7 +249,7 @@ function OrderSuccessContent() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="bg-white rounded-3xl p-8 shadow-lg border-2 border-pink-100 mb-8"
           >
-            <h3 className="text-lg font-light tracking-wide mb-4 text-gray-900">What's Next?</h3>
+            <h3 className="text-lg font-light tracking-wide mb-4 text-gray-900">What&apos;s Next?</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-[#d6869d] mt-0.5 mr-2 flex-shrink-0" />

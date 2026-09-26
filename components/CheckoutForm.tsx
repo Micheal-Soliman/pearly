@@ -3,18 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { getUnitPrice } from '@/lib/pricing';
+import type { CartItem } from '@/types';
 
 type Props = {
-  cart: any[];
-  subtotal: number;
-  deliveryFee: number;
+  cart: CartItem[];
   deliveryFees: { [key: string]: number };
   onCitySelected: (city: string) => void;
   setIsProcessing: (processing: boolean) => void;
 };
 
-export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees, onCitySelected, setIsProcessing }: Props) {
+export default function CheckoutForm({ cart, deliveryFees, onCitySelected, setIsProcessing }: Props) {
   const router = useRouter();
   const { clearCart } = useCart();
   const [formData, setFormData] = useState({
@@ -27,38 +25,9 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
     notes: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const cityList = [
-    'Cairo',
-    'Giza',
-    'Al Asher mn Ramadan',
-    'Alexandria',
-    'Qalyubia',
-    'Ismailia',
-    'Suez',
-    'Port Said',
-    'Beheira',
-    'Dakahlia',
-    'Menoufia',
-    'Sharqia',
-    'Kafr El-Sheikh',
-    'Damietta',
-    'Gharbia',
-    'Tanta',
-    'Mansoura',
-    'Fayoum',
-    'Beni Suef',
-    'Sohag',
-    'Minya',
-    'Assiut',
-    'Qena',
-    'Luxor',
-    'Aswan',
-    'Matrouh',
-    'New Valley',
-    'North Coast',
-    'Red Sea',
-  ];
+  const cityList = Object.keys(deliveryFees);
 
   const handleCityChange = (city: string) => {
     setFormData({ ...formData, city });
@@ -67,15 +36,15 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let orderSubmitted = false;
+    setSubmitError('');
     setIsSubmitting(true);
     setIsProcessing(true);
 
     try {
-      const orderNumber = `ORD-${Date.now()}`;
       const orderData = {
-        orderNumber,
         customerName: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email || 'N/A',
+        email: formData.email,
         phone: formData.phone,
         address: formData.address,
         city: formData.city,
@@ -85,15 +54,12 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
           name: item.name,
           category: item.category,
           quantity: item.quantity,
-          price: getUnitPrice(item),
+          selectedType: item.selectedType,
           type: item.selectedType || 'standard',
           shadeId: item.shadeId || null,
           bundleSteps: item.bundleSteps || [],
           bundleShades: item.bundleShades || [],
         })),
-        subtotal: subtotal,
-        deliveryFee: deliveryFee,
-        total: subtotal + deliveryFee,
       };
 
       const response = await fetch('/api/orders', {
@@ -102,18 +68,34 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
         body: JSON.stringify(orderData),
       });
 
-      if (response.ok) {
+      const result = await response.json().catch(() => null);
+
+      if (response.ok && result?.success && result?.order) {
+        orderSubmitted = true;
+        sessionStorage.setItem(
+          'pearly-last-order',
+          JSON.stringify({
+            ...result.order,
+            customerEmailSent: Boolean(result.deliveryStatus?.customerEmail),
+          }),
+        );
         clearCart();
-        const encodedData = encodeURIComponent(JSON.stringify(orderData));
-        router.push(`/order-success?data=${encodedData}`);
+        router.push(`/order-success?order=${encodeURIComponent(result.order.orderNumber)}`);
       } else {
-        throw new Error('Failed to submit order');
+        throw new Error(result?.message || 'Failed to submit order');
       }
     } catch (error) {
-      console.error('Order submission error:', error);
-      alert('Failed to submit order. Please try again or contact us directly.');
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to submit order. Please try again or contact us directly.',
+      );
     } finally {
       setIsSubmitting(false);
+      // Keep the checkout redirect guard active until the success page mounts.
+      if (!orderSubmitted) {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -214,6 +196,11 @@ export default function CheckoutForm({ cart, subtotal, deliveryFee, deliveryFees
         >
           {isSubmitting ? 'Processing...' : 'Place Order'}
         </button>
+        {submitError ? (
+          <p role="alert" className="text-sm text-red-600 text-center leading-relaxed">
+            {submitError}
+          </p>
+        ) : null}
       </form>
     </div>
   );

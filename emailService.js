@@ -1,15 +1,18 @@
 import nodemailer from "nodemailer";
 
 // Validate SMTP configuration
+const smtpPort = Number(process.env.SMTP_PORT || 587);
 const smtpConfig = {
-  service: "gmail",
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT || 587,
-  secure: false, // true for 465, false for other ports
+  port: smtpPort,
+  secure: smtpPort === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  connectionTimeout: 10_000,
+  greetingTimeout: 10_000,
+  socketTimeout: 20_000,
 };
 
 // Check if required SMTP variables are set
@@ -32,6 +35,15 @@ if (isSmtpConfigured()) {
 }
 
 export const emailService = {
+  getConfigurationStatus() {
+    return {
+      configured: Boolean(transporter),
+      adminEmailConfigured: Boolean(
+        process.env.COMPANY_EMAIL || process.env.SMTP_FROM || process.env.SMTP_USER
+      ),
+    };
+  },
+
   async sendEmail(to, subject, html, text = "", extra = {}) {
     if (!transporter) {
       throw new Error(

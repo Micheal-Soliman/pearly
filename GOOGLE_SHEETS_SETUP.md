@@ -65,8 +65,10 @@ function doPost(e) {
 1. في مجلد المشروع، اعمل ملف `.env.local`
 2. اكتب فيه:
 ```
-NEXT_PUBLIC_GOOGLE_SHEETS_URL=الـ_URL_اللي_نسخته
+GOOGLE_SHEETS_URL=الـ_URL_اللي_نسخته
 ```
+
+استخدم متغيرًا بدون `NEXT_PUBLIC_` لأن الرابط يحتاجه السيرفر فقط ولا يجب كشفه للمتصفح.
 
 ### 4. إعادة تشغيل المشروع
 ```bash

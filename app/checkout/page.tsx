@@ -7,40 +7,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import CheckoutSummary from '@/components/CheckoutSummary';
 import CheckoutForm from '@/components/CheckoutForm';
-
-// Delivery fees by city
-const deliveryFees: { [key: string]: number } = {
-  'Cairo': 70,
-  'Giza': 70,
-  'Al Asher mn Ramadan': 80,
-  'Alexandria': 85,
-  'Qalyubia': 85,
-  'Ismailia': 90,
-  'Suez': 90,
-  'Port Said': 90,
-  'Beheira': 90,
-  'Dakahlia': 90,
-  'Menoufia': 90,
-  'Sharqia': 90,
-  'Kafr El-Sheikh': 90,
-  'Damietta': 90,
-  'Gharbia': 90,
-  'Tanta': 90,
-  'Mansoura': 90,
-  'Fayoum': 95,
-  'Beni Suef': 95,
-  'Sohag': 95,
-  'Minya': 95,
-  'Assiut': 95,
-  'Qena': 105,
-  'Luxor': 105,
-  'Aswan': 105,
-  'Matrouh': 125,
-  'New Valley': 125,
-  'North Coast': 125,
-  'Red Sea': 130,
-  'Sinai': 155,
-};
+import { DEFAULT_DELIVERY_FEE, DELIVERY_FEES } from '@/lib/checkout';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -55,7 +22,7 @@ export default function CheckoutPage() {
     notes: '',
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState(75);
+  const [deliveryFee, setDeliveryFee] = useState(DEFAULT_DELIVERY_FEE);
 
   useEffect(() => {
     // Only redirect if cart is empty AND we're not processing an order
@@ -66,7 +33,7 @@ export default function CheckoutPage() {
 
   const handleCityChange = (city: string) => {
     setFormData({ ...formData, city });
-    setDeliveryFee(deliveryFees[city] || 75);
+    setDeliveryFee(DELIVERY_FEES[city] || DEFAULT_DELIVERY_FEE);
   };
 
   if (cart.length === 0) {
@@ -86,16 +53,14 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Checkout Form */}
             <CheckoutForm
-              cart={cart as any}
-              subtotal={totalPrice}
-              deliveryFee={deliveryFee}
-              deliveryFees={deliveryFees}
+              cart={cart}
+              deliveryFees={DELIVERY_FEES}
               onCitySelected={handleCityChange}
               setIsProcessing={setIsProcessing}
             />
 
             {/* Order Summary */}
-            <CheckoutSummary cart={cart as any} subtotal={totalPrice} deliveryFee={deliveryFee} city={formData.city} />
+            <CheckoutSummary cart={cart} subtotal={totalPrice} deliveryFee={deliveryFee} city={formData.city} />
           </div>
         </div>
       </div>

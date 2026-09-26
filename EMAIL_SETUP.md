@@ -21,7 +21,11 @@ SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-16-digit-app-password
 SMTP_FROM=your-email@gmail.com
+COMPANY_EMAIL=the-admin-email-that-receives-orders@gmail.com
 ```
+
+> مهم: أضف نفس المتغيرات في إعدادات الاستضافة (Production وPreview)، وليس في `.env.local` فقط.
+> الطلب لا يُعتبر مؤكدًا ولا تُمسح سلة العميل إذا فشل إرسال إشعار الأدمن.
 
 ### 3. تثبيت nodemailer
 ```bash
