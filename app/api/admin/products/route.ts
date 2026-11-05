@@ -14,6 +14,9 @@ function invalid(product: Product) {
   if (!product?.id || !product?.name?.trim() || !product?.category?.trim()) return 'Name and category are required.';
   if (!Number.isFinite(Number(product.price)) || Number(product.price) < 0) return 'Price must be zero or greater.';
   if (product.image?.startsWith('data:') && product.image.length > 2_100_000) return 'Base64 image is too large (maximum 1.5 MB).';
+  if ((product.images || []).length > 8) return 'A product can have up to 8 images.';
+  if ((product.images || []).some((image) => image.startsWith('data:') && image.length > 2_100_000)) return 'One of the images is larger than 1.5 MB.';
+  if ((product.images || []).reduce((total, image) => total + image.length, 0) > 8_500_000) return 'Product images are too large in total. Compress them first.';
   return null;
 }
 

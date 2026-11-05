@@ -23,6 +23,12 @@ export type ProductRow = {
   created_at?: string;
 };
 
+export type CategoryRow = {
+  id: string;
+  name: string;
+  created_at?: string;
+};
+
 export function rowToProduct(row: ProductRow): Product {
   return {
     id: row.id,

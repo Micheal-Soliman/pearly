@@ -17,6 +17,21 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.categories (
+  id text primary key,
+  name text not null unique,
+  created_at timestamptz not null default now()
+);
+
+insert into public.categories (id, name) values
+  ('bundles', 'Bundles'),
+  ('big-brush', 'Big Brush'),
+  ('squeeze', 'Squeeze'),
+  ('liquid-blush', 'Liquid Blush'),
+  ('lipgloss', 'Lipgloss'),
+  ('eyebrow-wax', 'Eyebrow Wax')
+on conflict (name) do nothing;
+
 -- Safe to run again when the table was created with an older schema.
 alter table public.products
   add column if not exists shade_images jsonb not null default '[]'::jsonb;
@@ -26,6 +41,7 @@ create index if not exists products_featured_idx on public.products (featured) w
 create index if not exists products_in_stock_idx on public.products (in_stock);
 
 alter table public.products enable row level security;
+alter table public.categories enable row level security;
 -- The dashboard writes through a server-only service role key. Public clients receive no table policy.
 
 create or replace function public.set_updated_at()

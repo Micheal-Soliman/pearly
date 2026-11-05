@@ -17,6 +17,11 @@ export interface Product {
   bundleSteps?: { label: string }[];
 }
 
+export interface Category {
+  id: string;
+  name: string;
+}
+
 export interface CartItem extends Product {
   quantity: number;
   selectedType?: 'big-brush' | 'squeez';
