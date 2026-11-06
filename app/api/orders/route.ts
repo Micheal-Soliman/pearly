@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { emailService } from '@/emailService';
 import { validateAndPriceOrder } from '@/lib/checkout';
+import { products as fallbackProducts } from '@/data/products';
+import { isSupabaseConfigured, rowToProduct, supabaseRequest } from '@/lib/supabase-admin';
+import type { Product } from '@/types';
 
 export const runtime = 'nodejs';
 
@@ -12,9 +15,32 @@ type DeliveryStatus = {
 
 export async function POST(request: Request) {
   let order;
+  let catalogue: Product[] = fallbackProducts;
+
+  if (isSupabaseConfigured) {
+    try {
+      const response = await supabaseRequest('products?select=*');
+      if (!response.ok) throw new Error(`Product catalogue returned ${response.status}`);
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw new Error('Product catalogue returned invalid data');
+      catalogue = rows.map(rowToProduct);
+    } catch (error) {
+      console.error('Could not load the product catalogue for checkout', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'CATALOGUE_UNAVAILABLE',
+          message: 'We could not verify the products right now. Your cart is safe—please try again shortly.',
+        },
+        { status: 503 },
+      );
+    }
+  }
 
   try {
-    order = validateAndPriceOrder(await request.json());
+    order = validateAndPriceOrder(await request.json(), catalogue);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Invalid order data';
     return NextResponse.json({ success: false, code: 'INVALID_ORDER', message }, { status: 400 });

@@ -1,5 +1,6 @@
 import { products } from '@/data/products';
 import { getUnitPrice } from '@/lib/pricing';
+import type { Product } from '@/types';
 
 export const DEFAULT_DELIVERY_FEE = 75;
 
@@ -96,28 +97,31 @@ function optionalText(value: unknown, maxLength: number): string {
   return value.trim().slice(0, maxLength);
 }
 
-function findCatalogProduct(item: SubmittedOrderItem) {
+function findCatalogProduct(item: SubmittedOrderItem, catalogue: Product[]) {
   const id = requiredText(item.id, 'Product id', 160);
   const category = requiredText(item.category, 'Product category', 60);
 
-  if (category === 'Big Brush') return products.find((product) => product.id === 'big-brush');
-  if (category === 'Squeeze') return products.find((product) => product.id === 'squeez');
+  const exactProduct = catalogue.find((product) => product.id === id);
+  if (exactProduct) return exactProduct;
+
+  if (category === 'Big Brush') return catalogue.find((product) => product.id === 'big-brush');
+  if (category === 'Squeeze') return catalogue.find((product) => product.id === 'squeez');
   if (category === 'Lipgloss') {
-    return products.find((product) => product.category === 'Lipgloss' && product.isShade);
+    return catalogue.find((product) => product.category === 'Lipgloss' && product.isShade);
   }
   if (category === 'Bundles') {
-    return products.find(
+    return catalogue.find(
       (product) => product.category === 'Bundles' && (id === product.id || id.startsWith(`${product.id}-b-`)),
     );
   }
 
-  return products.find((product) => product.id === id);
+  return undefined;
 }
 
-function validateItem(rawItem: unknown): ValidatedOrderItem {
+function validateItem(rawItem: unknown, catalogue: Product[]): ValidatedOrderItem {
   if (!rawItem || typeof rawItem !== 'object') throw new Error('Invalid order item');
   const item = rawItem as SubmittedOrderItem;
-  const product = findCatalogProduct(item);
+  const product = findCatalogProduct(item, catalogue);
   if (!product) throw new Error('Unknown product in order');
 
   const id = requiredText(item.id, 'Product id', 160);
@@ -149,7 +153,7 @@ function validateItem(rawItem: unknown): ValidatedOrderItem {
   };
 }
 
-export function validateAndPriceOrder(rawOrder: unknown): ValidatedOrder {
+export function validateAndPriceOrder(rawOrder: unknown, catalogue: Product[] = products): ValidatedOrder {
   if (!rawOrder || typeof rawOrder !== 'object') throw new Error('Invalid order payload');
   const order = rawOrder as SubmittedOrder;
 
@@ -165,7 +169,7 @@ export function validateAndPriceOrder(rawOrder: unknown): ValidatedOrder {
     throw new Error('Order must contain valid items');
   }
 
-  const items = order.items.map(validateItem);
+  const items = order.items.map((item) => validateItem(item, catalogue));
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = DELIVERY_FEES[city];
 
