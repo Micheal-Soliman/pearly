@@ -18,15 +18,22 @@ export async function GET() {
       return NextResponse.json({ products: fallbackProducts, categories: fallbackCategories, source: 'fallback' }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    const categoryResponse = await supabaseRequest('categories?select=id,name&order=name.asc');
+    const categoryResponse = await supabaseRequest('categories?select=*&order=homepage_order.asc.nullslast,name.asc');
     const categoryRows = categoryResponse.ok ? await categoryResponse.json() : [];
-    const categoryNames = Array.isArray(categoryRows)
-      ? categoryRows.map((category: { name: string }) => ({ name: category.name }))
+    const storedCategories = Array.isArray(categoryRows)
+      ? categoryRows.map((category: { id: string; name: string; homepage_visible?: boolean; homepage_order?: number }, index: number) => ({
+          id: category.id,
+          name: category.name,
+          homepageVisible: category.homepage_visible ?? true,
+          homepageOrder: category.homepage_order ?? index,
+        }))
       : [];
     const productCategories = rows.map(rowToProduct).map((product) => product.category);
-    const names = Array.from(new Set(['All', ...categoryNames.map((category: { name: string }) => category.name), ...productCategories]));
+    const missingCategories = productCategories
+      .filter((name, index, names) => names.indexOf(name) === index && !storedCategories.some((category) => category.name === name))
+      .map((name, index) => ({ name, homepageVisible: true, homepageOrder: storedCategories.length + index }));
 
-    return NextResponse.json({ products: rows.map(rowToProduct), categories: names.map((name) => ({ name })), source: 'supabase' }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ products: rows.map(rowToProduct), categories: [{ name: 'All' }, ...storedCategories, ...missingCategories], source: 'supabase' }, { headers: { 'Cache-Control': 'no-store' } });
   } catch {
     return NextResponse.json({ products: fallbackProducts, categories: fallbackCategories, source: 'fallback' }, { headers: { 'Cache-Control': 'no-store' } });
   }

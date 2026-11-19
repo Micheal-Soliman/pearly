@@ -2,12 +2,12 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { products as fallbackProducts, categories } from '@/data/products';
-import type { Product } from '@/types';
+import type { Category, Product } from '@/types';
 import { LOCAL_CATALOGUE_KEY, LOCAL_CATEGORIES_KEY, PRODUCTS_SYNC_KEY, PRODUCTS_UPDATED_EVENT } from '@/lib/products-sync';
 
 type ProductsContextValue = {
   products: Product[];
-  categories: Array<{ name: string }>;
+  categories: Array<Pick<Category, 'name'> & Partial<Category>>;
   loading: boolean;
   source: 'supabase' | 'fallback';
 };
@@ -47,7 +47,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         if (localCategories) {
           try {
             const parsed = JSON.parse(localCategories);
-            if (Array.isArray(parsed)) nextCategories = [{ name: 'All' }, ...parsed.map((category) => ({ name: category.name }))];
+            if (Array.isArray(parsed)) nextCategories = [{ name: 'All' }, ...parsed];
           } catch {}
         }
       }

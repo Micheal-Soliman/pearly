@@ -26,6 +26,8 @@ export interface BundleStep {
 export interface Category {
   id: string;
   name: string;
+  homepageVisible?: boolean;
+  homepageOrder?: number;
 }
 
 export interface CartItem extends Product {

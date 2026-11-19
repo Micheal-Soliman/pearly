@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { Boxes, Check, ChevronLeft, ChevronRight, Edit3, FolderPlus, ImagePlus, LayoutDashboard, Megaphone, Package, Plus, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Boxes, Check, ChevronLeft, ChevronRight, Edit3, Eye, EyeOff, FolderPlus, ImagePlus, LayoutDashboard, Megaphone, Package, Plus, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
 import { categories as seedCategoryNames, products as seedProducts } from '@/data/products';
 import { BundleStep, Category, Product } from '@/types';
 import { DEFAULT_ANNOUNCEMENT, type AnnouncementSettings } from '@/lib/announcement';
@@ -20,7 +20,7 @@ const blankProduct = (tab: Tab): Product => ({
 
 export default function AdminPage() {
   const [items, setItems] = useState<Product[]>(seedProducts);
-  const [categories, setCategories] = useState<Category[]>(seedCategoryNames.filter((category) => category.name !== 'All').map((category) => ({ id: category.name.toLowerCase().replace(/\s+/g, '-'), name: category.name })));
+  const [categories, setCategories] = useState<Category[]>(seedCategoryNames.filter((category) => category.name !== 'All').map((category, index) => ({ id: category.name.toLowerCase().replace(/\s+/g, '-'), name: category.name, homepageVisible: true, homepageOrder: index })));
   const [newCategory, setNewCategory] = useState('');
   const [announcement, setAnnouncement] = useState<AnnouncementSettings>(DEFAULT_ANNOUNCEMENT);
   const [tab, setTab] = useState<Tab>('products');
@@ -86,17 +86,50 @@ export default function AdminPage() {
       return setNotice({ kind: 'error', text: 'This category already exists.' });
     }
     try {
-      let category: Category = { id: `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${crypto.randomUUID().slice(0, 6)}`, name };
+      let category: Category = { id: `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${crypto.randomUUID().slice(0, 6)}`, name, homepageVisible: true, homepageOrder: categories.length };
       if (configured) {
         const response = await fetch('/api/admin/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'Could not add category.');
         category = result;
       }
-      persistCategories([...categories, category].sort((a, b) => a.name.localeCompare(b.name)));
+      persistCategories([...categories, category]);
       setNewCategory('');
       setNotice({ kind: 'success', text: `Category “${name}” created.` });
     } catch (error) { setNotice({ kind: 'error', text: error instanceof Error ? error.message : 'Could not add category.' }); }
+  }
+
+  async function saveCategoryLayout(next: Category[], changed: Category[]) {
+    try {
+      if (configured) {
+        const response = await fetch('/api/admin/categories', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ categories: changed }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Could not update homepage categories.');
+      }
+      persistCategories(next);
+      setNotice({ kind: 'success', text: 'Homepage categories updated.' });
+    } catch (error) {
+      setNotice({ kind: 'error', text: error instanceof Error ? error.message : 'Could not update homepage categories.' });
+    }
+  }
+
+  function toggleCategoryVisibility(category: Category) {
+    const updated = { ...category, homepageVisible: category.homepageVisible === false };
+    const next = categories.map((item) => item.id === category.id ? updated : item);
+    void saveCategoryLayout(next, [updated]);
+  }
+
+  function moveCategory(index: number, direction: -1 | 1) {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= categories.length) return;
+    const next = [...categories];
+    [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+    const ordered = next.map((category, position) => ({ ...category, homepageOrder: position }));
+    void saveCategoryLayout(ordered, [ordered[index], ordered[targetIndex]]);
   }
 
   async function removeCategory(category: Category) {
@@ -186,7 +219,17 @@ export default function AdminPage() {
 
       {tab === 'announcement' ? <AnnouncementEditor settings={announcement} saving={saving} onChange={setAnnouncement} onSave={() => void saveAnnouncement()}/> : tab === 'categories' ? <div className="category-manager">
         <div className="category-create"><input value={newCategory} onChange={(event) => setNewCategory(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') void addCategory(); }} placeholder="New category name"/><button className="primary" type="button" onClick={() => void addCategory()}><Plus size={18}/> Create category</button></div>
-        <div className="category-list">{categories.map((category) => <div key={category.id}><span><FolderPlus size={17}/>{category.name}</span><small>{items.filter((product) => product.category === category.name).length} products</small><button type="button" aria-label={`Delete ${category.name}`} onClick={() => void removeCategory(category)}><Trash2 size={17}/></button></div>)}</div>
+        <p className="category-help">Use the arrows to control the homepage order. The eye button shows or hides a category on the homepage only.</p>
+        <div className="category-list">{categories.map((category, index) => <div key={category.id} className={category.homepageVisible === false ? 'category-hidden' : ''}>
+          <span><FolderPlus size={17}/><span>{category.name}<small>{items.filter((product) => product.category === category.name).length} products</small></span></span>
+          <span className="category-status">{category.homepageVisible === false ? 'Hidden' : 'Visible'}</span>
+          <div className="category-actions">
+            <button type="button" disabled={index === 0} aria-label={`Move ${category.name} up`} title="Move up" onClick={() => moveCategory(index, -1)}><ArrowUp size={16}/></button>
+            <button type="button" disabled={index === categories.length - 1} aria-label={`Move ${category.name} down`} title="Move down" onClick={() => moveCategory(index, 1)}><ArrowDown size={16}/></button>
+            <button type="button" aria-label={`${category.homepageVisible === false ? 'Show' : 'Hide'} ${category.name} on homepage`} title={category.homepageVisible === false ? 'Show on homepage' : 'Hide from homepage'} onClick={() => toggleCategoryVisibility(category)}>{category.homepageVisible === false ? <EyeOff size={17}/> : <Eye size={17}/>}</button>
+            <button type="button" className="delete" aria-label={`Delete ${category.name}`} title="Delete category" onClick={() => void removeCategory(category)}><Trash2 size={17}/></button>
+          </div>
+        </div>)}</div>
       </div> : <div className="table-wrap">
         <table><thead><tr><th>{tab === 'products' ? 'Product' : 'Bundle'}</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th className="actions-col">Actions</th></tr></thead>
         <tbody>{visible.map((product) => <tr key={product.id}>

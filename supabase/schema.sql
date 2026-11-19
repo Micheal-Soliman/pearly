@@ -20,6 +20,8 @@ create table if not exists public.products (
 create table if not exists public.categories (
   id text primary key,
   name text not null unique,
+  homepage_visible boolean not null default true,
+  homepage_order integer not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -45,6 +47,10 @@ on conflict (name) do nothing;
 -- Safe to run again when the table was created with an older schema.
 alter table public.products
   add column if not exists shade_images jsonb not null default '[]'::jsonb;
+
+alter table public.categories
+  add column if not exists homepage_visible boolean not null default true,
+  add column if not exists homepage_order integer not null default 0;
 
 create index if not exists products_category_idx on public.products (category);
 create index if not exists products_featured_idx on public.products (featured) where featured = true;
