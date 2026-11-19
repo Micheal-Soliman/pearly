@@ -19,7 +19,7 @@ import { motion } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { getLipglossVariantPricing } from '@/lib/pricing';
-import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
+import { buildBundleStepLabels, buildBundleStepOptions, formatBundleSelectionNames, getBundleSteps, getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 
 function ProductsContent() {
   const { products, categories } = useProducts();
@@ -164,7 +164,7 @@ function ProductsContent() {
   }
 
   // Always hide individual lipgloss shade items from the products listing.
-  filteredProducts = filteredProducts.filter((p) => !(p.category === 'Lipgloss' && p.isShade));
+  filteredProducts = filteredProducts.filter((p) => !p.isShade);
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -505,7 +505,7 @@ function ProductsContent() {
               : bundleSelectedShades;
 
             const steps = getBundleSteps(pendingBundleProduct);
-            const shadeNames = formatBundleSelectionNames(steps, group, lipglossProducts);
+            const shadeNames = formatBundleSelectionNames(steps, group, products);
 
             const uniqueId = `${pendingBundleProduct.id}-b-${group.join('-')}`;
             const itemToAdd = {
@@ -543,8 +543,8 @@ function ProductsContent() {
             Math.floor(bundleSelectedShades.length / perBundleRequired) + 1
           );
           return pendingBundleQuantity > 1
-            ? `Select ${label} Shade (Bundle ${bundleNumber}/${Math.max(1, pendingBundleQuantity)})`
-            : `Select ${label} Shade`;
+            ? `Select ${label} (Bundle ${bundleNumber}/${Math.max(1, pendingBundleQuantity)})`
+            : `Select ${label}`;
         })()}
         stepLabels={(() => {
           const steps = getBundleSteps(pendingBundleProduct);
@@ -553,6 +553,7 @@ function ProductsContent() {
           if (!pendingBundleProduct || perBundleRequired <= 0 || steps.length !== perBundleRequired) return undefined;
           return buildBundleStepLabels(steps, { quantity: qty });
         })()}
+        stepOptions={pendingBundleProduct ? buildBundleStepOptions(getBundleSteps(pendingBundleProduct), products, Math.max(1, pendingBundleQuantity)) : undefined}
       />
 
       {/* Modal for Lipgloss Options */}

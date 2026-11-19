@@ -1,5 +1,6 @@
 import { products } from '@/data/products';
 import { getUnitPrice } from '@/lib/pricing';
+import { getBundleStepOptions, getBundleSteps } from '@/lib/bundles';
 import type { Product } from '@/types';
 
 export const DEFAULT_DELIVERY_FEE = 75;
@@ -44,6 +45,7 @@ type SubmittedOrderItem = {
   quantity?: unknown;
   selectedType?: unknown;
   type?: unknown;
+  bundleShades?: unknown;
 };
 
 type SubmittedOrder = {
@@ -133,6 +135,21 @@ function validateItem(rawItem: unknown, catalogue: Product[]): ValidatedOrderIte
   }
 
   const selectedType = item.selectedType === 'squeez' || item.type === 'squeez' ? 'squeez' : 'big-brush';
+
+  if (product.category === 'Bundles') {
+    const steps = getBundleSteps(product);
+    const selections = Array.isArray(item.bundleShades) ? item.bundleShades : [];
+    if (steps.length > 0 && selections.length !== steps.length) {
+      throw new Error('Please complete all bundle choices');
+    }
+    steps.forEach((step, index) => {
+      const selectedId = selections[index];
+      if (typeof selectedId !== 'string' || !getBundleStepOptions(step, catalogue).some((option) => option.id === selectedId)) {
+        throw new Error(`Invalid choice for ${step.label || `bundle item ${index + 1}`}`);
+      }
+    });
+  }
+
   const price = getUnitPrice({
     category: product.category,
     price: product.price,

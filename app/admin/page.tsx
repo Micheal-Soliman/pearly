@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { Boxes, Check, ChevronLeft, ChevronRight, Edit3, FolderPlus, ImagePlus, LayoutDashboard, Package, Plus, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
 import { categories as seedCategoryNames, products as seedProducts } from '@/data/products';
-import { Category, Product } from '@/types';
+import { BundleStep, Category, Product } from '@/types';
 import { LOCAL_CATALOGUE_KEY, LOCAL_CATEGORIES_KEY, PRODUCTS_SYNC_KEY, PRODUCTS_UPDATED_EVENT } from '@/lib/products-sync';
 import './admin.css';
 
@@ -14,7 +14,7 @@ type Notice = { kind: 'success' | 'error'; text: string } | null;
 const blankProduct = (tab: Tab): Product => ({
   id: crypto.randomUUID(), name: '', description: '', price: 0, image: '', images: [],
   category: tab === 'bundles' ? 'Bundles' : 'Lipgloss', inStock: true, featured: false,
-  bundleSteps: tab === 'bundles' ? [{ label: 'Big Brush' }] : [],
+  bundleSteps: tab === 'bundles' ? [{ label: 'Choose Lipgloss', category: 'Lipgloss' }] : [],
 });
 
 export default function AdminPage() {
@@ -176,7 +176,7 @@ export default function AdminPage() {
       </div>}
     </section>
 
-    {editing && <ProductDrawer product={editing} categories={categories} isNew={isNew} saving={saving} onClose={() => setEditing(null)} onSave={save}/>} 
+    {editing && <ProductDrawer product={editing} catalogue={items} categories={categories} isNew={isNew} saving={saving} onClose={() => setEditing(null)} onSave={save}/>}
   </main>;
 }
 
@@ -184,7 +184,7 @@ function ProductThumb({ product }: { product: Product }) {
   return <div className="thumb">{product.image ? <Image unoptimized fill sizes="48px" src={product.image} alt="" /> : <ImagePlus size={20}/>}</div>;
 }
 
-function ProductDrawer({ product: initial, categories, isNew, saving, onClose, onSave }: { product: Product; categories: Category[]; isNew: boolean; saving: boolean; onClose: () => void; onSave: (p: Product) => void }) {
+function ProductDrawer({ product: initial, catalogue, categories, isNew, saving, onClose, onSave }: { product: Product; catalogue: Product[]; categories: Category[]; isNew: boolean; saving: boolean; onClose: () => void; onSave: (p: Product) => void }) {
   const [product, setProduct] = useState({ ...initial, images: initial.images?.length ? initial.images : initial.image ? [initial.image] : [] });
   const [imageError, setImageError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -227,6 +227,10 @@ function ProductDrawer({ product: initial, categories, isNew, saving, onClose, o
     setProduct((current) => ({ ...current, images }));
   }
 
+  function updateBundleStep(index: number, changes: Partial<BundleStep>) {
+    update('bundleSteps', (product.bundleSteps || []).map((step, stepIndex) => stepIndex === index ? { ...step, ...changes } : step));
+  }
+
   return <><button className="drawer-backdrop" aria-label="Close editor" onClick={onClose}/><aside className="drawer">
     <header><div><h2>{isNew ? 'Add' : 'Edit'} {isBundle ? 'bundle' : 'product'}</h2><p>{isNew ? 'Create a new catalogue item' : 'Update catalogue details'}</p></div><button onClick={onClose}><X/></button></header>
     <form onSubmit={(e) => { e.preventDefault(); onSave(product); }}>
@@ -244,8 +248,30 @@ function ProductDrawer({ product: initial, categories, isNew, saving, onClose, o
       <Field label="Description"><textarea rows={4} value={product.description} onChange={(e) => update('description', e.target.value)} placeholder="Describe this item"/></Field>
       <Field label="Category"><select required value={product.category} onChange={(e) => update('category', e.target.value)}>{!categories.some((category) => category.name === product.category) && <option>{product.category}</option>}{categories.map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}</select></Field>
       <div className="form-grid"><Field label="Price (EGP)"><input required min="0" step="0.01" type="number" value={product.price} onChange={(e) => update('price', Number(e.target.value))}/></Field><Field label="Original price"><input min="0" step="0.01" type="number" value={product.originalPrice || ''} onChange={(e) => update('originalPrice', e.target.value ? Number(e.target.value) : undefined)}/></Field></div>
-      {isBundle && <Field label="Bundle items"><div className="bundle-steps">{(product.bundleSteps || []).map((step, index) => <div key={index}><input value={step.label} onChange={(e) => update('bundleSteps', (product.bundleSteps || []).map((s, i) => i === index ? { label: e.target.value } : s))}/><button type="button" onClick={() => update('bundleSteps', (product.bundleSteps || []).filter((_, i) => i !== index))}><X size={16}/></button></div>)}<button type="button" className="add-step" onClick={() => update('bundleSteps', [...(product.bundleSteps || []), { label: 'Lipgloss' }])}><Plus size={15}/> Add bundle item</button></div></Field>}
-      <div className="switches"><label><input type="checkbox" checked={product.inStock} onChange={(e) => update('inStock', e.target.checked)}/><span/> In stock</label><label><input type="checkbox" checked={product.featured} onChange={(e) => update('featured', e.target.checked)}/><span/> Featured</label></div>
+      {isBundle && <Field label="Bundle items"><div className="bundle-steps">
+        {(product.bundleSteps || []).map((step, index) => {
+          const mode = step.productId ? 'product' : 'category';
+          return <div className="bundle-step-card" key={index}>
+            <div className="bundle-step-head"><strong>Item {index + 1}</strong><button type="button" onClick={() => update('bundleSteps', (product.bundleSteps || []).filter((_, i) => i !== index))}><Trash2 size={15}/></button></div>
+            <input required value={step.label} onChange={(event) => updateBundleStep(index, { label: event.target.value })} placeholder="Customer-facing label"/>
+            <select value={mode} onChange={(event) => event.target.value === 'product'
+              ? updateBundleStep(index, { productId: catalogue.find((item) => item.category !== 'Bundles')?.id || '', category: undefined })
+              : updateBundleStep(index, { category: categories.find((item) => item.name !== 'Bundles')?.name || '', productId: undefined })}>
+              <option value="category">Customer chooses from category</option>
+              <option value="product">Fixed product</option>
+            </select>
+            {mode === 'category' ? <select required value={step.category || ''} onChange={(event) => updateBundleStep(index, { category: event.target.value, productId: undefined })}>
+              <option value="" disabled>Select category</option>
+              {categories.filter((category) => category.name !== 'Bundles').map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}
+            </select> : <select required value={step.productId || ''} onChange={(event) => updateBundleStep(index, { productId: event.target.value, category: undefined })}>
+              <option value="" disabled>Select product</option>
+              {catalogue.filter((item) => item.category !== 'Bundles' && item.id !== product.id).map((item) => <option key={item.id} value={item.id}>{item.name} — {item.category}</option>)}
+            </select>}
+          </div>;
+        })}
+        <button type="button" className="add-step" onClick={() => update('bundleSteps', [...(product.bundleSteps || []), { label: 'Choose item', category: categories.find((item) => item.name !== 'Bundles')?.name || 'Lipgloss' }])}><Plus size={15}/> Add bundle item</button>
+      </div></Field>}
+      <div className="switches"><label><input type="checkbox" checked={product.inStock} onChange={(e) => update('inStock', e.target.checked)}/><span/> In stock</label><label><input type="checkbox" checked={product.featured} onChange={(e) => update('featured', e.target.checked)}/><span/> Featured</label>{!isBundle && <label title="Use this for a shade or variant that customers choose inside a product or bundle"><input type="checkbox" checked={Boolean(product.isShade)} onChange={(e) => update('isShade', e.target.checked)}/><span/> Shade / variant</label>}</div>
       <footer><button type="button" className="secondary" onClick={onClose}>Cancel</button><button disabled={saving} className="primary" type="submit">{saving ? 'Saving…' : 'Save changes'}</button></footer>
     </form>
   </aside></>;

@@ -1,6 +1,8 @@
-export type BundleStep = { label: string };
+import type { BundleStep, Product } from '@/types';
 
-type ProductLike = { id: string; name: string };
+export type { BundleStep } from '@/types';
+
+type ProductLike = { id: string; name: string; category?: string; inStock?: boolean; isShade?: boolean };
 
 type BundleProductLike = {
   category?: string;
@@ -51,14 +53,40 @@ export function buildBundleStepLabels(
 
 export function getShadeDisplayName(allProducts: ProductLike[], shadeId: string): string {
   const p = allProducts.find((x) => x.id === shadeId);
-  return p?.name?.replace('Lipgloss - ', '') || shadeId;
+  if (!p) return shadeId;
+  const prefix = p.category ? `${p.category} - ` : '';
+  return prefix && p.name.startsWith(prefix) ? p.name.slice(prefix.length) : p.name;
+}
+
+export function getBundleStepOptions(step: BundleStep, allProducts: Product[]): Product[] {
+  const available = allProducts.filter((product) => product.inStock && product.category !== 'Bundles');
+
+  if (step.productId) {
+    const product = available.find((item) => item.id === step.productId);
+    return product ? [product] : [];
+  }
+
+  const category = step.category?.trim();
+  if (category) {
+    const matches = available.filter((product) => product.category === category);
+    const variants = matches.filter((product) => product.isShade);
+    return variants.length ? variants : matches;
+  }
+
+  // Legacy bundles only stored a label. Keep them working as lipgloss shade choices.
+  const legacyLipgloss = available.filter((product) => product.category === 'Lipgloss' && product.isShade);
+  return legacyLipgloss.length ? legacyLipgloss : available.filter((product) => product.category === 'Lipgloss');
+}
+
+export function buildBundleStepOptions(steps: BundleStep[], allProducts: Product[], quantity = 1): Product[][] {
+  const groups = steps.map((step) => getBundleStepOptions(step, allProducts));
+  return Array.from({ length: Math.max(1, quantity) }, () => groups).flat();
 }
 
 export function formatBundleSelectionNames(
   steps: BundleStep[],
   selectedShadeIds: string[],
-  allProducts: ProductLike[],
-  opts?: Record<string, never>
+  allProducts: ProductLike[]
 ): string[] {
   if (steps.length > 0 && steps.length === selectedShadeIds.length) {
     return selectedShadeIds.map((sid, idx) => {

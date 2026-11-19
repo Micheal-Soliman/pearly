@@ -13,7 +13,7 @@ import { ShoppingBag, Heart, Check, Star, Truck, Users, Package, ArrowLeft, Chev
 import ShadesModal from '@/components/ShadesModal';
 import ProductCard from '@/components/ProductCard';
 import { getLipglossVariantPricing, getUnitPrice } from '@/lib/pricing';
-import { formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
+import { formatBundleSelectionNames, getBundleStepOptions, getBundleSteps, getShadeDisplayName, getStepLabelForIndex } from '@/lib/bundles';
 import type { Product } from '@/types';
 
 const loadingProduct: Product = {
@@ -171,17 +171,22 @@ export default function ProductPage() {
   }));
 
   const bundleSteps = product.category === 'Bundles' ? getBundleSteps(product) : [];
+  const bundleStepOptions = bundleSteps.map((step) => getBundleStepOptions(step, products).map((option) => ({
+    id: option.id,
+    name: option.name,
+    image: option.image,
+  })));
   const requiredBundleCount = bundleSteps.length;
   const bundleStepLabels = requiredBundleCount > 0 ? bundleSteps.map((_, idx) => getStepLabelForIndex(bundleSteps, idx)) : undefined;
   const bundleModalTitle = product.category !== 'Bundles' || requiredBundleCount === 0
     ? undefined
-    : `Select ${getStepLabelForIndex(bundleSteps, Math.min(requiredBundleCount - 1, selectedShades.length))} Shade`;
+    : `Select ${getStepLabelForIndex(bundleSteps, Math.min(requiredBundleCount - 1, selectedShades.length))}`;
   const isBundleSelectionComplete = product.category !== 'Bundles' || requiredBundleCount === 0 || selectedShades.length === requiredBundleCount;
   const isLipglossSelectionComplete = product.category !== 'Lipgloss' || selectedLipglossShades.length === quantity;
   const canAddToCart = !addedToCart && isBundleSelectionComplete && isLipglossSelectionComplete;
 
   const relatedProducts = (() => {
-    const base = products.filter((p) => !(p.category === 'Lipgloss' && p.isShade) && p.id !== product.id);
+    const base = products.filter((p) => !p.isShade && p.id !== product.id);
     if (product.category === 'Lipgloss') {
       const featured = base.filter((p) => p.featured || p.bestSeller);
       return (featured.length ? featured : base).slice(0, 4);
@@ -524,8 +529,7 @@ export default function ProductPage() {
                     <div className="space-y-2">
                       {bundleSteps.map((_, idx) => {
                         const sid = selectedShades[idx];
-                        const shade = sid ? products.find((p) => p.id === sid) : undefined;
-                        const shadeLabel = sid ? (shade?.name?.replace('Lipgloss - ', '') || sid) : undefined;
+                        const shadeLabel = sid ? getShadeDisplayName(products, sid) : undefined;
                         return (
                           <div
                             key={idx}
@@ -608,7 +612,7 @@ export default function ProductPage() {
                 {!canAddToCart && !addedToCart && (
                   <p className="text-sm text-amber-600 text-center">
                     {product.category === 'Bundles' && !isBundleSelectionComplete
-                      ? `Please select ${requiredBundleCount} shades first.`
+                      ? `Please complete all ${requiredBundleCount} bundle choices first.`
                       : product.category === 'Lipgloss' && !isLipglossSelectionComplete
                       ? `Please select ${quantity} shade${quantity === 1 ? '' : 's'} first.`
                       : ''}
@@ -746,6 +750,7 @@ export default function ProductPage() {
         shadeSwatches={shadeSwatches}
         title={bundleModalTitle}
         stepLabels={bundleStepLabels}
+        stepOptions={bundleStepOptions}
       />
 
       <ShadesModal

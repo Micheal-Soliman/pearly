@@ -19,7 +19,7 @@ import LipglossSlider from '@/components/LipglossSlider';
 import FlavoursGrid from '@/components/FlavoursGrid';
 import BundleSavings from '@/components/BundleSavings';
 import ShadesPalette from '../components/ShadesPalette';
-import { buildBundleStepLabels, formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
+import { buildBundleStepLabels, buildBundleStepOptions, formatBundleSelectionNames, getBundleSteps, getStepLabelForIndex } from '@/lib/bundles';
 
 export default function Home() {
   const { products } = useProducts();
@@ -214,7 +214,7 @@ export default function Home() {
               : bundleSelectedShades;
 
             const steps = getBundleSteps(pendingBundleProduct);
-            const shadeNames = formatBundleSelectionNames(steps, group, lipglossProducts);
+            const shadeNames = formatBundleSelectionNames(steps, group, products);
 
             const uniqueId = `${pendingBundleProduct.id}-b-${group.join('-')}`;
             const itemToAdd = {
@@ -250,8 +250,8 @@ export default function Home() {
 
           const bundleNumber = Math.min(Math.max(1, pendingBundleQuantity), Math.floor(bundleSelectedShades.length / perBundleRequired) + 1);
           return pendingBundleQuantity > 1
-            ? `Select ${label} Shade (Bundle ${bundleNumber}/${Math.max(1, pendingBundleQuantity)})`
-            : `Select ${label} Shade`;
+            ? `Select ${label} (Bundle ${bundleNumber}/${Math.max(1, pendingBundleQuantity)})`
+            : `Select ${label}`;
         })()}
         stepLabels={(() => {
           const steps = getBundleSteps(pendingBundleProduct);
@@ -261,6 +261,7 @@ export default function Home() {
 
           return buildBundleStepLabels(steps, { quantity: qty });
         })()}
+        stepOptions={pendingBundleProduct ? buildBundleStepOptions(getBundleSteps(pendingBundleProduct), products, Math.max(1, pendingBundleQuantity)) : undefined}
       />
 
       <div className="pt-12">

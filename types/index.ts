@@ -14,7 +14,13 @@ export interface Product {
   isShade?: boolean;
   shadeId?: string;
   shadeImages?: string[];
-  bundleSteps?: { label: string }[];
+  bundleSteps?: BundleStep[];
+}
+
+export interface BundleStep {
+  label: string;
+  category?: string;
+  productId?: string;
 }
 
 export interface Category {

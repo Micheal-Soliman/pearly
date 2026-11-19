@@ -1,4 +1,4 @@
-import { Product } from '@/types';
+import { BundleStep, Product } from '@/types';
 
 const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -19,7 +19,7 @@ export type ProductRow = {
   featured: boolean;
   best_seller: boolean;
   is_shade: boolean;
-  bundle_steps: { label: string }[];
+  bundle_steps: BundleStep[];
   created_at?: string;
 };
 

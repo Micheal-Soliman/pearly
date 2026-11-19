@@ -37,17 +37,25 @@ type Props = {
 
   stepLabels?: string[];
 
+  stepOptions?: Shade[][];
+
 };
 
 
 
-export default function ShadesModal({ show, onClose, onDone, title, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches, stepLabels }: Props) {
+export default function ShadesModal({ show, onClose, onDone, title, lipglossShades, selectedShades, setSelectedShades, requiredCount, shadeSwatches, stepLabels, stepOptions }: Props) {
 
   const hasSteps = Array.isArray(stepLabels) && stepLabels.length === requiredCount && requiredCount > 0;
 
   const derivedActiveStepIndex = Math.min(Math.max(0, selectedShades.length), Math.max(0, requiredCount - 1));
 
   const [activeStepIndex, setActiveStepIndex] = useState(derivedActiveStepIndex);
+
+  const allOptions = stepOptions?.flat() || lipglossShades;
+
+  const visibleOptions = hasSteps && stepOptions?.[activeStepIndex]
+    ? stepOptions[activeStepIndex]
+    : lipglossShades;
 
 
 
@@ -103,7 +111,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
                 const sid = selectedShades[idx];
 
-                const shade = sid ? lipglossShades.find((s) => s.id === sid) : undefined;
+                const shade = sid ? allOptions.find((s) => s.id === sid) : undefined;
 
                 const shadeName = sid ? (shade?.name?.replace('Lipgloss - ', '') || sid) : undefined;
 
@@ -145,7 +153,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[40vh] overflow-auto">
 
-          {lipglossShades.map((shade) => {
+          {visibleOptions.map((shade) => {
 
             const count = selectedShades.filter((sid) => sid === shade.id).length;
 
@@ -238,7 +246,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
                   </div>
 
-                  <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.replace('Lipgloss - ', '')}</p>
+                  <p className="text-sm font-medium text-gray-800 line-clamp-1">{shade.name.includes(' - ') ? shade.name.split(' - ').slice(1).join(' - ') : shade.name}</p>
 
                 </button>
 
@@ -286,6 +294,7 @@ export default function ShadesModal({ show, onClose, onDone, title, lipglossShad
 
           })}
 
+          {visibleOptions.length === 0 && <p className="col-span-full py-8 text-center text-sm text-gray-500">No available products for this bundle item.</p>}
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
