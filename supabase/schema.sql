@@ -23,6 +23,16 @@ create table if not exists public.categories (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.site_settings (
+  id text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+insert into public.site_settings (id, value) values
+  ('announcement', '{"enabled":false,"text":"","linkUrl":"","linkLabel":"Shop now","backgroundColor":"#d6869d","textColor":"#ffffff","dismissible":true}'::jsonb)
+on conflict (id) do nothing;
+
 insert into public.categories (id, name) values
   ('bundles', 'Bundles'),
   ('big-brush', 'Big Brush'),
@@ -42,6 +52,7 @@ create index if not exists products_in_stock_idx on public.products (in_stock);
 
 alter table public.products enable row level security;
 alter table public.categories enable row level security;
+alter table public.site_settings enable row level security;
 -- The dashboard writes through a server-only service role key. Public clients receive no table policy.
 
 create or replace function public.set_updated_at()

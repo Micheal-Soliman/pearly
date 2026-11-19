@@ -2,13 +2,14 @@
 
 import Image from 'next/image';
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { Boxes, Check, ChevronLeft, ChevronRight, Edit3, FolderPlus, ImagePlus, LayoutDashboard, Package, Plus, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
+import { Boxes, Check, ChevronLeft, ChevronRight, Edit3, FolderPlus, ImagePlus, LayoutDashboard, Megaphone, Package, Plus, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
 import { categories as seedCategoryNames, products as seedProducts } from '@/data/products';
 import { BundleStep, Category, Product } from '@/types';
-import { LOCAL_CATALOGUE_KEY, LOCAL_CATEGORIES_KEY, PRODUCTS_SYNC_KEY, PRODUCTS_UPDATED_EVENT } from '@/lib/products-sync';
+import { DEFAULT_ANNOUNCEMENT, type AnnouncementSettings } from '@/lib/announcement';
+import { LOCAL_ANNOUNCEMENT_KEY, LOCAL_CATALOGUE_KEY, LOCAL_CATEGORIES_KEY, PRODUCTS_SYNC_KEY, PRODUCTS_UPDATED_EVENT } from '@/lib/products-sync';
 import './admin.css';
 
-type Tab = 'products' | 'bundles' | 'categories';
+type Tab = 'products' | 'bundles' | 'categories' | 'announcement';
 type Notice = { kind: 'success' | 'error'; text: string } | null;
 
 const blankProduct = (tab: Tab): Product => ({
@@ -21,6 +22,7 @@ export default function AdminPage() {
   const [items, setItems] = useState<Product[]>(seedProducts);
   const [categories, setCategories] = useState<Category[]>(seedCategoryNames.filter((category) => category.name !== 'All').map((category) => ({ id: category.name.toLowerCase().replace(/\s+/g, '-'), name: category.name })));
   const [newCategory, setNewCategory] = useState('');
+  const [announcement, setAnnouncement] = useState<AnnouncementSettings>(DEFAULT_ANNOUNCEMENT);
   const [tab, setTab] = useState<Tab>('products');
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<Product | null>(null);
@@ -36,12 +38,17 @@ export default function AdminPage() {
     if (local) { try { setItems(JSON.parse(local)); } catch {} }
     const localCategories = localStorage.getItem(LOCAL_CATEGORIES_KEY);
     if (localCategories) { try { setCategories(JSON.parse(localCategories)); } catch {} }
+    const localAnnouncement = localStorage.getItem(LOCAL_ANNOUNCEMENT_KEY);
+    if (localAnnouncement) { try { setAnnouncement(JSON.parse(localAnnouncement)); } catch {} }
     fetch('/api/admin/products').then((r) => r.json()).then((data) => {
       setConfigured(Boolean(data.configured));
       if (data.configured && Array.isArray(data.products)) setItems(data.products);
     }).catch(() => {}).finally(() => setLoading(false));
     fetch('/api/admin/categories').then((r) => r.json()).then((data) => {
       if (data.configured && Array.isArray(data.categories)) setCategories(data.categories);
+    }).catch(() => {});
+    fetch('/api/admin/announcement').then((r) => r.json()).then((data) => {
+      if (data.settings) setAnnouncement(data.settings);
     }).catch(() => {});
   }, []);
 
@@ -136,6 +143,23 @@ export default function AdminPage() {
     } catch (error) { setNotice({ kind: 'error', text: error instanceof Error ? error.message : 'Could not delete.' }); }
   }
 
+  async function saveAnnouncement() {
+    setSaving(true); setNotice(null);
+    try {
+      if (announcement.enabled && !announcement.text.trim()) throw new Error('Write announcement text before enabling the bar.');
+      if (configured) {
+        const response = await fetch('/api/admin/announcement', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(announcement) });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Could not save announcement.');
+        setAnnouncement(result);
+      } else {
+        localStorage.setItem(LOCAL_ANNOUNCEMENT_KEY, JSON.stringify(announcement));
+      }
+      setNotice({ kind: 'success', text: announcement.enabled ? 'Announcement bar is live.' : 'Announcement bar is hidden.' });
+    } catch (error) { setNotice({ kind: 'error', text: error instanceof Error ? error.message : 'Could not save announcement.' }); }
+    finally { setSaving(false); }
+  }
+
   return <main className="admin-shell">
     <aside className="admin-sidebar">
       <div><div className="admin-wordmark">Pearly</div><p>Pearly Admin</p></div>
@@ -144,22 +168,23 @@ export default function AdminPage() {
         <button type="button" className={tab === 'products' ? 'active' : ''} onClick={() => setTab('products')}><Package size={19}/> Products</button>
         <button type="button" className={tab === 'bundles' ? 'active' : ''} onClick={() => setTab('bundles')}><Boxes size={19}/> Bundles</button>
         <button type="button" className={tab === 'categories' ? 'active' : ''} onClick={() => setTab('categories')}><FolderPlus size={19}/> Categories</button>
+        <button type="button" className={tab === 'announcement' ? 'active' : ''} onClick={() => setTab('announcement')}><Megaphone size={19}/> Announcement</button>
       </nav>
       <div className={`connection ${configured ? 'online' : ''}`}><span />{configured ? 'Supabase connected' : 'Local preview mode'}</div>
     </aside>
 
     <section className="admin-content">
       <header className="admin-header">
-        <div><h1>{tab === 'products' ? 'Products' : tab === 'bundles' ? 'Bundles' : 'Categories'}</h1><p>Manage your Pearly catalogue in one place.</p></div>
-        {tab !== 'categories' && <div className="header-actions"><label className="search"><Search size={18}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${tab}`} /></label>
+        <div><h1>{tab === 'products' ? 'Products' : tab === 'bundles' ? 'Bundles' : tab === 'categories' ? 'Categories' : 'Announcement Bar'}</h1><p>{tab === 'announcement' ? 'Control the message displayed across your store.' : 'Manage your Pearly catalogue in one place.'}</p></div>
+        {(tab === 'products' || tab === 'bundles') && <div className="header-actions"><label className="search"><Search size={18}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${tab}`} /></label>
           <button className="primary" onClick={() => { setEditing(blankProduct(tab)); setIsNew(true); }}><Plus size={18}/> Add {tab === 'products' ? 'product' : 'bundle'}</button></div>}
       </header>
 
       {notice && <div className={`notice ${notice.kind}`}>{notice.text}<button onClick={() => setNotice(null)}><X size={16}/></button></div>}
-      <div className="stats">{stats.map(({ label, value, icon: Icon }) => <article key={label}><span><Icon size={20}/></span><div><p>{label}</p><strong>{value}</strong></div></article>)}</div>
-      <div className="tabs"><button className={tab === 'products' ? 'active' : ''} onClick={() => setTab('products')}>Products</button><button className={tab === 'bundles' ? 'active' : ''} onClick={() => setTab('bundles')}>Bundles</button><button className={tab === 'categories' ? 'active' : ''} onClick={() => setTab('categories')}>Categories</button></div>
+      {tab !== 'announcement' && <div className="stats">{stats.map(({ label, value, icon: Icon }) => <article key={label}><span><Icon size={20}/></span><div><p>{label}</p><strong>{value}</strong></div></article>)}</div>}
+      <div className="tabs"><button className={tab === 'products' ? 'active' : ''} onClick={() => setTab('products')}>Products</button><button className={tab === 'bundles' ? 'active' : ''} onClick={() => setTab('bundles')}>Bundles</button><button className={tab === 'categories' ? 'active' : ''} onClick={() => setTab('categories')}>Categories</button><button className={tab === 'announcement' ? 'active' : ''} onClick={() => setTab('announcement')}>Announcement</button></div>
 
-      {tab === 'categories' ? <div className="category-manager">
+      {tab === 'announcement' ? <AnnouncementEditor settings={announcement} saving={saving} onChange={setAnnouncement} onSave={() => void saveAnnouncement()}/> : tab === 'categories' ? <div className="category-manager">
         <div className="category-create"><input value={newCategory} onChange={(event) => setNewCategory(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') void addCategory(); }} placeholder="New category name"/><button className="primary" type="button" onClick={() => void addCategory()}><Plus size={18}/> Create category</button></div>
         <div className="category-list">{categories.map((category) => <div key={category.id}><span><FolderPlus size={17}/>{category.name}</span><small>{items.filter((product) => product.category === category.name).length} products</small><button type="button" aria-label={`Delete ${category.name}`} onClick={() => void removeCategory(category)}><Trash2 size={17}/></button></div>)}</div>
       </div> : <div className="table-wrap">
@@ -182,6 +207,25 @@ export default function AdminPage() {
 
 function ProductThumb({ product }: { product: Product }) {
   return <div className="thumb">{product.image ? <Image unoptimized fill sizes="48px" src={product.image} alt="" /> : <ImagePlus size={20}/>}</div>;
+}
+
+function AnnouncementEditor({ settings, saving, onChange, onSave }: { settings: AnnouncementSettings; saving: boolean; onChange: (settings: AnnouncementSettings) => void; onSave: () => void }) {
+  const update = <K extends keyof AnnouncementSettings>(key: K, value: AnnouncementSettings[K]) => onChange({ ...settings, [key]: value });
+  return <div className="announcement-editor">
+    <div className="announcement-preview" style={{ backgroundColor: settings.backgroundColor, color: settings.textColor }}>
+      <span>{settings.text || 'Your announcement preview will appear here'}</span>
+      {settings.linkUrl && <strong>{settings.linkLabel || 'Shop now'}</strong>}
+      {settings.dismissible && <X size={15}/>}
+    </div>
+    <div className="announcement-form">
+      <label className="announcement-toggle"><input type="checkbox" checked={settings.enabled} onChange={(event) => update('enabled', event.target.checked)}/><span/><div><b>Show announcement bar</b><small>Turn it on or hide it instantly.</small></div></label>
+      <Field label="Announcement text"><textarea rows={3} maxLength={300} value={settings.text} onChange={(event) => update('text', event.target.value)} placeholder="Free delivery on orders over 500 EGP"/><small className="field-hint">{settings.text.length}/300 characters</small></Field>
+      <div className="form-grid"><Field label="Optional link"><input value={settings.linkUrl} onChange={(event) => update('linkUrl', event.target.value)} placeholder="/products or https://..."/></Field><Field label="Link label"><input value={settings.linkLabel} onChange={(event) => update('linkLabel', event.target.value)} placeholder="Shop now"/></Field></div>
+      <div className="color-grid"><label><span>Background color</span><div><input type="color" value={settings.backgroundColor} onChange={(event) => update('backgroundColor', event.target.value)}/><code>{settings.backgroundColor}</code></div></label><label><span>Text color</span><div><input type="color" value={settings.textColor} onChange={(event) => update('textColor', event.target.value)}/><code>{settings.textColor}</code></div></label></div>
+      <label className="announcement-toggle"><input type="checkbox" checked={settings.dismissible} onChange={(event) => update('dismissible', event.target.checked)}/><span/><div><b>Allow customers to close it</b><small>The bar returns when you change its text or in a new session.</small></div></label>
+      <button type="button" disabled={saving} className="primary announcement-save" onClick={onSave}>{saving ? 'Saving…' : 'Save announcement'}</button>
+    </div>
+  </div>;
 }
 
 function ProductDrawer({ product: initial, catalogue, categories, isNew, saving, onClose, onSave }: { product: Product; catalogue: Product[]; categories: Category[]; isNew: boolean; saving: boolean; onClose: () => void; onSave: (p: Product) => void }) {

@@ -8,6 +8,7 @@ import { FavoritesProvider } from '@/context/FavoritesContext';
 import FABSearch from '@/components/FABSearch';
 import ToastProvider from '@/components/ToastProvider';
 import { ProductsProvider } from '@/context/ProductsContext';
+import AnnouncementBar from '@/components/AnnouncementBar';
 
 const alice = localFont({
   src: "./fonts/Alice-Regular.ttf",
@@ -63,6 +64,7 @@ fbq('track', 'PageView');`}
         </Script>
       </head>
       <body>
+        <AnnouncementBar />
         <noscript>
           <img
             height="1"
