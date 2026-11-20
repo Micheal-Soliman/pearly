@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { getUnitPrice } from '@/lib/pricing';
+import { useProducts } from '@/context/ProductsContext';
 
 type Product = {
   id: string;
@@ -23,7 +24,8 @@ type Props = {
 };
 
 export default function FavoriteCard({ product, onRemove, onAddToCart }: Props) {
-  const currentPrice = getUnitPrice(product);
+  const { products } = useProducts();
+  const currentPrice = getUnitPrice(product, products);
 
   return (
     <motion.div

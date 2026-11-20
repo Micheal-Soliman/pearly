@@ -18,7 +18,7 @@ type Props = {
 };
 
 export default function LipglossSlider({ products, isFavorite, toggleFavorite, onSelectShade }: Props) {
-  const bigBrushPricing = getLipglossVariantPricing('big-brush');
+  const bigBrushPricing = getLipglossVariantPricing('big-brush', products);
   const sliderRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [swipedCards, setSwipedCards] = useState<Set<string>>(new Set());
@@ -197,7 +197,7 @@ export default function LipglossSlider({ products, isFavorite, toggleFavorite, o
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-base text-[#d6869d] font-semibold">
                             {bigBrushPricing.price} EGP
-                            {bigBrushPricing.originalPrice ? (
+                            {bigBrushPricing.originalPrice !== undefined ? (
                               <span className="line-through text-gray-400 font-medium ml-2">{bigBrushPricing.originalPrice} EGP</span>
                             ) : null}
                           </p>

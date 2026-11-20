@@ -65,8 +65,9 @@ function SqueezePageContent() {
       ]
     : product?.images || ['/4.2.jpg'];
 
-  const { price: currentPrice, originalPrice } = getLipglossVariantPricing('squeez');
-  const hasDiscount = originalPrice > currentPrice;
+  const { price: currentPrice, originalPrice } = getLipglossVariantPricing('squeez', products);
+  const comparePrice = originalPrice ?? currentPrice;
+  const hasDiscount = comparePrice > currentPrice;
   const rating = 5;
   const reviewCount = 148;
 
@@ -172,7 +173,7 @@ function SqueezePageContent() {
                   </span>
                   {hasDiscount && (
                     <span className="px-4 py-1.5 bg-[#d6869d] text-white text-sm font-bold rounded-full shadow-xl backdrop-blur-sm flex items-center gap-1.5">
-                      <span>−{Math.round((1 - currentPrice / originalPrice) * 100)}%</span>
+                      <span>−{Math.round((1 - currentPrice / comparePrice) * 100)}%</span>
                       <span className="text-xs font-medium opacity-90">Discount</span>
                     </span>
                   )}
@@ -242,7 +243,7 @@ function SqueezePageContent() {
                   {hasDiscount && (
                     <div className="flex flex-col">
                       <span className="text-xl text-gray-400 line-through font-light">{originalPrice} EGP</span>
-                      <span className="text-sm text-emerald-600 font-medium">You save {originalPrice - currentPrice} EGP</span>
+                      <span className="text-sm text-emerald-600 font-medium">You save {comparePrice - currentPrice} EGP</span>
                     </div>
                   )}
                 </div>

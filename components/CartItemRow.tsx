@@ -28,9 +28,9 @@ type Props = {
 
 export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
   const { products } = useProducts();
-  const unitPrice = getUnitPrice(item);
+  const unitPrice = getUnitPrice(item, products);
   const total = (unitPrice * item.quantity).toFixed(2);
-  const lipglossPricing = item.category === 'Lipgloss' ? getLipglossVariantPricing(item.selectedType) : null;
+  const lipglossPricing = item.category === 'Lipgloss' ? getLipglossVariantPricing(item.selectedType, products) : null;
   const isBundle = item.category === 'Bundles' && Array.isArray(item.bundleSteps) && item.bundleSteps.length > 0;
   const bundleSteps = isBundle ? (item.bundleSteps || []) : [];
   const bundleShades = Array.isArray(item.bundleShades) ? item.bundleShades : [];
@@ -95,7 +95,7 @@ export default function CartItemRow({ item, onRemove, onUpdateQty }: Props) {
           {item.category === 'Lipgloss' ? (
             <div className="text-sm font-medium">
               <span className="text-pink-600">{unitPrice} EGP</span>
-              {lipglossPricing && (
+              {lipglossPricing?.originalPrice !== undefined && (
                 <span className="line-through text-gray-400 ml-2">{lipglossPricing.originalPrice} EGP</span>
               )}
             </div>

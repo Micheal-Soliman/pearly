@@ -50,8 +50,8 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
   }));
 
   const pricing = useMemo(() => {
-    return isLipgloss ? getLipglossVariantPricing(selectedType) : null;
-  }, [isLipgloss, selectedType]);
+    return isLipgloss ? getLipglossVariantPricing(selectedType, products) : null;
+  }, [isLipgloss, products, selectedType]);
 
   if (product?.isShade) return null;
 
@@ -127,7 +127,7 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
                 <span className="text-xl sm:text-2xl text-[#d6869d] font-light">
                   {(pricing ? pricing.price : product.price)} EGP
                 </span>
-                {isLipgloss ? (
+                {isLipgloss && pricing?.originalPrice !== undefined ? (
                   <span className="line-through text-gray-400 font-light text-sm">{pricing?.originalPrice} EGP</span>
                 ) : product.originalPrice ? (
                   <span className="line-through text-gray-400 font-light text-sm">{product.originalPrice} EGP</span>

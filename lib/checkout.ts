@@ -151,10 +151,11 @@ function validateItem(rawItem: unknown, catalogue: Product[]): ValidatedOrderIte
   }
 
   const price = getUnitPrice({
+    id: product.id,
     category: product.category,
     price: product.price,
     selectedType,
-  });
+  }, catalogue);
 
   return {
     id,

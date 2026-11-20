@@ -9,6 +9,8 @@ export const LIPGLOSS_VARIANTS = {
 
 export type LipglossVariantType = keyof typeof LIPGLOSS_VARIANTS;
 
+type CataloguePrice = Pick<Product, 'id' | 'category' | 'price' | 'originalPrice'>;
+
 export function getLipglossVariantType(selectedType?: string): LipglossVariantType {
   if (selectedType === 'big-brush') return 'big-brush';
   if (selectedType === 'squeez') return 'squeez';
@@ -16,32 +18,37 @@ export function getLipglossVariantType(selectedType?: string): LipglossVariantTy
   return 'big-brush';
 }
 
-export function getLipglossVariantPricing(selectedType?: string) {
+export function getLipglossVariantPricing(selectedType?: string, catalogue: CataloguePrice[] = []) {
   const type = getLipglossVariantType(selectedType);
   const base = LIPGLOSS_VARIANTS[type];
+  const product = catalogue.find((item) => item.id === (type === 'squeez' ? 'squeez' : 'big-brush'))
+    || catalogue.find((item) => item.category === (type === 'squeez' ? 'Squeeze' : 'Big Brush'));
   return {
     type,
-    price: base.price + PRICE_BUMP,
-    originalPrice: base.originalPrice + PRICE_BUMP,
+    price: product ? Number(product.price) : base.price + PRICE_BUMP,
+    originalPrice: product
+      ? (product.originalPrice !== undefined ? Number(product.originalPrice) : undefined)
+      : base.originalPrice + PRICE_BUMP,
   };
 }
 
-export function getUnitPrice(item: Pick<CartItem, 'category' | 'price'> & { selectedType?: string }): number {
-  if (item.category === 'Lipgloss' || item.category === 'Big Brush') {
-    return getLipglossVariantPricing(item.selectedType).price;
+export function getUnitPrice(item: Pick<CartItem, 'category' | 'price'> & { id?: string; selectedType?: string }, catalogue: CataloguePrice[] = []): number {
+  if (item.category === 'Lipgloss') {
+    return getLipglossVariantPricing(item.selectedType, catalogue).price;
   }
-  if (item.category === 'Squeeze') {
-    return getLipglossVariantPricing('squeez').price;
-  }
-  return item.price;
+  const liveProduct = item.id
+    ? catalogue.find((product) => product.id === item.id)
+      || catalogue.find((product) => item.id!.startsWith(`${product.id}-`))
+    : undefined;
+  if (liveProduct) return Number(liveProduct.price);
+  if (item.category === 'Big Brush') return getLipglossVariantPricing('big-brush', catalogue).price;
+  if (item.category === 'Squeeze') return getLipglossVariantPricing('squeez', catalogue).price;
+  return Number(item.price);
 }
 
-export function getOriginalPrice(item: Pick<Product, 'category' | 'originalPrice'> & { selectedType?: string }): number | undefined {
-  if (item.category === 'Lipgloss' || item.category === 'Big Brush') {
-    return getLipglossVariantPricing(item.selectedType).originalPrice;
-  }
-  if (item.category === 'Squeeze') {
-    return getLipglossVariantPricing('squeez').originalPrice;
+export function getOriginalPrice(item: Pick<Product, 'category' | 'originalPrice'> & { selectedType?: string }, catalogue: CataloguePrice[] = []): number | undefined {
+  if (item.category === 'Lipgloss') {
+    return getLipglossVariantPricing(item.selectedType, catalogue).originalPrice;
   }
   return item.originalPrice;
 }

@@ -45,8 +45,8 @@ export default function ProductPage() {
 
   const foundProduct = products.find((p) => p.id === params.id);
   const product = foundProduct ?? loadingProduct;
-  const squeezPricing = getLipglossVariantPricing('squeez');
-  const bigBrushPricing = getLipglossVariantPricing('big-brush');
+  const squeezPricing = getLipglossVariantPricing('squeez', products);
+  const bigBrushPricing = getLipglossVariantPricing('big-brush', products);
   const rating = (product as any)?.rating ?? 5;
   const reviewCount = (product as any)?.reviewCount ?? 148;
 
@@ -107,7 +107,7 @@ export default function ProductPage() {
 
   const getCurrentPrice = () => {
     if (product.category === 'Lipgloss') {
-      return getUnitPrice({ category: 'Lipgloss', price: product.price, selectedType });
+      return getUnitPrice({ category: 'Lipgloss', price: product.price, selectedType }, products);
     }
     return product.price;
   };
@@ -237,7 +237,10 @@ export default function ProductPage() {
   }, [quantity, product.category]);
 
   const currentPrice = getCurrentPrice();
-  const hasDiscount = product.originalPrice && product.originalPrice > currentPrice;
+  const currentOriginalPrice = product.category === 'Lipgloss'
+    ? (selectedType === 'squeez' ? squeezPricing.originalPrice : bigBrushPricing.originalPrice)
+    : product.originalPrice;
+  const hasDiscount = currentOriginalPrice !== undefined && currentOriginalPrice > currentPrice;
 
   if (!foundProduct) {
     return <div className="min-h-screen flex items-center justify-center bg-white"><div className="text-center space-y-5">
@@ -310,7 +313,7 @@ export default function ProductPage() {
                   )}
                   {hasDiscount && (
                     <span className="px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xs font-bold rounded-full shadow-xl backdrop-blur-sm">
-                      −{Math.round((1 - currentPrice / product.originalPrice!) * 100)}%
+                      −{Math.round((1 - currentPrice / currentOriginalPrice!) * 100)}%
                     </span>
                   )}
                 </div>
@@ -384,9 +387,9 @@ export default function ProductPage() {
                   {hasDiscount && (
                     <div className="flex flex-col">
                       <span className="text-xl text-gray-400 line-through font-light">
-                        {Number(product.originalPrice).toFixed(0)} EGP
+                        {Number(currentOriginalPrice).toFixed(0)} EGP
                       </span>
-                      <span className="text-sm text-emerald-600 font-medium">You save {Math.round(product.originalPrice! - currentPrice)} EGP</span>
+                      <span className="text-sm text-emerald-600 font-medium">You save {Math.round(currentOriginalPrice! - currentPrice)} EGP</span>
                     </div>
                   )}
                 </div>

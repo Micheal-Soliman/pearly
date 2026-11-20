@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product } from '@/types';
 import { getUnitPrice } from '@/lib/pricing';
 import { showToast } from '@/components/ToastProvider';
+import { useProducts } from '@/context/ProductsContext';
 
 interface CartContextType {
   cart: CartItem[];
@@ -19,6 +20,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const { products } = useProducts();
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -71,7 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce(
     (sum, item) => {
-      return sum + getUnitPrice(item) * item.quantity;
+      return sum + getUnitPrice(item, products) * item.quantity;
     },
     0
   );

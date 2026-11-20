@@ -61,8 +61,8 @@ function ProductsContent() {
   const shadeOptions = useMemo(() =>
     Array.from(new Set(products.filter(p => p.category === 'Lipgloss' && p.isShade).map(p => p.name.replace('Lipgloss - ', '')))), [products]);
 
-  const squeezPricing = useMemo(() => getLipglossVariantPricing('squeez'), []);
-  const bigBrushPricing = useMemo(() => getLipglossVariantPricing('big-brush'), []);
+  const squeezPricing = useMemo(() => getLipglossVariantPricing('squeez', products), [products]);
+  const bigBrushPricing = useMemo(() => getLipglossVariantPricing('big-brush', products), [products]);
   const [selectedShades, setSelectedShades] = useState<string[]>(
     (searchParams.get('shades') || '').split(',').filter(Boolean)
   );
@@ -583,7 +583,7 @@ function ProductsContent() {
                   <p className="font-medium">Squeez</p>
                   <p className="text-sm opacity-80">
                     <span className="font-semibold">{squeezPricing.price} EGP</span>
-                    <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
+                    {squeezPricing.originalPrice !== undefined && <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>}
                   </p>
                 </div>
               </button>
@@ -600,7 +600,7 @@ function ProductsContent() {
                   <p className="font-medium">Big Brush</p>
                   <p className="text-sm opacity-80">
                     <span className="font-semibold">{bigBrushPricing.price} EGP</span>
-                    <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
+                    {bigBrushPricing.originalPrice !== undefined && <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>}
                   </p>
                 </div>
               </button>

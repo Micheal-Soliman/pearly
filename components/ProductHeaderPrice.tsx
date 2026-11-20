@@ -1,6 +1,7 @@
 'use client';
 
 import { getLipglossVariantPricing } from '@/lib/pricing';
+import { useProducts } from '@/context/ProductsContext';
 
 type Props = {
   category: string;
@@ -13,7 +14,8 @@ type Props = {
 };
 
 export default function ProductHeaderPrice({ category, name, currentPrice, isLipgloss, selectedType, originalPrice, bestSeller }: Props) {
-  const lipglossOriginalPrice = isLipgloss ? getLipglossVariantPricing(selectedType).originalPrice : undefined;
+  const { products } = useProducts();
+  const lipglossOriginalPrice = isLipgloss ? getLipglossVariantPricing(selectedType, products).originalPrice : undefined;
 
   return (
     <div className="bg-white rounded-3xl p-6 border-2 border-[#ffe9f0] shadow-lg">
@@ -25,7 +27,7 @@ export default function ProductHeaderPrice({ category, name, currentPrice, isLip
       </h1>
       <p className="text-4xl font-medium text-[#d6869d] flex items-baseline gap-3">
         <span>{currentPrice} EGP</span>
-        {isLipgloss ? (
+        {isLipgloss && lipglossOriginalPrice !== undefined ? (
           <span className="text-2xl line-through text-gray-400">
             {lipglossOriginalPrice} EGP
           </span>

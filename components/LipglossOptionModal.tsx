@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { getLipglossVariantPricing } from '@/lib/pricing';
+import { useProducts } from '@/context/ProductsContext';
 
 type Props = {
   show: boolean;
@@ -14,8 +15,9 @@ type Props = {
 };
 
 export default function LipglossOptionModal({ show, onClose, selectedType, setSelectedType, onConfirm }: Props) {
-  const squeezPricing = getLipglossVariantPricing('squeez');
-  const bigBrushPricing = getLipglossVariantPricing('big-brush');
+  const { products } = useProducts();
+  const squeezPricing = getLipglossVariantPricing('squeez', products);
+  const bigBrushPricing = getLipglossVariantPricing('big-brush', products);
 
   return (
     <AnimatePresence>
@@ -54,7 +56,7 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
                     <span className="font-medium text-gray-900">Squeez (No Mini)</span>
                     <span className="text-[#d6869d] font-medium">
                       <span className="font-semibold">{squeezPricing.price} EGP</span>
-                      <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>
+                      {squeezPricing.originalPrice !== undefined && <span className="line-through ml-2 opacity-70">{squeezPricing.originalPrice} EGP</span>}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">No mini included</p>
@@ -73,7 +75,7 @@ export default function LipglossOptionModal({ show, onClose, selectedType, setSe
                     <span className="font-medium text-gray-900">Big Brush</span>
                     <span className="text-[#d6869d] font-medium">
                       <span className="font-semibold">{bigBrushPricing.price} EGP</span>
-                      <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>
+                      {bigBrushPricing.originalPrice !== undefined && <span className="line-through ml-2 opacity-70">{bigBrushPricing.originalPrice} EGP</span>}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">Larger size with precision applicator</p>

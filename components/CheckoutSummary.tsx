@@ -68,7 +68,7 @@ export default function CheckoutSummary({ cart, subtotal, deliveryFee, city }: P
               <div className="flex justify-between items-center mt-2">
                 <p className="text-sm text-gray-600 font-light">Qty: {item.quantity}</p>
                 <p className="text-sm font-light">
-                  {(getUnitPrice(item) * item.quantity).toFixed(2)} EGP
+                  {(getUnitPrice(item, products) * item.quantity).toFixed(2)} EGP
                 </p>
               </div>
             </div>
